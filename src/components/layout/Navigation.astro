@@ -1,0 +1,88 @@
+---
+type NavItem = { label: string; href: string } | { divider: true };
+
+const navItems: NavItem[] = [
+  { label: 'Cover',      href: '/' },
+  { label: 'Wirtschaft', href: '/wirtschaft' },
+  { label: 'Wetter',     href: '/wetter' },
+  { label: 'News',       href: '/news' },
+  { label: 'Kalender',   href: '/kalender' },
+  { label: 'Archiv',     href: '/archiv' },
+  { divider: true },
+  { label: 'Habits',     href: '/habits' },
+  { label: 'Workout',    href: '/workout' },
+  { label: 'Zeit',       href: '/zeit' },
+];
+
+const current = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? current === '/' : current === href || current.startsWith(href + '/');
+---
+
+<nav aria-label="Module">
+  <ul class="nav-list">
+    {navItems.map((item) => (
+      'divider' in item
+        ? <li class="nav-divider" aria-hidden="true"></li>
+        : <li>
+            <a
+              href={item.href}
+              class:list={['nav-link', { active: isActive(item.href) }]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-5);
+    align-items: center;
+  }
+
+  .nav-link {
+    font-size: var(--fs-body-s);
+    color: var(--fg-muted);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    line-height: 1.4;
+    transition: color 200ms ease-out;
+  }
+  .nav-link:hover { color: var(--fg); }
+  .nav-link.active {
+    color: var(--fg);
+    border-bottom-color: var(--accent);
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--hairline-strong);
+    align-self: center;
+  }
+
+  /* Mobile: vertikale Liste, horizontaler Trenner */
+  @media (max-width: 767px) {
+    .nav-list {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s-3);
+      padding: var(--s-2) 0 0;
+    }
+    .nav-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--hairline);
+      margin: var(--s-2) 0;
+    }
+  }
+</style>

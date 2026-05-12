@@ -1,0 +1,50 @@
+---
+interface Props {
+  phase: string;
+  beschreibung?: string;
+}
+
+const { phase, beschreibung } = Astro.props;
+---
+
+<section class="placeholder">
+  <p class="eyebrow">{phase}</p>
+  <h1 class="headline">Diese Sektion ist in Vorbereitung.</h1>
+  {beschreibung && <p class="lead">{beschreibung}</p>}
+</section>
+
+<style>
+  .placeholder {
+    max-width: var(--container-text);
+    margin: var(--s-9) auto;
+    padding: 0 var(--s-5);
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-size: var(--fs-meta);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--fg-subtle);
+    font-weight: 500;
+  }
+
+  .headline {
+    margin: var(--s-5) 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 96;
+    font-weight: 300;
+    font-size: var(--fs-h1);
+    color: var(--fg);
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+  }
+
+  .lead {
+    margin: var(--s-5) 0 0;
+    font-size: var(--fs-body-l);
+    color: var(--fg-muted);
+    max-width: 56ch;
+    line-height: 1.5;
+  }
+</style>

@@ -1,0 +1,137 @@
+---
+import Navigation from './Navigation.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import DateDisplay from './DateDisplay.astro';
+---
+
+<header class="site-header">
+  <div class="header-grid">
+    <a href="/" class="brand">Mario&rsquo;s HQ</a>
+
+    <div class="cell-date"><DateDisplay /></div>
+    <div class="cell-theme"><ThemeToggle /></div>
+
+    <button
+      type="button"
+      class="hamburger"
+      aria-expanded="false"
+      aria-controls="main-nav"
+      aria-label="Menü öffnen"
+    >
+      <span class="hamburger-icon" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <div id="main-nav" class="cell-nav">
+      <Navigation />
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    const btn = document.querySelector('.hamburger');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      btn.setAttribute('aria-label', !open ? 'Menü schliessen' : 'Menü öffnen');
+    });
+  })();
+</script>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--hairline);
+    background: var(--bg);
+  }
+
+  .header-grid {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: var(--s-5) var(--s-5) var(--s-4);
+
+    display: grid;
+    gap: var(--s-4) var(--s-5);
+    align-items: baseline;
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 48;
+    font-weight: 400;
+    font-size: var(--fs-h3);
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: 0.005em;
+    line-height: 1;
+  }
+
+  .cell-date { line-height: 1; }
+
+  .cell-theme {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .cell-nav { width: 100%; }
+
+  .hamburger {
+    background: none;
+    border: 0;
+    padding: var(--s-2);
+    cursor: pointer;
+    color: var(--fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hamburger-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 22px;
+  }
+  .hamburger-icon span {
+    display: block;
+    height: 1.5px;
+    background: var(--fg);
+  }
+
+  /* Desktop: Brand+Date+Theme oben, Nav unten. Kein Hamburger. */
+  @media (min-width: 768px) {
+    .header-grid {
+      grid-template-columns: 1fr auto auto;
+      grid-template-areas:
+        "brand date theme"
+        "nav   nav  nav";
+    }
+    .brand      { grid-area: brand; }
+    .cell-date  { grid-area: date; justify-self: end; }
+    .cell-theme { grid-area: theme; }
+    .cell-nav   { grid-area: nav; }
+    .hamburger  { display: none; }
+  }
+
+  /* Mobile: Brand+Theme+Hamburger oben, Date eigene Zeile, Nav unten (collapsed via aria-expanded). */
+  @media (max-width: 767px) {
+    .header-grid {
+      grid-template-columns: 1fr auto auto;
+      grid-template-areas:
+        "brand theme ham"
+        "date  date  date"
+        "nav   nav   nav";
+    }
+    .brand      { grid-area: brand; }
+    .cell-theme { grid-area: theme; }
+    .hamburger  { grid-area: ham; }
+    .cell-date  { grid-area: date; justify-self: start; }
+    .cell-nav   { grid-area: nav; }
+
+    .header-grid:has(.hamburger[aria-expanded="false"]) .cell-nav {
+      display: none;
+    }
+  }
+</style>

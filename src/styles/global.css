@@ -87,6 +87,7 @@
     font-family: var(--font-body);
     color: var(--fg);
     background: var(--bg);
+    transition: background-color 200ms ease-out, color 200ms ease-out;
   }
   body {
     margin: 0;

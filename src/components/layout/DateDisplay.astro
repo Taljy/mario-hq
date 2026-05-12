@@ -1,0 +1,46 @@
+---
+interface Props {
+  variant?: 'meta' | 'hero';
+}
+
+const { variant = 'meta' } = Astro.props;
+const id = `date-${variant}-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<time class:list={['date', `date-${variant}`]} id={id} datetime=""></time>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const now = new Date();
+    el.setAttribute('datetime', now.toISOString().slice(0, 10));
+    el.textContent = now.toLocaleDateString('de-CH', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  })();
+</script>
+
+<style>
+  .date { display: inline-block; }
+
+  .date-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--fg-muted);
+    letter-spacing: 0.01em;
+  }
+
+  .date-hero {
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 144;
+    font-weight: 300;
+    font-size: var(--fs-display);
+    line-height: 0.98;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+</style>

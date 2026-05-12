@@ -1,33 +1,40 @@
 ---
 import Magazine from '../layouts/Magazine.astro';
+import DateDisplay from '../components/layout/DateDisplay.astro';
 ---
 
-<Magazine title="Morgenbriefing · Setup">
-  <main style="max-width: var(--container-text); margin: 0 auto; padding: var(--s-8) var(--s-5);">
-
-    <p style="font-size: var(--fs-meta); text-transform: uppercase; letter-spacing: 0.15em; color: var(--fg-subtle); margin: 0;">
-      Setup · Phase 1 · <span style="color: var(--accent);">Smoketest</span>
+<Magazine title="Cover · Mario's HQ">
+  <main class="cover">
+    <p class="eyebrow">Mario&rsquo;s HQ · Phase 2.1</p>
+    <DateDisplay variant="hero" />
+    <p class="lead">
+      Information-Architektur steht. Die Module folgen in den nächsten Phasen —
+      siehe Navigation oben.
     </p>
-
-    <h1 style="font-family: var(--font-display); font-variation-settings: 'opsz' 144; font-weight: 300; font-size: var(--fs-display); line-height: 0.95; margin: var(--s-5) 0 0;">
-      Morgenbriefing
-    </h1>
-
-    <hr style="border: 0; border-top: 1px solid var(--hairline); margin: var(--s-6) 0;" />
-
-    <p style="font-size: var(--fs-body-l); color: var(--fg-muted); margin: 0 0 var(--s-6);">
-      Foundation steht, wenn die Headline in <strong style="color: var(--fg); font-weight: 500;">Fraunces</strong> rendert
-      und dieser Body in <strong style="color: var(--fg); font-weight: 500;">Inter</strong>.
-    </p>
-
-    <div style="background: var(--bg-card); padding: var(--s-5); border-radius: 4px;">
-      <p style="font-size: var(--fs-meta); text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-subtle); margin: 0 0 var(--s-2);">
-        Papier-Card
-      </p>
-      <p style="font-size: var(--fs-body-m); margin: 0;">
-        Washi-Page · Papier-Card · Sumi-Text · Hairline. Wenn dieser Block zur Page-BG abgesetzt ist, stimmen die Tokens.
-      </p>
-    </div>
-
   </main>
 </Magazine>
+
+<style>
+  .cover {
+    max-width: var(--container-text);
+    margin: var(--s-9) auto;
+    padding: 0 var(--s-5);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--s-5);
+    font-size: var(--fs-meta);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--fg-subtle);
+    font-weight: 500;
+  }
+
+  .lead {
+    margin: var(--s-6) 0 0;
+    font-size: var(--fs-body-l);
+    color: var(--fg-muted);
+    max-width: 56ch;
+    line-height: 1.5;
+  }
+</style>
