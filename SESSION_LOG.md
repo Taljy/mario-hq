@@ -1,4 +1,17 @@
-# Morgenbriefing · Session Log
+# Mario's HQ · Session Log
+## 26-05-12 (Update 4) · Repo-Rename zu `mario-hq`
+
+### Was gemacht
+- GitHub-Repo `Taljy/mario-hq` erstellt (statt `morgenbriefing`)
+- Lokaler Ordner umbenannt: `~/Developer/morgenbriefing/` → `~/Developer/mario-hq/`
+- Alle Meta-Files aktualisiert: package.json, SKILL.md, _projekt.md, _pendenzen.md
+- Historische Referenzen in `docs/UEBERGABE-morgenbriefing.md` und `_pendenzen.md` (Erledigt-Sektion) bleiben unverändert als Archiv
+
+### Erkenntnis
+- Konsequente Umbenennung jetzt — bevor GitHub-Push und Vercel-Setup. Pivot zum richtigen Zeitpunkt: später wäre teurer.
+- Repo-Name matched jetzt Produktname „Mario's HQ".
+
+---
 ## 26-05-12 (Update 3) · Mario's HQ · Strategischer Pivot von Briefing zu Cockpit
 
 ### Was gemacht
@@ -13,7 +26,7 @@ Mario fragt sich, ob das Projekt mehr werden sollte als ein tägliches Briefing 
 - **Bewusst draussen:** Essen, Shopping, Ziele, Lernen — gehören in Obsidian oder existierende Apps
 
 **Drei Schlüssel-Entscheidungen**
-1. **Name:** Mario's HQ (Repo bleibt `morgenbriefing`, UI/Branding pivotiert)
+1. **Name:** Mario's HQ (Repo bleibt `morgenbriefing`, UI/Branding pivotiert) — *später revidiert in Update 4: Repo wurde umbenannt zu `mario-hq`*
 2. **Aufgaben-Architektur:** 4-Typen-Trennung — Cal (termingebunden) · Obsidian (Notizen) · _pendenzen.md (Code) · Streaks (Habits). HQ zeigt Read-Only an, bearbeitet wird am Quell-Ort.
 3. **Phase 2 Schwerpunkt:** Wirtschaft + Wetter/Foto parallel produktionsreif, statt nacheinander
 

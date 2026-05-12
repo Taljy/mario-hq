@@ -1,6 +1,6 @@
 ---
 type: projektbeschrieb
-projekt: morgenbriefing (Repo) · Mario's HQ (UI/Brand)
+projekt: mario-hq
 owner: Mario
 erstellt: 26-05-12
 aktualisiert: 26-05-12
@@ -139,7 +139,7 @@ Mario's HQ
                          ↓ Push to GitHub
 ┌─────────────────────────────────────────────────────────┐
 │  Vercel · Auto-Deploy                                   │
-│  Production-URL: morgenbriefing.vercel.app              │
+│  Production-URL: mario-hq.vercel.app                    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -171,10 +171,10 @@ Mario's HQ
 
 | Was | Wo |
 |---|---|
-| Code-Repo lokal | `~/Developer/morgenbriefing/` |
-| GitHub-Repo | `https://github.com/Taljy/morgenbriefing` *(noch nicht erstellt)* |
+| Code-Repo lokal | `~/Developer/mario-hq/` |
+| GitHub-Repo | `https://github.com/Taljy/mario-hq` *(noch nicht erstellt)* |
 | Dev-Server | `http://localhost:4321` (oder 4322/4323 wenn belegt) |
-| Production | `https://morgenbriefing.vercel.app` *(provisorisch)* |
+| Production | `https://mario-hq.vercel.app` *(provisorisch)* |
 | Obsidian-Vault | `~/Second_Brain/` *(Briefings parallel dort)* |
 | Briefing-Daten im Repo | `src/content/briefings/JJJJ-MM-TT.md` |
 | DRG-Design-System (Referenz) | claude.ai/design · Studio Da Rugna Design System |
@@ -241,7 +241,7 @@ Im Projekt „Morgenbriefing" neuen Chat öffnen, dieses File und `_pendenzen.md
 
 ### Konkretes Coding (Claude Code im Repo)
 ```bash
-cd ~/Developer/morgenbriefing
+cd ~/Developer/mario-hq
 claude
 ```
 Claude Code liest automatisch `SKILL.md` aus dem Repo-Root und kennt damit alle Konventionen inkl. DRG-Tokens.

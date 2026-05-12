@@ -1,6 +1,6 @@
 ---
 type: pendenzen
-projekt: morgenbriefing (Repo) · Mario's HQ (UI/Brand)
+projekt: mario-hq
 aktualisiert: 26-05-12
 aktuelle-phase: 2 (Start)
 ---
@@ -50,7 +50,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - [ ] `_projekt.md` (HQ-Pivot) ins Repo · commit + push
 - [ ] `_pendenzen.md` (dieses File) ins Repo · commit + push
 - [ ] `SESSION_LOG.md` mit Phase-1-Abschluss + HQ-Pivot ergänzen
-- [ ] GitHub-Repo anlegen (`github.com/Taljy/morgenbriefing`, public)
+- [ ] GitHub-Repo anlegen (`github.com/Taljy/mario-hq`, public)
 - [ ] Remote hinzufügen + erster Push
 - [ ] Vercel-Account verknüpfen → Auto-Deploy testen
 - [ ] Live-URL bestätigen
