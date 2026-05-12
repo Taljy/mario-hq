@@ -1,4 +1,4 @@
-# Morgenbriefing — Skill für Claude Code
+# Mario's HQ — Skill für Claude Code
 
 > **Pflicht-Lektüre vor jeder Coding-Session.** Wenn du Claude Code bist und in diesem Repo arbeitest: lies dieses File komplett, bevor du Code anfasst.
 
@@ -6,7 +6,7 @@
 
 ## Projekt-Identität
 
-- **Was:** Tägliches persönliches Morgenbriefing als Magazin-Website
+- **Was:** Mario's HQ — persönliches Magazin-Cockpit · Tägliches Morgenbriefing als Kern-Modul
 - **Für wen:** Mario · Baden AG, Schweiz · Foto/Design-Hintergrund · aktiver Trader
 - **Visuelle Familie:** Studio Da Rugna · Architekturfotografie-Studio · gleiche Brand-Sprache, anderer Use Case
 - **Stil:** Editorial-warm · Fraunces × Inter · Vermillon-Akzent · ruhig, dicht, sachlich
@@ -14,7 +14,7 @@
 - **Deploy:** Vercel · Auto-Deploy on push to `main`
 - **Production-URL:** `mario-hq.vercel.app` *(provisorisch)*
 
-**Wichtig:** Das Morgenbriefing ist **kein Studio-Da-Rugna-Kunden-Touchpoint**. Es ist Marios privates Tool, das in der DRG-Visualsprache atmet. Heisst: DRG-Tokens und Schriften strikt — DRG-Regeln pragmatisch (z.B. Emojis im Briefing-Output erlaubt, weil's keine Kunden-Sicht ist).
+**Wichtig:** Mario's HQ ist **kein Studio-Da-Rugna-Kunden-Touchpoint**. Es ist Marios privates Tool, das in der DRG-Visualsprache atmet. Heisst: DRG-Tokens und Schriften strikt — DRG-Regeln pragmatisch (z.B. Emojis im Briefing-Output erlaubt, weil's keine Kunden-Sicht ist).
 
 ---
 
