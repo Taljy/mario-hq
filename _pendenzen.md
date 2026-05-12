@@ -2,7 +2,7 @@
 type: pendenzen
 projekt: mario-hq
 aktualisiert: 26-05-12
-aktuelle-phase: 2 (Start)
+aktuelle-phase: 2.2 (Start)
 ---
 
 # Mario's HQ · Pendenzen
@@ -35,11 +35,11 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 2 — Start
+## 🎯 Aktuelle Phase: 2.2 — Start
 
-**Phase 1 ist abgeschlossen (12.5.2026).** Astro v6 + Tailwind v4 + DRG-Tokens stehen, Smoketest visuell verifiziert.
+**Phase 2.1 ist abgeschlossen (12.5.2026 Abend).** Layout-Foundation produktionsreif, 9 Routes funktional, live auf Vercel.
 
-**Phase 2 · Information-Architektur + Wirtschaft + Wetter/Foto** startet jetzt — beide Hauptmodule parallel produktionsreif.
+**Phase 2.2 · Cover-Page Layout** startet jetzt — Hero-Datum, Modul-Cards, HQ-Identität visuell etabliert.
 
 ---
 
@@ -64,20 +64,20 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 
 ### Phase 2 · Information-Architektur + Hauptmodule
 
-**Phase 2.1 · IA & Navigation** *(Foundation für alle weiteren Module)*
-- [ ] Header mit HQ-Branding (Logo/Wordmark · Navigation · Dark-Mode-Toggle)
-- [ ] Footer mit Meta (Build-Datum, Version, Link zu Repo)
-- [ ] Multi-Page-Routing für 6 Routes:
-  - [ ] `/` (Cover · Tagesübersicht)
-  - [ ] `/wirtschaft` (Krypto + Macro + News-Wirtschaft)
-  - [ ] `/wetter` (Wetter + Foto + Astronomie)
-  - [ ] `/news` (Tech, Foto, Architektur, Politik)
-  - [ ] `/kalender` (Read-Only Google Cal)
-  - [ ] `/archiv` (alte Briefings)
-- [ ] Platzhalter-Links in der Navigation für Phase 7+ Module (Habits, Workout, Zeit, Projekte)
-- [ ] Magazine.astro produktionsreif (über Smoketest hinaus)
-- [ ] Dark-Mode-Toggle als UI-Element
-- [ ] Mobile-Layout iPad 768px verifizieren
+**Phase 2.1 · IA & Navigation** ✅ *(Foundation für alle weiteren Module, abgeschlossen 12.5.2026)*
+- [x] Header mit HQ-Branding (Logo/Wordmark · Navigation · Dark-Mode-Toggle)
+- [x] Footer mit Meta (Build-Datum, Version, Link zu Repo)
+- [x] Multi-Page-Routing für 6 Routes:
+  - [x] `/` (Cover · Tagesübersicht)
+  - [x] `/wirtschaft` (Krypto + Macro + News-Wirtschaft)
+  - [x] `/wetter` (Wetter + Foto + Astronomie)
+  - [x] `/news` (Tech, Foto, Architektur, Politik)
+  - [x] `/kalender` (Read-Only Google Cal)
+  - [x] `/archiv` (alte Briefings)
+- [x] Platzhalter-Links in der Navigation für Phase 7+ Module (Habits, Workout, Zeit, Projekte)
+- [x] Magazine.astro produktionsreif (über Smoketest hinaus)
+- [x] Dark-Mode-Toggle als UI-Element
+- [x] Mobile-Layout iPad 768px verifizieren
 
 **Phase 2.2 · Cover-Page Layout**
 - [ ] Hero-Datum mit Eyebrow („Mario's HQ · Dienstag, 12. Mai 2026")
@@ -163,6 +163,17 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 ---
 
 ## ✅ Erledigt
+
+### 26-05-12 (Abend · Phase 2.1 abgeschlossen)
+- Layout-Foundation für Mario's HQ produktionsreif gebaut
+- 9 Routes funktional: Cover, Wirtschaft, Wetter, News, Kalender, Archiv, Habits, Workout, Zeit
+- Header mit Brand-Lockup, client-side de-CH Datum, Theme-Toggle
+- Top-Navigation mit MVP-Gruppe + Sektionstrenner + Phase-7-Gruppe
+- Mobile-Layout mit Hamburger-Toggle (Button + JS, kein <details>)
+- Theme-Toggle mit localStorage-Persistierung, FOUC-Schutz, sanftem Transition
+- Live auf Vercel: mario-hq-qc6f.vercel.app
+- Repo public: github.com/Taljy/mario-hq
+- Build grün (9 pages in 614ms), Push erfolgreich
 
 ### 26-05-12 (Nachmittag · Strategischer Pivot)
 - **Strategischer Pivot zu „Mario's HQ"** · Projekt wird Life-Cockpit, Briefing wird ein Modul

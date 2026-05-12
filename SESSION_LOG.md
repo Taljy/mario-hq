@@ -1,4 +1,44 @@
 # Mario's HQ · Session Log
+
+## 26-05-12 (Update 5) · Phase 2.1 live · Layout-Foundation komplett
+
+### Was gemacht
+
+**Drei Commits in einem produktiven Abend-Block:**
+- Commit 1 (21eda17): Layout-Foundation — Header, Navigation, ThemeToggle, DateDisplay, Footer, PhasePlaceholder, Magazine-Refactor, Cover-Mini-Stub
+- Commit 2 (f7e2261): 8 Platzhalter-Pages für MVP- und Phase-7-Module
+- Push zu GitHub, Vercel Auto-Deploy auf mario-hq-qc6f.vercel.app
+
+**Wichtige Architektur-Entscheidung mitten in Phase 2.1:**
+- Erster Ansatz mit `<details>` als Layout-Wrapper scheiterte am Browser-Shadow-Box-Modell
+- Diagnose: `<details>` exponiert intern einen anonymen Wrapper, der `<summary>` und alle anderen Kinder trennt; Grid-Items waren nicht die direkten DOM-Kinder
+- Lösung: Wechsel zu Button + JS-Toggle (`aria-expanded`, 6 Zeilen Inline-JS)
+- `:has()`-Selektor für robusten Mobile-Collapse
+- Cross-Browser robust, kein UA-Shadow-DOM-Stress
+
+### Erkenntnisse
+
+- **Plan-First-Regel bewährt sich:** Sonnet 4.6 hat den `<details>`-Bug bei der Browser-Verifikation entdeckt, vor dem Commit. Saubere Diagnose statt blinden Fix-Versuchen.
+- **Spec-Treue vs. Pragmatismus:** `<details>` ist semantisch für Inhalt-Disclosure (FAQ, Spoiler), nicht für Navigations-Layout. Die richtige Wahl ist manchmal der Standard-Button mit `aria-expanded`.
+- **Vermillon-Quote sehr sparsam:** Active-Underline alleine = 0.006% Page-Area. Drei-Prozent-Regel komfortabel eingehalten.
+- **Worktree-Falle besteht:** Jeder bash-Call muss `cd /Users/mariomacstudio/Developer/mario-hq && ...` chainen. Claude Code rutscht sonst in `.claude/worktrees/...` zurück.
+- **DRG-Tokens funktionieren wie geplant:** Fraunces × Inter × JetBrains Mono, Washi/Sumi/Papier/Vermillon — alles in CSS-Variablen sauber. Theme-Switch ist eine einzige `data-theme`-Mutation.
+
+### Offene Pendenzen
+
+- SKILL.md: Worktree-Falle als bekannten Stolperstein dokumentieren (bei nächstem `docs:`-Commit)
+- SKILL.md: `<details>`-Shadow-Box-Modell als „bewusst verworfene Pattern" dokumentieren
+- Phase 2.2 vorbereiten: Cover-Page als echte Tagesübersicht mit 5 Modul-Cards
+
+### Files dieser Session
+
+- Commit 1: 6 neue Komponenten + 3 modifizierte (Magazine, index, global.css)
+- Commit 2: 8 neue Platzhalter-Pages
+- Update 5 in SESSION_LOG.md (dieser Eintrag)
+- Phase-2.1-Abschluss in _pendenzen.md
+
+---
+
 ## 26-05-12 (Update 4) · Repo-Rename zu `mario-hq`
 
 ### Was gemacht

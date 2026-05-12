@@ -4,7 +4,7 @@ projekt: mario-hq
 owner: Mario
 erstellt: 26-05-12
 aktualisiert: 26-05-12
-status: Phase 1 ✅ → Phase 2 startet
+status: Phase 2.1 ✅ → Phase 2.2 startet
 zweck: Einstiegs-Dokument für jeden neuen Chat — Vision, Stand, Architektur
 ---
 
