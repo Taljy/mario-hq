@@ -1,0 +1,181 @@
+---
+// KryptoHero — BTC-Hero gross + ETH/SOL/XRP/SUI-Strip darunter
+// Negative Deltas in Vermillon · Schweizer Apostroph via toLocaleString('de-CH')
+// ist_live: true → "Live · HH:MM CEST" · false → "Fallback · API offline"
+
+import type { KryptoErgebnis } from '../../lib/coingeckoFetcher';
+
+interface Props {
+  ergebnis: KryptoErgebnis;
+}
+
+const { ergebnis } = Astro.props;
+const btc      = ergebnis.coins[0];
+const altcoins = ergebnis.coins.slice(1);
+
+function formatPreis(p: number): string {
+  if (p >= 1000) return '$' + p.toLocaleString('de-CH', { maximumFractionDigits: 0 });
+  if (p >= 1)    return '$' + p.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return '$' + p.toLocaleString('de-CH', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+}
+
+function formatDelta(d: number): string {
+  return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
+}
+
+const btcDelta       = formatDelta(btc.delta_24h_prozent);
+const btcNegativ     = btc.delta_24h_prozent < 0;
+const stempelLabel   = ergebnis.ist_live
+  ? `Live · ${ergebnis.fetch_zeit}`
+  : 'Fallback · API offline';
+---
+
+<div class="krypto-hero">
+  <!-- BTC Hero -->
+  <div class="hero-card">
+    <div class="card-head">
+      <span class="eyebrow">Bitcoin</span>
+      <span class={`live-stempel ${!ergebnis.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+    </div>
+    <div class="preis-block">
+      <span class="btc-preis">{formatPreis(btc.preis_usd)}</span>
+      <span class="delta-zeile">
+        BTC · 24h <span class={`delta ${btcNegativ ? 'negativ' : ''}`}>{btcDelta}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Altcoin-Strip -->
+  <div class="altcoin-strip">
+    {altcoins.map((coin) => {
+      const delta   = formatDelta(coin.delta_24h_prozent);
+      const negativ = coin.delta_24h_prozent < 0;
+      return (
+        <div class="altcoin-card">
+          <span class="coin-symbol">{coin.symbol}</span>
+          <span class="coin-preis">{formatPreis(coin.preis_usd)}</span>
+          <span class={`coin-delta ${negativ ? 'negativ' : ''}`}>{delta}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  /* Hero-Card (BTC) */
+  .hero-card {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 4px;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s-4);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .live-stempel {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .preis-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btc-preis {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 72;
+    color: var(--fg);
+  }
+
+  .delta-zeile {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-muted);
+  }
+
+  .delta {
+    color: var(--fg-muted);
+  }
+
+  .delta.negativ {
+    color: var(--accent);
+  }
+
+  /* Altcoin-Strip */
+  .altcoin-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .altcoin-card {
+    background: var(--bg-card);
+    padding: 14px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .coin-symbol {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .coin-preis {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1;
+    font-variation-settings: "opsz" 36;
+    color: var(--fg);
+  }
+
+  .coin-delta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  .coin-delta.negativ {
+    color: var(--accent);
+  }
+
+  @media (max-width: 767px) {
+    .altcoin-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

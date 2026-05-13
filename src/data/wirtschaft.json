@@ -1,0 +1,24 @@
+{
+  "krypto_fallback": {
+    "btc": { "preis_usd": 95420, "delta_24h_prozent": -1.8 },
+    "eth": { "preis_usd": 3680, "delta_24h_prozent": -2.1 },
+    "sol": { "preis_usd": 162, "delta_24h_prozent": 0.4 },
+    "xrp": { "preis_usd": 0.52, "delta_24h_prozent": -0.8 },
+    "sui": { "preis_usd": 2.85, "delta_24h_prozent": 1.2 },
+    "fear_greed": 47,
+    "fear_greed_label": "Neutral"
+  },
+  "indizes": [
+    { "name": "SMI",     "wert": 11420, "delta_prozent":  0.3 },
+    { "name": "DAX",     "wert": 17880, "delta_prozent":  0.0 },
+    { "name": "S&P 500", "wert":  5180, "delta_prozent": -0.1 },
+    { "name": "Nasdaq",  "wert": 16240, "delta_prozent":  0.2 }
+  ],
+  "news": [
+    { "titel": "Schweizer AI-Act tritt in Kraft",          "quelle": "NZZ",           "url": "https://www.nzz.ch" },
+    { "titel": "Tesla senkt EU-Preise",                    "quelle": "Handelszeitung", "url": "https://www.handelszeitung.ch" },
+    { "titel": "SNB-Sitzung Mitte Mai erwartet Zinsschritt", "quelle": "Bloomberg",   "url": "https://www.bloomberg.com" },
+    { "titel": "Nvidia mit neuen Quartalszahlen",          "quelle": "Reuters",        "url": "https://www.reuters.com" }
+  ],
+  "trade_setups_placeholder": "Trade-Setups mit konkreten Entry/SL/TP-Vorschlägen kommen mit Phase 6+."
+}

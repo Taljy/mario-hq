@@ -1,0 +1,51 @@
+---
+// TradeSetupsPlaceholder — expliziter Phase-6+-Vermerk · kein Mockup-Inhalt
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<div class="trade-card">
+  <span class="eyebrow">Trade-Setups · Vorschau</span>
+  <p class="body">{text}</p>
+  <p class="subtext">Geplant für Phase 6+ · konkrete Entry/SL/TP mit R:R-Berechnung</p>
+</div>
+
+<style>
+  .trade-card {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 4px;
+    border: 1px dashed var(--hairline-strong);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .body {
+    font-size: 14px;
+    color: var(--fg-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .subtext {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    margin: 0;
+  }
+</style>

@@ -1,11 +1,40 @@
 ---
-import Magazine from '../layouts/Magazine.astro';
-import PhasePlaceholder from '../components/PhasePlaceholder.astro';
+export const prerender = false;
+
+// /wirtschaft — SSR · CoinGecko-Fetch bei jedem Request · 60s Edge-Cache via Vercel
+// Statische Inhalte (Indizes · News) aus wirtschaft.json · Cowork befüllt ab Phase 5
+
+import DetailPage from '../layouts/DetailPage.astro';
+import KryptoHero from '../components/wirtschaft/KryptoHero.astro';
+import IndizesGrid from '../components/wirtschaft/IndizesGrid.astro';
+import WirtschaftsNews from '../components/wirtschaft/WirtschaftsNews.astro';
+import TradeSetupsPlaceholder from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
+import { getKryptoStand } from '../lib/coingeckoFetcher';
+import { getWirtschaft } from '../lib/wirtschaftResolver';
+
+Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+
+const krypto = await getKryptoStand();
+const { indizes, news, trade_setups_placeholder } = getWirtschaft();
 ---
 
-<Magazine title="Wirtschaft · Mario's HQ">
-  <PhasePlaceholder
-    phase="Phase 2.3 · in Arbeit"
-    beschreibung="Krypto, Macro-Kalender, Wirtschafts-News und Indizes — folgt als nächstes Hauptmodul."
-  />
-</Magazine>
+<DetailPage
+  title="Wirtschaft"
+  eyebrow="Krypto · Indizes · News"
+  modul="wirtschaft"
+>
+  <div class="w-stack">
+    <KryptoHero ergebnis={krypto} />
+    <IndizesGrid indizes={indizes} />
+    <WirtschaftsNews items={news} />
+    <TradeSetupsPlaceholder text={trade_setups_placeholder} />
+  </div>
+</DetailPage>
+
+<style>
+  .w-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+</style>

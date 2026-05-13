@@ -1,0 +1,87 @@
+---
+// WirtschaftsNews — Schlagzeilen-Liste mit Quellenangabe
+// Links öffnen in neuem Tab · Hover: Underline + Vermillon
+
+import type { WirtschaftsNews as NewsItem } from '../../lib/wirtschaftResolver';
+
+interface Props {
+  items: NewsItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="news-sektion">
+  <span class="sektion-eyebrow">News · Wirtschaft</span>
+  <ul class="news-liste">
+    {items.map((item) => (
+      <li class="news-item">
+        <a
+          href={item.url}
+          class="news-titel"
+          target="_blank"
+          rel="noopener"
+        >
+          {item.titel}
+        </a>
+        <span class="news-quelle">{item.quelle}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .sektion-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-3);
+  }
+
+  .news-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .news-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .news-item:last-child {
+    border-bottom: none;
+  }
+
+  .news-titel {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.4;
+    flex: 1;
+    transition: color 200ms ease-out;
+  }
+
+  .news-titel:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .news-quelle {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+  }
+</style>
