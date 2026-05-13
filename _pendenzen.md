@@ -91,7 +91,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 > **Detail-Spezifikation:** `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md`
 - [x] **Slice 2.3.1** Foundation · DetailPage-Layout · sources.json · SourceStempel
 - [x] **Slice 2.3.2** /wirtschaft Slim · Krypto-Hero (live) · Indizes · News · Trade-Placeholder
-- [ ] **Slice 2.3.3** /wetter Slim · 8 Wetter-Symbole · Open-Meteo · Foto-Spots
+- [x] **Slice 2.3.3** /wetter Slim · 8 Wetter-Symbole · Open-Meteo · Foto-Spots
 - [ ] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
 - [ ] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
 

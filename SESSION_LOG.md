@@ -1,5 +1,42 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 16) · Slice 2.3.3 implementiert
+
+### Was gemacht
+- 8 Wetter-Symbol-SVGs sumi-e monolinig in `src/components/wetter-symbole/` · Painters-Model für Wolken-Fill (var(--bg-card) überdeckt Sonnenstrahlen korrekt im Dark-Mode)
+- `WetterSymbol.astro` Wrapper mit WMO-Code-Mapping · size-Prop via inline-flex (kein Scoping-Problem)
+- `openMeteoFetcher.ts` · Open-Meteo Baden AG (47.4762, 8.3056) · forecast_days=8 · heute + 7 Wochentage · wochentagKurz via Intl (Europe/Zurich-safe)
+- `fotoSpotPicker.ts` · 4-Regel-Algorithmus: Regen → kein Spot · Nebel+Frühmorgens → Lägern · Klar+Abend → Goldene-Stunde · Fallback → kürzeste Fahrzeit
+- `WetterDetail.astro` · Hero mit 96px Symbol + Fraunces-Temp + Sonnenzeiten · 7-Tage-Strip (7 Karten, Mobile 4-Spalten)
+- `FotoSpots.astro` · Empfehlung-Hero (Fraunces-Name · italic Hinweis · Tags) + Alle-Spots-Grid
+- `/wetter.astro` auf DetailPage + SSR · Cache 30min/1h SWR
+
+### Erkenntnisse
+- **Painters-Model für SVG-Dunkel-Symbole.** `fill="var(--bg-card)"` auf Wolken-Pfad überdeckt Sonnenstrahlen korrekt — im Dark-Mode wechselt das automatisch zu sumi-dunkel ohne eigene Dark-Mode-Regel.
+- **Worktree-Falle bestätigt.** Build ohne `cd /Users/mariomacstudio/Developer/mario-hq &&`-Prefix lief im Worktree und zeigte falsches Ergebnis (Static statt Hybrid). Konvention stärker einhalten.
+- **Open-Meteo timezone-Param via `%2F`.** URL-Encoding für den Slash in `Europe/Zurich` ist nötig, sonst wird die Param falsch geparst.
+- **Foto-Spot-Algorithmus aktuell sehr simpel.** Bei echter Nutzung wird sich zeigen welche Fälle fehlen (z.B. Föhn-Wind für Geissberg, Frühlings/Herbst-Filter).
+
+### Offene Pendenzen
+- Slice 2.3.4 als Nächstes (/news Slim + /kalender iCal Read-Only)
+- Astronomie-Sektion in 2.3.5 (SunCalc + 2026-Events in /wetter)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+- Foto-Spots-Datenbank über 4 Aargau-Spots hinaus erweitern (später)
+
+### Files dieser Session
+- `src/data/wetter-fallback.json` (neu)
+- `src/data/foto-spots.json` (neu)
+- `src/lib/openMeteoFetcher.ts` (neu)
+- `src/lib/fotoSpotPicker.ts` (neu)
+- `src/components/wetter-symbole/` (9 Files: 8 SVGs + Wrapper)
+- `src/components/wetter/WetterDetail.astro` (neu)
+- `src/components/wetter/FotoSpots.astro` (neu)
+- `src/pages/wetter.astro` (modifiziert · DetailPage · SSR)
+- `_pendenzen.md` (Slice 2.3.3 abgehakt)
+- `SESSION_LOG.md` (Update 16)
+
+---
+
 ## 26-05-13 (Update 15) · Slice 2.3.2 implementiert
 
 ### Was gemacht
