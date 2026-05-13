@@ -2,7 +2,7 @@
 type: pendenzen
 projekt: mario-hq
 aktualisiert: 26-05-13
-aktuelle-phase: 2.2 (Start)
+aktuelle-phase: 2.3 (Start)
 ---
 
 # Mario's HQ · Pendenzen
@@ -36,11 +36,11 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 2.3 — Start
+## 🎯 Aktuelle Phase: 2.3 — Start (konsolidiert)
 
-**Phase 2.2 ist abgeschlossen (13.5.2026).** Cover-Page produktionsreif: 5 Slices durchgezogen, Editorial-Layout, Custom-SVG-Komponenten, Conditional-Logic für Events, Dark-Mode + Mobile verifiziert.
+**Phase 2.2 ist abgeschlossen (13.5.2026).** Cover-Page produktionsreif: 5 Slices, Editorial-Layout, Custom-SVG, Conditional-Logic, Live-Inseln vorbereitet, Light/Dark und Mobile verifiziert.
 
-**Phase 2.3 · /wirtschaft als Vertiefung** startet als nächstes — Krypto-Detail, Macro-Timeline, Indizes, News-Wirtschaft.
+**Phase 2.3 · Detail-Pages Slim** konsolidiert die ursprünglichen Sub-Phasen 2.3/2.4/2.5/2.6 in eine Phase mit 5 Slices. Volle Vertiefung pro Modul verschiebt sich nach Phase 4 (Charts) und Phase 5 (Cowork-Automation).
 
 ---
 
@@ -87,27 +87,13 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.2.4** Krypto · Macro · News Cards
 - [x] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
 
-**Phase 2.3 · /wirtschaft als Vertiefung** *(HAUPTMODUL)*
-- [ ] Krypto-Detail-Layout (BTC-Hero, Altcoins ETH/SOL/XRP/SUI)
-- [ ] Fear & Greed Index als statisches Card-Element (echter Gauge in Phase 4)
-- [ ] Macro-Timeline für die Woche (statisch, Charts in Phase 4)
-- [ ] Indizes-Snapshot SMI/DAX/S&P/Nasdaq
-- [ ] News-Block Wirtschaft (Schlagzeilen + Originalartikel-Links)
-- [ ] **Quellen-Architektur** dokumentieren · `src/data/sources.json` mit transparenten Datenherkünften (CoinGecko, TradingEconomics, etc.)
-- [ ] Trade-Setups-Sektion vorbereitet (echter Inhalt Phase 6+)
-
-**Phase 2.4 · /wetter als Vertiefung** *(HAUPTMODUL)*
-- [ ] Wetter-Detail (Min/Max-Wochenstreifen, Wind, Niederschlag)
-- [ ] Goldene + Blaue Stunde prominent
-- [ ] Foto-Chancen-Layout · DRG-Wertesystem (Licht, Komposition, Motiv)
-- [ ] Aargau-Foto-Spot-Datenbank · `src/data/foto-spots.json`
-  - [ ] Geissberg
-  - [ ] Lägern
-  - [ ] Kloster Wettingen
-  - [ ] Wasserturm Baden
-  - [ ] weitere folgen
-- [ ] Astronomie-Sub-Section (Mondphase als Mini-SVG, Planeten-Sichtbarkeit, Meteore)
-- [ ] **Quellen-Architektur** für Wetter und Foto (MeteoSwiss, SunsetSunrise.com, In-the-Sky.org)
+**Phase 2.3 · Detail-Pages Slim**
+> **Detail-Spezifikation:** `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md`
+- [ ] **Slice 2.3.1** Foundation · DetailPage-Layout · sources.json · SourceStempel
+- [ ] **Slice 2.3.2** /wirtschaft Slim · Krypto-Hero (live) · Indizes · News · Trade-Placeholder
+- [ ] **Slice 2.3.3** /wetter Slim · 8 Wetter-Symbole · Open-Meteo · Foto-Spots
+- [ ] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
+- [ ] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
 
 ### Phase 3 · Content-Pipeline
 - [ ] Schema für Briefing-Frontmatter definieren (Zod 4)

@@ -1,5 +1,37 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 13) · Phase 2.3 Konsolidierung + Spec
+
+### Was gemacht
+- Strategische Diskussion: Phase 2.3/2.4/2.5/2.6 zu einer konsolidierten Phase 2.3 · Detail-Pages Slim zusammengefasst (Site-First-Tiefe-Later-Prinzip)
+- Architektur-Entscheidungen pro Detail-Modul getroffen:
+  · Krypto via CoinGecko-API (live)
+  · Wetter via Open-Meteo (live, gratis)
+  · Kalender via iCal-Geheim-URL (Wegwerf-Code bis Phase 8)
+  · 8 Wetter-Symbole als sumi-e SVGs
+  · 4 Aargau-Foto-Spots mit Picker-Algorithmus
+  · Astronomie via SunCalc lokal + hartcodierte 2026-Events
+  · News kuratiert ab Phase 5 via Cowork
+- Spec-File `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md` committed
+- Out-of-Band-Edit Commit d1b88a6 nachgeloggt (Site-Footer Phase 2.1 → 2.2 Korrektur nach Phase-2.2-Abschluss)
+
+### Erkenntnisse
+- **Konsolidierung war richtig.** Volle Vertiefung pro Modul macht ohne Charts (Phase 4) und Cowork-Daten (Phase 5) nur Mockup-Arbeit. Slim-Layouts jetzt geben dem HQ als Ganzes Gestalt.
+- **iCal statt OAuth für Kalender im MVP.** OAuth-Setup ist 200+ Zeilen, eigene Slice-Last, ENV-Management. iCal-URL als Wegwerf-Brücke bis Phase 8 (Voll-Kalender).
+- **Out-of-Band-Edit-Pattern erkannt.** Spontane Auto-Edit-Pop-ups in Claude Code können Logging-Lücken erzeugen. Künftig vorsichtig sein.
+
+### Offene Pendenzen
+- Slice 2.3.1 als Nächstes (Foundation für Detail-Pages)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen (`<details>`-Stolperstein, Worktree-Falle in SKILL.md)
+- Cowork-Prompt-Schema für JSON-Befüllung ab Phase 5 definieren (eigene Spec wahrscheinlich)
+
+### Files dieser Session
+- `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md` (neu)
+- `_pendenzen.md` (Phase-2.3-Konsolidierung)
+- `SESSION_LOG.md` (Update 13)
+
+---
+
 ## 26-05-13 (Update 12) · Slice 2.2.5 + Phase 2.2 Abschluss
 
 ### Was gemacht
