@@ -47,4 +47,9 @@ const event = getAktivenEvent();
     font-size: 13px;
     color: var(--fg-muted);
   }
+
+  /* Dark-Mode — 0.06 auf #1A1A1A fast unsichtbar · 0.12 gibt Wärme ohne zu dominieren */
+  :root[data-theme="dark"] .event-banner {
+    background: rgba(227, 66, 52, 0.12);
+  }
 </style>

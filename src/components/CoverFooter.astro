@@ -1,0 +1,43 @@
+---
+// CoverFooter — Generierungs-Stempel + HQ-Meta unten auf der Cover-Page
+// Trennt Cover-Content vom Site-Footer · editorial-vermerk-Charakter
+// In Phase 5: Cowork bestückt generierung.zeit mit echtem Timestamp
+
+import { getGenerierung } from '../lib/generierung';
+
+const generierung = getGenerierung();
+---
+
+<div class="cover-footer">
+  <span class="links">Generiert {generierung.zeit} · Live-BTC {generierung.live_btc_zeit}</span>
+  <span class="rechts">Mario's HQ · v0.1 · Phase 2.2</span>
+</div>
+
+<style>
+  .cover-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: var(--s-5);
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .links,
+  .rechts {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  @media (max-width: 480px) {
+    .cover-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>

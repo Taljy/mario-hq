@@ -63,6 +63,17 @@ const indizesStrip = macro.indizes
     }
   }
 
+  /* Dark-Mode — Pulse stärker: 0.18/0.55 ist für hellen Hintergrund kalibriert
+     Auf dunklem Background sind 0.28/0.65 nötig für vergleichbare Wirkung */
+  :root[data-theme="dark"] .macro-card.event-aktiv {
+    animation-name: hq-pulse-border-dark;
+  }
+
+  @keyframes hq-pulse-border-dark {
+    0%, 100% { border-color: rgba(227, 66, 52, 0.28); }
+    50%       { border-color: rgba(227, 66, 52, 0.65); }
+  }
+
   /* Header-Row */
   .card-head {
     display: flex;
