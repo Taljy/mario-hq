@@ -1,5 +1,52 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 17) · Slice 2.3.4 implementiert
+
+### Was gemacht
+- `news-voll.json` · 4 Kategorien (Tech · Foto · Architektur · Politik) · je 4 curated Headlines mit Quelle + URL
+- `newsResolver.ts` · `getNewsKategorien()` ergänzt · `getNewsHeute()` für Cover-Kompatibilität beibehalten
+- `KategorieBlock.astro` · Eyebrow + Headlines als `<a target="_blank">` · Quelle rechts in Mono · border-bottom zwischen Items
+- `/news.astro` · SSG · 2-Spalten-Grid · DetailPage modul="news"
+- `ical.js` installiert für iCal-Parse + Recurrence-Expansion
+- `.env` Placeholder angelegt · `KALENDER_ICAL_URL` mit Dummy-Wert + ausführlichem Kommentar
+- `kalender-fallback.json` · 5 Termine über 3 Tage (Mi 13.5. / Do 14.5. / Sa 16.5.) · Ganztags-Event "Glose-Tag im Studio" für Edge-Case-Test
+- `icalFetcher.ts` · `KALENDER_ICAL_URL` server-only via `import.meta.env` · 5s AbortSignal-Timeout · ical.js VEVENT-Iterator mit Recurrence-Expansion · Heute+7-Tage-Fenster · Europe/Zurich · Fallback wenn ENV fehlt oder Fetch schlägt fehl
+- `TerminListe.astro` · Tag-Gruppen mit Datum-Eyebrow · Heute-Tag in Vermillon-Accent · GANZTAG-Badge statt Uhrzeit · Fallback-Banner mit Border-Left
+- `/kalender.astro` · SSR (prerender=false) · 5min Cache · eyebrow dynamisch mit heutigem Datum
+
+### Sicherheit verifiziert
+- `.env` in `.gitignore` (Zeile 19) ✓
+- `grep -r "calendar.google.com" dist/` → kein Treffer ✓
+- `/kalender` nicht in prerendering-Liste (SSR) ✓
+
+**MARIO-TODO: KALENDER_ICAL_URL in Vercel Dashboard eintragen**
+Settings → Environment Variables → Production + Preview + Development
+Wert: Geheime iCal-URL (Google Calendar → Einstellungen → "Geheime Adresse im iCal-Format")
+
+### Erkenntnisse
+- **ical.js Recurrence-Iterator-Limit.** Ohne Iterations-Limit läuft der Iterator bei Endlos-Serienterminen in eine Endlosschleife. Fix: max 50 Occurrences pro Event + Break wenn `jsDate >= fensterEnd`.
+- **Ganztags-Events in ical.js.** `dtstart.isDate === true` bei DATE-Properties (keine Zeit). Der `zeitVon()`-Helper darf für Ganztags-Events nicht aufgerufen werden — separater Code-Pfad nötig.
+- **`T12:00:00Z`-Trick für Wochentag.** Konsistent mit openMeteoFetcher: Mittag UTC verhindert Timezone-Fehler bei `Intl.DateTimeFormat` für Europe/Zurich.
+
+### Offene Pendenzen
+- **MARIO-TODO:** KALENDER_ICAL_URL in Vercel Dashboard eintragen (ohne das bleibt /kalender auf Fallback)
+- Slice 2.3.5 als Nächstes: Astronomie-Sektion in /wetter · Polish · Volltest · Phase-2.3-Abschluss
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `src/data/news-voll.json` (neu)
+- `src/data/kalender-fallback.json` (neu)
+- `src/lib/newsResolver.ts` (erweitert)
+- `src/lib/icalFetcher.ts` (neu)
+- `src/components/news/KategorieBlock.astro` (neu)
+- `src/components/kalender/TerminListe.astro` (neu)
+- `src/pages/news.astro` (ersetzt)
+- `src/pages/kalender.astro` (ersetzt)
+- `.env` (neu · nicht committed)
+- `package.json` / `package-lock.json` (ical.js)
+
+---
+
 ## 26-05-13 (Update 16) · Slice 2.3.3 implementiert
 
 ### Was gemacht

@@ -36,7 +36,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 2.3 — Start (konsolidiert)
+## 🎯 Aktuelle Phase: 2.3 — Slice 2.3.5 (fast fertig)
 
 **Phase 2.2 ist abgeschlossen (13.5.2026).** Cover-Page produktionsreif: 5 Slices, Editorial-Layout, Custom-SVG, Conditional-Logic, Live-Inseln vorbereitet, Light/Dark und Mobile verifiziert.
 
@@ -92,7 +92,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.3.1** Foundation · DetailPage-Layout · sources.json · SourceStempel
 - [x] **Slice 2.3.2** /wirtschaft Slim · Krypto-Hero (live) · Indizes · News · Trade-Placeholder
 - [x] **Slice 2.3.3** /wetter Slim · 8 Wetter-Symbole · Open-Meteo · Foto-Spots
-- [ ] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
+- [x] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
 - [ ] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
 
 ### Phase 3 · Content-Pipeline
