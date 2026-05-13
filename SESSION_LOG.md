@@ -1,5 +1,33 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 20) · Phase 4 Spec dokumentiert
+
+### Was gemacht
+- PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md erstellt und ins Repo unter docs/ committed
+- Vollständige Slice-Aufteilung 4.1 bis 4.8 spezifiziert
+- 5 API-Anbieter dokumentiert mit Pattern-Vorgaben
+- watchlist.json-Schema mit 30 Items aus Marios TradingView-Setup
+- ECharts-DRG-Theme-Konzept festgelegt
+- Indices-Test als kritischer Punkt in Slice 4.5 identifiziert
+
+### Erkenntnisse
+- Phase-4-Spec ist umfangreicher als Phase 2.3 · ECharts-Lernkurve plus Multi-Asset-Komplexität
+- Foundation-First-Strategie wie bei Slice 2.3.1 · Slice 4.1 räumt das technische Risiko (ECharts-Integration in Astro) frühzeitig ab
+- Spec-Pattern bewährt sich als Brücken-Doku zwischen Strategie-Chats und Code-Sessions
+
+### Offene Pendenzen
+- Slice 4.1 als Nächstes (ECharts-Foundation + BTC-Hero mit Sparkline)
+- MARIO-TODO: Twelve-Data-Account erstellen für TWELVE_DATA_API_KEY (Slice 4.3)
+- MARIO-TODO: KALENDER_ICAL_URL in Vercel (weiterhin offen aus Phase 2.3)
+- Move2Earn-Coin-IDs verifizieren via CoinGecko-API in Slice 4.4
+
+### Files dieser Session
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` (neu)
+- `_pendenzen.md` (Spec-Referenz *(folgt)* entfernt)
+- `SESSION_LOG.md` (Update 20)
+
+---
+
 ## 26-05-13 (Update 19) · Strategische Wende vor Phase 4
 
 ### Was gemacht

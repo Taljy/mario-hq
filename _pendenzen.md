@@ -105,7 +105,7 @@ Bei Aktivierung: Briefing-Frontmatter-Schema · Content Collections · Archive-P
 
 ### Phase 4 · Charts + Trading-Watchlist auf /wirtschaft
 
-> **Detail-Spezifikation:** `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` *(folgt)*
+> **Detail-Spezifikation:** `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md`
 
 Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Watchlist analog Marios TradingView-Setup.
 
