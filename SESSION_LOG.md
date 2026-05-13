@@ -1,5 +1,48 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 21) · Slice 4.1 · ECharts Foundation + BTC-Hero Sparkline
+
+### Was gemacht
+- `echarts-drg-theme.ts` erstellt: SSR-safe DRG Token Export · kein ECharts-Import · hardcodierte Hex-Werte (`#E34234` Vermillon, `#2A2A2A` Sumi, `#E8E4DC` Washi)
+- `echartsRenderer.ts` erstellt: Client-only Utility · `initSparkline()` mit IntersectionObserver (lazy) · ResizeObserver (responsiv) · MutationObserver (LIVE Theme-Switch)
+- `src/components/charts/Sparkline.astro` erstellt: neues Verzeichnis · Islands-Pattern via `<script>` · `data-values` Serialization auf Div · kein `define:vars` (würde Bundle-Splitting brechen)
+- `coingeckoFetcher.ts` erweitert: `getBTCHistory()` für 7d-Stundenwerte (168 Punkte) · paralleler Fetch via `Promise.all`
+- `KryptoHero.astro` erweitert: `btcHistory` Prop · Sparkline-Row unter preis-block · `7 Tage` Label · conditional render wenn leer
+- `wirtschaft.astro`: `getBTCHistory` Import · `Promise.all([getKryptoStand(), getBTCHistory()])` für parallele Fetches
+- `sources.json`: Apache ECharts Eintrag ergänzt
+
+### Erkenntnisse
+- Astro `<script>` Bundle-Splitting funktioniert korrekt: ECharts nur auf /wirtschaft · Cover `window.echarts === undefined` verifiziert
+- LIVE Theme-Switch via MutationObserver auf `document.documentElement[data-theme]` + `chart.setOption()` — kein Reload nötig · **sofort sichtbar**
+- `data-values` auf Div-Attribut ist die saubere Pattern für Props → Client-Script · `define:vars` würde Inline-Script erzeugen und Bundle-Splitting brechen
+- ECharts DRG-Theme muss SSR-safe sein → separates File ohne ECharts-Import · Registration im Client-only `echartsRenderer.ts`
+- Trend-Logik: letzter Wert < erster Wert → Vermillon · sonst Sumi-Light/Washi-Dark
+
+### Verifikation
+- Sparkline Canvas 1196px × 64px · volle Kartenbreite
+- Vermillon-Linie korrekt (BTC 7d fallend)
+- LIVE Theme-Switch bestätigt (kein Reload)
+- Mobile 375px: Sparkline skaliert korrekt · kein Layout-Bruch
+- Bundle-Splitting: `echartsScripts: []` auf Cover
+
+### Offene Pendenzen
+- Slice 4.2 (Trading-Indikatoren: Funding · OI · L/S · Coinbase Premium · Stablecoin)
+- MARIO-TODO: Twelve-Data-Account erstellen für TWELVE_DATA_API_KEY (Slice 4.3)
+- MARIO-TODO: KALENDER_ICAL_URL in Vercel (weiterhin offen)
+
+### Files dieser Session
+- `src/lib/echarts-drg-theme.ts` (neu)
+- `src/lib/echartsRenderer.ts` (neu)
+- `src/components/charts/Sparkline.astro` (neu · neues Verzeichnis)
+- `src/lib/coingeckoFetcher.ts` (erweitert)
+- `src/components/wirtschaft/KryptoHero.astro` (erweitert)
+- `src/pages/wirtschaft.astro` (erweitert)
+- `src/data/sources.json` (ergänzt)
+- `_pendenzen.md` (Slice 4.1 auf [x])
+- `SESSION_LOG.md` (Update 21)
+
+---
+
 ## 26-05-13 (Update 20) · Phase 4 Spec dokumentiert
 
 ### Was gemacht
