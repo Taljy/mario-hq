@@ -5,6 +5,8 @@ import CoverHeader from '../components/CoverHeader.astro';
 import Zitat from '../components/Zitat.astro';
 import GeschichteStrip from '../components/GeschichteStrip.astro';
 import EventBanner from '../components/EventBanner.astro';
+import WetterCard from '../components/WetterCard.astro';
+import KalenderCard from '../components/KalenderCard.astro';
 ---
 
 <Magazine title="Cover · Mario's HQ">
@@ -15,6 +17,10 @@ import EventBanner from '../components/EventBanner.astro';
       <Zitat />
       <GeschichteStrip />
       <EventBanner />
+      <div class="co-heroes">
+        <WetterCard />
+        <KalenderCard />
+      </div>
     </div>
   </div>
 </Magazine>
@@ -28,5 +34,20 @@ import EventBanner from '../components/EventBanner.astro';
   /* Horizontales Padding für Text-Inhalte — Hero-Bild bleibt vollbreite */
   .cover-content {
     padding: 0 var(--s-5);
+  }
+
+  /* Co-Heroes: Wetter links (1.7fr) · Kalender rechts (1fr)
+     minmax(0, …) verhindert Overflow bei langem Card-Inhalt */
+  .co-heroes {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-top: var(--s-4);
+  }
+
+  @media (max-width: 767px) {
+    .co-heroes {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

@@ -1,0 +1,98 @@
+---
+// KalenderCard — Co-Hero rechts (1fr) · statischer Kalender-Stub
+// Google-Calendar-Read-Only-Anbindung kommt Phase 2.6
+
+import { getKalenderHeute } from '../lib/kalenderResolver';
+
+const kalender = getKalenderHeute();
+---
+
+<div class="kalender-card">
+  <!-- Eyebrow -->
+  <span class="eyebrow">Kalender · Heute</span>
+
+  <!-- Termin-Liste -->
+  <div class="termine">
+    {kalender.heute.map((t) => (
+      <div class="termin">
+        <span class="zeit">{t.zeit}</span>
+        <span class="titel">{t.titel}</span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Wochen-Strip -->
+  <div class="woche-strip">
+    <span class="woche-eyebrow">Diese Woche</span>
+    <p class="woche-text">{kalender.woche}</p>
+  </div>
+</div>
+
+<style>
+  .kalender-card {
+    background: var(--bg-card);
+    padding: 22px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  /* Termin-Liste */
+  .termine {
+    margin-bottom: var(--s-3);
+  }
+
+  .termin {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: baseline;
+  }
+
+  .zeit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    min-width: 38px;
+    flex-shrink: 0;
+  }
+
+  .titel {
+    font-size: 12px;
+    color: var(--fg);
+    line-height: 1.6;
+  }
+
+  /* Wochen-Strip */
+  .woche-strip {
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .woche-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .woche-text {
+    margin: 0;
+    font-size: 11px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+</style>

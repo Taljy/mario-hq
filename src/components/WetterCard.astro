@@ -1,0 +1,184 @@
+---
+// WetterCard — Co-Hero links (1.7fr) · statischer Wetter-Stub
+// Symbol: sumi-e monolinig · var(--fg) für Auto-Dark-Mode-Switch
+// Wolken-Fill via var(--bg-card) — überdeckt untere Sonnenstrahlen (Painters Model)
+// Live-MeteoSwiss-Anbindung kommt Phase 2.4
+
+import { getWetterHeute } from '../lib/wetterPicker';
+
+const wetter = getWetterHeute();
+---
+
+<div class="wetter-card">
+  <!-- Eyebrow -->
+  <span class="eyebrow">Wetter &amp; Foto · {wetter.ort}</span>
+
+  <!-- Hero-Row: Symbol + Temperatur + Bedingung -->
+  <div class="hero-row">
+    <!-- Sumi-e Symbol: Sonne zuerst, Wolke zuletzt — Wolke liegt oben im Painters Model -->
+    <svg
+      class="wetter-symbol"
+      viewBox="0 0 80 80"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Mix Sonne und Wolken"
+    >
+      <circle cx="32" cy="32" r="14" fill="none" stroke="var(--fg)" stroke-width="1.5" />
+      <line x1="32" y1="10" x2="32" y2="16" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="32" y1="48" x2="32" y2="54" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="10" y1="32" x2="16" y2="32" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="16.7" y1="16.7" x2="21" y2="21" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="47.3" y1="16.7" x2="43" y2="21" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="16.7" y1="47.3" x2="21" y2="43" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
+      <!-- Wolke zuletzt — fill=var(--bg-card) lässt sie mit Karten-Hintergrund verschmelzen -->
+      <path
+        d="M 28 56 Q 28 46 38 46 Q 44 38 54 42 Q 64 42 66 52 Q 72 52 72 60 Q 72 68 64 68 L 32 68 Q 24 68 24 62 Q 24 56 28 56 Z"
+        fill="var(--bg-card)"
+        stroke="var(--fg)"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+      />
+    </svg>
+
+    <!-- Temperatur -->
+    <div class="temp-block">
+      <span class="temp">{wetter.temperatur}°</span>
+      <span class="min">Min {wetter.min}°</span>
+    </div>
+
+    <!-- Bedingung + Wind -->
+    <div class="bedingung-block">
+      <span class="bedingung">{wetter.bedingung}</span>
+      <span class="wind">{wetter.wind}</span>
+    </div>
+  </div>
+
+  <!-- Sub-Grid: Goldene + Blaue Stunde -->
+  <div class="stunden-grid">
+    <div class="stunde">
+      <span class="stunde-eyebrow">Goldene Stunde</span>
+      <span class="stunde-wert">{wetter.goldene_stunde}</span>
+    </div>
+    <div class="stunde">
+      <span class="stunde-eyebrow">Blaue Stunde</span>
+      <span class="stunde-wert">{wetter.blaue_stunde}</span>
+    </div>
+  </div>
+
+  <!-- Foto-Hinweis -->
+  <p class="foto-hinweis">{wetter.foto_hinweis}</p>
+</div>
+
+<style>
+  .wetter-card {
+    background: var(--bg-card);
+    padding: 22px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  /* Hero-Row — Symbol + Temp + Bedingung nebeneinander */
+  .hero-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    margin-bottom: var(--s-4);
+  }
+
+  .wetter-symbol {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+  }
+
+  .temp-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .temp {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+  }
+
+  .min {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+
+  .bedingung-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bedingung {
+    font-size: 13px;
+    color: var(--fg);
+    line-height: 1.4;
+  }
+
+  .wind {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+
+  /* Sub-Grid: Goldene + Blaue Stunde */
+  .stunden-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--hairline);
+    margin-bottom: var(--s-3);
+  }
+
+  .stunde {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .stunde-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .stunde-wert {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg);
+  }
+
+  /* Foto-Hinweis */
+  .foto-hinweis {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--fg-muted);
+    line-height: 1.4;
+    border-top: 1px solid var(--hairline);
+    padding-top: var(--s-3);
+  }
+</style>
