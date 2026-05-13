@@ -1,11 +1,36 @@
 ---
-import Magazine from '../layouts/Magazine.astro';
-import PhasePlaceholder from '../components/PhasePlaceholder.astro';
+// /news — SSG · Kuratierte Headlines in 4 Kategorien
+// Daten aus news-voll.json · ab Phase 5 täglich via Cowork befüllt
+
+import DetailPage from '../layouts/DetailPage.astro';
+import KategorieBlock from '../components/news/KategorieBlock.astro';
+import { getNewsKategorien } from '../lib/newsResolver';
+
+const kategorien = getNewsKategorien();
 ---
 
-<Magazine title="News · Mario's HQ">
-  <PhasePlaceholder
-    phase="Phase 2.5 · in Arbeit"
-    beschreibung="Tech, Foto, Architektur und Politik — kuratierte Schlagzeilen mit Originallinks."
-  />
-</Magazine>
+<DetailPage
+  title="News"
+  eyebrow="Tech · Foto · Architektur · Politik"
+  modul="news"
+>
+  <div class="news-grid">
+    {kategorien.map((kat) => (
+      <KategorieBlock kategorie={kat} />
+    ))}
+  </div>
+</DetailPage>
+
+<style>
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s-5);
+  }
+
+  @media (max-width: 767px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

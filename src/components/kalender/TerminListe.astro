@@ -1,0 +1,159 @@
+---
+// TerminListe — Termine nach Tag gegliedert
+// Heute-Tag: Accent-Eyebrow · Ganztags: "Ganztag" statt Uhrzeit
+// ist_live: false → Fallback-Banner
+
+import type { KalenderErgebnis } from '../../lib/icalFetcher';
+
+interface Props {
+  ergebnis: KalenderErgebnis;
+}
+
+const { ergebnis } = Astro.props;
+const { tage, ist_live } = ergebnis;
+
+const heuteISO = new Date().toISOString().slice(0, 10);
+
+function formatDatumLang(datum: string): string {
+  const d = new Date(`${datum}T12:00:00Z`);
+  return new Intl.DateTimeFormat('de-CH', {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'Europe/Zurich',
+  }).format(d);
+}
+---
+
+<div class="termin-liste">
+  {!ist_live && (
+    <div class="fallback-banner">
+      <span class="fallback-label">Fallback · Kalender nicht verbunden</span>
+    </div>
+  )}
+
+  {tage.length === 0 && (
+    <div class="leer-hinweis">Keine Termine in den nächsten 7 Tagen.</div>
+  )}
+
+  {tage.map((tag) => {
+    const istHeute = tag.datum === heuteISO;
+    return (
+      <div class={`tag-block ${istHeute ? 'ist-heute' : ''}`}>
+        <div class="tag-header">
+          <span class={`tag-eyebrow ${istHeute ? 'heute-accent' : ''}`}>
+            {istHeute ? 'Heute · ' : ''}{tag.wochentag} {formatDatumLang(tag.datum)}
+          </span>
+        </div>
+        <div class="termin-rows">
+          {tag.termine.map((termin) => (
+            <div class="termin-row">
+              <span class={`termin-zeit ${termin.ganztag ? 'ganztag' : ''}`}>
+                {termin.ganztag ? 'Ganztag' : termin.zeit}
+              </span>
+              <span class="termin-titel">{termin.titel}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .termin-liste {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  /* Fallback-Banner */
+  .fallback-banner {
+    background: var(--bg-card);
+    padding: 10px 16px;
+    border-radius: 4px;
+    border-left: 2px solid var(--accent);
+  }
+
+  .fallback-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+
+  /* Leerer Hinweis */
+  .leer-hinweis {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+    padding: var(--s-4);
+  }
+
+  /* Tag-Block */
+  .tag-block {
+    background: var(--bg-card);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .tag-header {
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .tag-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .heute-accent {
+    color: var(--accent);
+  }
+
+  /* Termin-Zeilen */
+  .termin-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .termin-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .termin-row:last-child {
+    border-bottom: none;
+  }
+
+  .termin-zeit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+
+  .termin-zeit.ganztag {
+    color: var(--accent);
+    opacity: 0.8;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .termin-titel {
+    font-size: 14px;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+</style>

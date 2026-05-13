@@ -1,11 +1,28 @@
 ---
-import Magazine from '../layouts/Magazine.astro';
-import PhasePlaceholder from '../components/PhasePlaceholder.astro';
+export const prerender = false;
+
+// /kalender — SSR · iCal-Fetch bei jedem Request · 5min Edge-Cache
+// KALENDER_ICAL_URL: server-only ENV · NIE in Client-Bundle
+
+import DetailPage from '../layouts/DetailPage.astro';
+import TerminListe from '../components/kalender/TerminListe.astro';
+import { getKalenderTermine } from '../lib/icalFetcher';
+
+Astro.response.headers.set('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+
+const ergebnis = await getKalenderTermine();
+
+const heuteLabel = new Intl.DateTimeFormat('de-CH', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'Europe/Zurich',
+}).format(new Date());
 ---
 
-<Magazine title="Kalender · Mario's HQ">
-  <PhasePlaceholder
-    phase="Phase 2.6 · in Arbeit"
-    beschreibung="Read-only-Ansicht des Google Calendars, Heute und Morgen prominent."
-  />
-</Magazine>
+<DetailPage
+  title="Kalender"
+  eyebrow={`Heute · ${heuteLabel}`}
+  modul="kalender"
+>
+  <TerminListe ergebnis={ergebnis} />
+</DetailPage>

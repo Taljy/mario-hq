@@ -1,0 +1,93 @@
+---
+// KategorieBlock — eine News-Kategorie mit Eyebrow + Headlines als Links
+// Analog WirtschaftsNews: border-bottom zwischen Items, letztes ohne
+
+import type { NewsKategorie } from '../../lib/newsResolver';
+
+interface Props {
+  kategorie: NewsKategorie;
+}
+
+const { kategorie } = Astro.props;
+---
+
+<div class="kategorie-block">
+  <span class="eyebrow">{kategorie.name}</span>
+  <div class="headlines">
+    {kategorie.items.map((item) => (
+      <a
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="headline-zeile"
+      >
+        <span class="headline-titel">{item.titel}</span>
+        <span class="headline-quelle">{item.quelle}</span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .kategorie-block {
+    background: var(--bg-card);
+    padding: 20px 22px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  .headlines {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headline-zeile {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    transition: color 150ms ease-out;
+  }
+
+  .headline-zeile:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .headline-zeile:first-child {
+    padding-top: 0;
+  }
+
+  .headline-zeile:hover .headline-titel {
+    color: var(--accent);
+  }
+
+  .headline-titel {
+    font-size: 14px;
+    color: var(--fg);
+    line-height: 1.4;
+    transition: color 150ms ease-out;
+  }
+
+  .headline-quelle {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>

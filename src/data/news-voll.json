@@ -1,0 +1,44 @@
+{
+  "kategorien": [
+    {
+      "id": "tech",
+      "name": "Tech",
+      "items": [
+        { "titel": "OpenAI stellt GPT-5 mit erweitertem Reasoning vor", "quelle": "The Verge", "url": "https://www.theverge.com" },
+        { "titel": "Apple Intelligence kommt im Herbst nach Europa", "quelle": "9to5Mac", "url": "https://9to5mac.com" },
+        { "titel": "Anthropic Claude 4 schlägt Benchmarks im Code-Bereich", "quelle": "Hacker News", "url": "https://news.ycombinator.com" },
+        { "titel": "Schweizer AI-Act: Erste Unternehmen melden Compliance-Pläne", "quelle": "NZZ", "url": "https://www.nzz.ch" }
+      ]
+    },
+    {
+      "id": "foto",
+      "name": "Foto",
+      "items": [
+        { "titel": "Sony A1 II: Vollformat-Flaggschiff mit 50 MP und 30 fps", "quelle": "DPReview", "url": "https://www.dpreview.com" },
+        { "titel": "Fujifilm X-T60: Klassisches Gehäuse, neuer X-Trans-Sensor", "quelle": "PetaPixel", "url": "https://petapixel.com" },
+        { "titel": "Lightroom 2026 führt KI-gestützte Motivauswahl ein", "quelle": "Adobe Blog", "url": "https://blog.adobe.com" },
+        { "titel": "Saharastaub am Wochenende: Tipps für atmosphärische Aufnahmen", "quelle": "Fotocommunity", "url": "https://www.fotocommunity.de" }
+      ]
+    },
+    {
+      "id": "architektur",
+      "name": "Architektur",
+      "items": [
+        { "titel": "Kengo Kuma entwirft neues Kulturzentrum in Lausanne", "quelle": "Dezeen", "url": "https://www.dezeen.com" },
+        { "titel": "Wettbewerb Hauptbahnhof Zürich-Erweiterung: Shortlist bekannt", "quelle": "Hochparterre", "url": "https://www.hochparterre.ch" },
+        { "titel": "Holz-Hybrid-Bau: Basler Startup setzt Rekord mit 24-stöckigem Turm", "quelle": "Architektur Aktuell", "url": "https://www.architektur-aktuell.at" },
+        { "titel": "Herzog & de Meuron: Rückblick zur Tokio-Retrospektive im Mori Art Museum", "quelle": "Dezeen", "url": "https://www.dezeen.com" }
+      ]
+    },
+    {
+      "id": "politik",
+      "name": "Politik",
+      "items": [
+        { "titel": "Bundesrat verabschiedet neue KI-Regulierung für öffentliche Verwaltung", "quelle": "SRF", "url": "https://www.srf.ch" },
+        { "titel": "EU-Kommission einigt sich auf Digitalsteuer für Grosskonzerne", "quelle": "NZZ", "url": "https://www.nzz.ch" },
+        { "titel": "Abstimmung 18. Mai: Klimainitiative und Rentenreform auf Kurs", "quelle": "Tamedia", "url": "https://www.tagesanzeiger.ch" },
+        { "titel": "Nato-Gipfel Wien: Schweizer Beobachterstatus erneut thematisiert", "quelle": "Watson", "url": "https://www.watson.ch" }
+      ]
+    }
+  ]
+}

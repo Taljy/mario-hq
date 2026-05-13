@@ -1,0 +1,27 @@
+{
+  "tage": [
+    {
+      "datum": "2026-05-13",
+      "wochentag": "Mi",
+      "termine": [
+        { "zeit": "09:00", "titel": "Notion → Obsidian", "ganztag": false },
+        { "zeit": "12:45", "titel": "Claude → Secondbrain", "ganztag": false },
+        { "zeit": "13:00", "titel": "Zahnreinigung", "ganztag": false }
+      ]
+    },
+    {
+      "datum": "2026-05-14",
+      "wochentag": "Do",
+      "termine": [
+        { "zeit": "09:00", "titel": "Mail aufräumen", "ganztag": false }
+      ]
+    },
+    {
+      "datum": "2026-05-16",
+      "wochentag": "Sa",
+      "termine": [
+        { "zeit": null, "titel": "Glose-Tag im Studio", "ganztag": true }
+      ]
+    }
+  ]
+}
