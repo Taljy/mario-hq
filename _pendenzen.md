@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-12
+aktualisiert: 26-05-13
 aktuelle-phase: 2.2 (Start)
 ---
 
@@ -25,6 +25,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - 🔧 **Workout-Log** mit Übungs-Historie und Progression
 - 🔧 **Zeit-Modul** als Ersatz für Session-App
 - 🔧 **Projekt-Übersicht** (Studio Darugna · DREK · Privat)
+- 📆 **Voll-Kalender** mit Google-Sync bidirektional · Drag-Drop · Quick-Add · Akiflow/Routine-inspiriert
 - 🔧 **Apption.co Widget-Integration** prüfen (Timer mit Google-Calendar-Anbindung)
 - 🔧 **Foto-Pipeline** für DRG-Workflow
 
@@ -46,7 +47,6 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 ## ⏭️ Nächste konkrete Schritte
 
 ### Aufräum-Tasks (vor Phase 2.1)
-- [ ] SKILL.md auf Astro v6 aktualisieren (kleiner `docs:`-Commit)
 - [ ] `_projekt.md` (HQ-Pivot) ins Repo · commit + push
 - [ ] `_pendenzen.md` (dieses File) ins Repo · commit + push
 - [ ] `SESSION_LOG.md` mit Phase-1-Abschluss + HQ-Pivot ergänzen
@@ -148,6 +148,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [ ] **Apption.co Widgets** prüfen und integrieren
 - [ ] **Foto-Pipeline** für DRG-Workflow
 - [ ] **Obsidian-Sync-Ausbau** (Symlink-Brücke oder API)
+- [ ] **Voll-Kalender** mit Google-Sync bidirektional · OAuth · Drag-Drop · Akiflow/Routine-inspiriert
 
 ---
 
@@ -220,3 +221,4 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 4. **News-Quellen:** Welche konkreten Quellen für die `/news`-Sektion? Tech (Hacker News? The Verge?) · Architektur (Dezeen? Hochparterre.ch?) · Politik (NZZ? Tagi? Watson?)
 5. **Trading-Daten:** Direkt-Anzeige des Bitvavo-Portfolios im HQ — oder nur Markt-Daten ohne dein eigenes Portfolio?
 6. **Habits-Granularität:** Welche der Streaks-App-Habits sind „öffentlich" genug für HQ-Anzeige? (Sport, Lesen — nicht alle persönlichen)
+7. **Voll-Kalender (Post-MVP):** Welcher konkrete Trigger startet die Implementierung? Was muss Phase 2.6 (Read-Only-Kalender) als API-Annahme treffen, damit das Voll-Kalender-Modul später sauber draufbauen kann?

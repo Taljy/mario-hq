@@ -1,5 +1,34 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 6) · Voll-Kalender als Post-MVP-Modul dokumentiert
+
+### Was gemacht
+
+**Strategische Diskussion: Voll-Kalender als eigenes Modul**
+- Phase 2.6 bleibt Read-Only-Kalender (Google Calendar API, kein Write-Zugriff)
+- Voll-Kalender (bidirektionaler Google-Sync, Drag-Drop, Quick-Add) als eigenständiges Post-MVP-Modul definiert
+- Akiflow und Routine als visuelle Referenz für UI/UX festgehalten
+- Drei Docs-Files aktualisiert: `_pendenzen.md`, `_projekt.md`, `SESSION_LOG.md`
+
+### Erkenntnisse
+
+- **Akiflow/Routine als Benchmark:** Nicht das Feature-Set kopieren — die Reibungslosigkeit als Massstab nehmen. Voll-Kalender lohnt sich nur, wenn er spürbar besser als der native Kalender ist.
+- **Read-First-Reihenfolge bewährt sich:** Phase 2.6 Read-Only zuerst aufbauen. Wenn die API-Integration sitzt, ist Voll-Kalender ein inkrementeller Write-Layer — kein Rewrite.
+- **Strategie vor Code:** Modul-Grenzen jetzt klären spart später Architektur-Schulden. Der Trigger für Voll-Kalender bleibt offen — bewusst, nicht vergessen.
+
+### Offene Pendenzen
+
+- Phase 2.2 · Cover-Page Layout startet als nächstes
+- SKILL.md: Worktree-Falle + `<details>`-Shadow-Box-Modell dokumentieren (bei nächstem `docs:`-Commit)
+
+### Files dieser Session
+
+- `_pendenzen.md` (Voll-Kalender in Nordstern, Phase 7+, Offene Fragen)
+- `_projekt.md` (Modul-Architektur, Entscheidungs-Tabelle)
+- `SESSION_LOG.md` (dieser Eintrag)
+
+---
+
 ## 26-05-12 (Update 5) · Phase 2.1 live · Layout-Foundation komplett
 
 ### Was gemacht

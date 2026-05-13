@@ -3,7 +3,7 @@ type: projektbeschrieb
 projekt: mario-hq
 owner: Mario
 erstellt: 26-05-12
-aktualisiert: 26-05-12
+aktualisiert: 26-05-13
 status: Phase 2.1 ✅ → Phase 2.2 startet
 zweck: Einstiegs-Dokument für jeden neuen Chat — Vision, Stand, Architektur
 ---
@@ -105,7 +105,8 @@ Mario's HQ
 ├── 🏃 HABITS (Platzhalter Phase 2 · Ausbau Phase 7+)
 ├── 💪 WORKOUT (Platzhalter Phase 2 · Ausbau Phase 7+)
 ├── ⏱️ ZEIT (Platzhalter Phase 2 · Ausbau Phase 7+)
-└── 🎯 PROJEKTE (Platzhalter Phase 2 · Ausbau Phase 7+)
+├── 🎯 PROJEKTE (Platzhalter Phase 2 · Ausbau Phase 7+)
+└── 📆 VOLL-KALENDER (Post-MVP · Google-Sync bidirektional · Akiflow/Routine-inspiriert)
 ```
 
 **Bewusst draussen** (vielleicht für immer):
@@ -164,6 +165,7 @@ Mario's HQ
 | Multi-Page statt Single-Page | 12.5. | Magazin-Gefühl · echte URLs · Browser-Vor/Zurück |
 | ECharts statt Chart.js | 12.5. | Finanz-native, schickeres Editorial-Look |
 | Obsidian-Sync via Cowork-Doppel-Write (Phase 5) | 12.5. | 80% des Werts ohne API-Komplexität |
+| Voll-Kalender als eigenes Post-MVP-Modul | 13.5. | Bidirektionaler Google-Sync zu komplex für Briefing-MVP · Akiflow/Routine als visuelle Referenz · Reihenfolge innerhalb Post-MVP offen |
 
 ---
 
