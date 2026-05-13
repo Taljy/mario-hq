@@ -4,7 +4,7 @@ projekt: mario-hq
 owner: Mario
 erstellt: 26-05-12
 aktualisiert: 26-05-13
-status: Phase 2.1 ✅ → Phase 2.2 startet
+status: Phase 2.3 ✅ → Phase 3 geplant
 zweck: Einstiegs-Dokument für jeden neuen Chat — Vision, Stand, Architektur
 ---
 
@@ -166,6 +166,9 @@ Mario's HQ
 | ECharts statt Chart.js | 12.5. | Finanz-native, schickeres Editorial-Look |
 | Obsidian-Sync via Cowork-Doppel-Write (Phase 5) | 12.5. | 80% des Werts ohne API-Komplexität |
 | Voll-Kalender als eigenes Post-MVP-Modul | 13.5. | Bidirektionaler Google-Sync zu komplex für Briefing-MVP · Akiflow/Routine als visuelle Referenz · Reihenfolge innerhalb Post-MVP offen |
+| **Phase-2.3-Konsolidierung (Detail-Pages Slim)** | **13.5.** | **4 Sub-Phasen (2.3/2.4/2.5/2.6) zu einer Phase zusammengefasst** — Site-First-Tiefe-Later-Prinzip · alle 4 Detail-Pages slim produktionsreif statt eine tief ausgebaut |
+| **Vercel-Adapter SSR-Hybrid-Mode** | **13.5.** | **`output: 'static'` + `@astrojs/vercel` + per-page `prerender=false`** — SSR nur wo Live-APIs nötig (/wirtschaft · /wetter · /kalender) · SSG für statische Pages (/news u.a.) |
+| **iCal-Geheim-URL als Wegwerf-Brücke für /kalender** | **13.5.** | **Google-Calendar-iCal ohne OAuth** — pragmatisch für Phase 2.3 · URL als server-only ENV-Var · vollständige OAuth-Implementierung verschiebt sich auf Phase 8 (Voll-Kalender) |
 
 ---
 
@@ -174,9 +177,9 @@ Mario's HQ
 | Was | Wo |
 |---|---|
 | Code-Repo lokal | `~/Developer/mario-hq/` |
-| GitHub-Repo | `https://github.com/Taljy/mario-hq` *(noch nicht erstellt)* |
+| GitHub-Repo | `https://github.com/Taljy/mario-hq` |
 | Dev-Server | `http://localhost:4321` (oder 4322/4323 wenn belegt) |
-| Production | `https://mario-hq.vercel.app` *(provisorisch)* |
+| Production | `https://mario-hq-qc6f.vercel.app` |
 | Obsidian-Vault | `~/Second_Brain/` *(Briefings parallel dort)* |
 | Briefing-Daten im Repo | `src/content/briefings/JJJJ-MM-TT.md` |
 | DRG-Design-System (Referenz) | claude.ai/design · Studio Da Rugna Design System |

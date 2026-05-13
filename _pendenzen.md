@@ -204,8 +204,8 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 
 ## ❓ Offene Fragen für Mario
 
-1. **Reise-Modus:** Wie soll der Standort dynamisch wechseln können? (Manuell im Frontmatter? Automatisch über IP?)
-2. **Cowork vs Claude Code:** Wer schreibt am Ende die täglichen Briefing-Files — Cowork (UI) oder Claude Code (lokal im Repo via CLI)?
+1. **Reise-Modus:** Wie soll der Standort dynamisch wechseln können? (Manuell im Frontmatter? Automatisch über IP?) *(Post-MVP · gehört zur Voll-Kalender-Diskussion · siehe Phase 7+)*
+2. ~~**Cowork vs Claude Code:** Wer schreibt am Ende die täglichen Briefing-Files — Cowork (UI) oder Claude Code (lokal im Repo via CLI)?~~ → **Beantwortet:** Cowork = Scheduled Task ab Phase 5 (tägliches JSON/Markdown-Output) · Claude Code = Coding und Repo-Arbeit. Keine Überschneidung.
 3. **Life-Cockpit-Priorität:** Welche Erweiterung würdest du als erstes wollen, sobald MVP läuft? Habits-Modul, Workout, Zeit-Modul?
 4. **News-Quellen:** Welche konkreten Quellen für die `/news`-Sektion? Tech (Hacker News? The Verge?) · Architektur (Dezeen? Hochparterre.ch?) · Politik (NZZ? Tagi? Watson?)
 5. **Trading-Daten:** Direkt-Anzeige des Bitvavo-Portfolios im HQ — oder nur Markt-Daten ohne dein eigenes Portfolio?

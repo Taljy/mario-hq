@@ -4,7 +4,7 @@ projekt: mario-hq
 phase: 2.2
 erstellt: 26-05-13
 aktualisiert: 26-05-13
-status: Spezifikation steht · Implementierung in Slices · 2.2.1 als nächster Slice
+status: Alle 5 Slices abgeschlossen · 13.5.2026
 referenz: Strategie-Chat 13.5.2026 (claude.ai Web)
 ---
 
@@ -233,14 +233,13 @@ Liste der zu zeichnenden Custom-SVG-Symbole im monolinigen DRG-Stil (Sumi-Stroke
 
 ## 6 · Implementierungs-Reihenfolge in Slices
 
-| Slice | Inhalt | Schätz-Dauer |
+| Slice | Inhalt | Status |
 |---|---|---|
-| **2.2.1** | Eyebrow-Zeile · Hero-Bild-SVG · Zitat-Modul · Hero-Datum | 45 Min |
-| 2.2.2 | Geschichte-Strip · Event-Banner-Komponente (hartcodiert) | 45 Min |
-| 2.2.3 | Wetter+Foto-Card · Kalender-Card (statische Stubs, kein Live-API) | 90 Min |
-| 2.2.4 | Krypto-Card · Macro-Card · News-Card (statisch + Event-Pulse-CSS) | 60 Min |
-| 2.2.5 | Cover-Footer · Polish · Mobile-Verifikation · Build · Commit · Push | 30 Min |
-| **2.2.x später** | Wetter-Symbol-Set · echte Hero-Fotos · Live-API-BTC | eigene Slices |
+| **2.2.1** | Eyebrow-Zeile · Hero-Bild-SVG · Zitat-Modul · Hero-Datum | ✅ 13.5.2026 |
+| **2.2.2** | Geschichte-Strip · Event-Banner-Komponente (hartcodiert) | ✅ 13.5.2026 |
+| **2.2.3** | Wetter+Foto-Card · Kalender-Card (statische Stubs, kein Live-API) | ✅ 13.5.2026 |
+| **2.2.4** | Krypto-Card · Macro-Card · News-Card (statisch + Event-Pulse-CSS) | ✅ 13.5.2026 |
+| **2.2.5** | Cover-Footer · Polish · Mobile-Verifikation · Build · Commit · Push | ✅ 13.5.2026 |
 
 ---
 
