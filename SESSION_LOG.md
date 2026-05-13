@@ -1,5 +1,35 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 23) · Tages-Abschluss · ENV-Setup + Vercel-Issues + Glassnode
+
+### Was gemacht
+- `TWELVE_DATA_API_KEY` in `.env` (lokal) und Vercel Dashboard in beiden Projekten (mario-hq + mario-hq-qc6f) eingetragen
+- `KALENDER_ICAL_URL` ebenfalls in beiden Vercel-Projekten + lokal vorhanden
+- `/kalender` auf `mario-hq-qc6f.vercel.app` zeigt jetzt Live-Daten · echte Termine aus Google Calendar via iCal
+- Vercel-Doppel-Projekt entdeckt · ENV-Vars mussten in beiden eingetragen werden da separate Projekte trotz selbem Repo
+- Vercel-Binance-Block entdeckt · 4 Trading-Indikator-Cards zeigen Fallback auf Production · lokal alles live
+- Glassnode als potenzielle Erweiterung diskutiert · Mario offen für Subscription wenn Mehrwert klar
+
+### Erkenntnisse
+- ENV-Variables auf Vercel müssen pro Projekt einzeln gesetzt werden · gilt auch wenn dasselbe Repo deployt
+- Redeploy nach ENV-Var-Änderung zwingend · „Use existing Build Cache" deaktivieren für sauberen Build
+- Binance Futures-API von einigen Cloud-Provider-IPs geblockt · betrifft Vercel-Server-IPs · kein Code-Problem, sondern Netzwerk-Restriktion · Bybit/OKX als Alternative evaluieren
+- Glassnode bietet On-Chain-Tiefe die mit Public-APIs nur teilweise nachbaubar · ETF Net Flows, Hash Rate, Exchange Balances, aggregierte Funding über alle Exchanges · Kosten-Nutzen-Abwägung steht aus
+
+### Offene Pendenzen
+- Slice 4.3 als nächstes · Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup-Code
+- Mini-Reparatur-Slice für Vercel-Binance-Block · Bybit/OKX oder Edge-Function-Proxy
+- Mini-Hygiene-Slice für Vercel-Doppel-Projekt
+- Glassnode-Entscheidung wenn Phase-4-Trading-Indikatoren produktiv laufen
+- Mario-Frage offen: Trading-Daten-Tiefe (Glassnode) vs Asset-Breite (Watchlist ~30 Items)
+
+### Files dieser Session
+- `_pendenzen.md` (Phase-4-Status · Mario-TODOs aktualisiert · Production-Issues · neue Offene Fragen 8+9)
+- `_projekt.md` (Decisions · Tool-Landschaft aktualisiert)
+- `SESSION_LOG.md` (Update 23)
+
+---
+
 ## 26-05-13 (Update 22) · Slice 4.2 · Trading-Indikatoren-Block
 
 ### Was gemacht

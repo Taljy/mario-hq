@@ -46,14 +46,22 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - **Phase 3 (Content-Pipeline) wartet** bis Bedarf konkret ist · Habits/Notizen-Tracking oder Archiv-Wunsch sind Trigger.
 - **Phase 4 wird breiter:** Editorial-Charts (Sparklines, F&G, Mondphase) plus Trading-Indikatoren (Funding Rates, Open Interest, Long/Short Ratio, Coinbase Premium, Stablecoin Supply) plus vollständige Multi-Asset-Watchlist (Crypto, Aktien, Forex, Commodities) alles auf /wirtschaft als langem scrollintensiven Wirtschafts-Hub.
 
+**Phase-4-Status (Stand 13.5.2026 abend):**
+- Slice 4.1 ✅ ECharts-Foundation + BTC-Sparkline · lokal + Production
+- Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen Vercel-Binance-Block
+- Slice 4.3 als nächstes · Multi-Anbieter-Watchlist-Foundation · API-Keys (Twelve Data + CoinGecko) bereit
+
 ---
 
 ## ⏭️ Nächste konkrete Schritte
 
 ### Mario-TODO
-- [ ] **KALENDER_ICAL_URL** in Vercel Dashboard eintragen · Settings → Environment Variables → alle drei Environments · Wert: Geheime iCal-URL aus Google Calendar → Einstellungen → "Geheime Adresse im iCal-Format"
-- [ ] **Twelve-Data-Account** erstellen und API-Key bereitlegen (für Slice 4.3)
-- [ ] **PHASE-4-SPEC** wird in nächster Session erstellt
+- [x] **KALENDER_ICAL_URL** in Vercel Dashboard eingetragen · beide Projekte (mario-hq + mario-hq-qc6f) · /kalender zeigt Live-Termine
+- [x] **TWELVE_DATA_API_KEY** in .env (lokal) + Vercel Dashboard eingetragen · bereit für Slice 4.3
+- [x] **PHASE-4-SPEC** erstellt · `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md`
+- [ ] **Vercel-Doppel-Projekt bereinigen** · zwei Projekte für dasselbe Repo entdeckt · eines löschen · kanonische URL klären · Vorsicht bei DNS/Custom-Domain
+- [ ] **Vercel-Binance-Block diagnostizieren** · 4 Trading-Indikator-Cards zeigen Fallback auf Production · Bybit/OKX als Alternative evaluieren oder Edge-Function-Proxy
+- [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
 
 ---
 
@@ -199,6 +207,33 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 
 ---
 
+## 🐛 Bekannte Production-Issues
+
+**Vercel blockt Binance-API-Calls** *(entdeckt 13.5.2026)*
+
+Auf `mario-hq-qc6f.vercel.app/wirtschaft` zeigen vier Trading-Indikator-Cards „FALLBACK · BINANCE OFFLINE":
+- Funding Rates
+- Open Interest
+- Long/Short Ratio
+- Coinbase Premium (nutzt Binance für Preis-Vergleich)
+
+Lokal alles live. Stablecoin Supply (DeFiLlama) funktioniert auf Production korrekt. Wahrscheinlich Geo-/IP-Block von Binance gegen Vercel-Server-IPs oder rechtliche Compliance-Restriktion.
+
+**Lösungsoptionen (für Mini-Reparatur-Slice):**
+- Edge-Function-Proxy via Vercel · routet Calls über andere IPs
+- Alternative API · Bybit oder OKX statt Binance · selbes Datenmodell · Free Public Endpoints
+- Pragmatisch akzeptieren · /wirtschaft hauptsächlich lokal nutzen
+
+**Vercel-Doppel-Projekt** *(entdeckt 13.5.2026)*
+
+Zwei Vercel-Projekte deployen dasselbe GitHub-Repo:
+- `mario-hq` → `mario-hq.vercel.app`
+- `mario-hq-qc6f` → `mario-hq-qc6f.vercel.app` *(aktuelle Production-URL)*
+
+ENV-Vars (KALENDER_ICAL_URL, TWELVE_DATA_API_KEY) mussten in beiden separat eingetragen werden. Aufräum-Task: eines löschen, das andere als kanonisch markieren. Vorsicht beim Löschen wegen möglicher Custom-Domain-Bindung.
+
+---
+
 ## ❓ Offene Fragen für Mario
 
 1. **Reise-Modus:** Wie soll der Standort dynamisch wechseln können? (Manuell im Frontmatter? Automatisch über IP?) *(Post-MVP · gehört zur Voll-Kalender-Diskussion · siehe Phase 7+)*
@@ -208,3 +243,5 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 5. **Trading-Daten:** Direkt-Anzeige des Bitvavo-Portfolios im HQ — oder nur Markt-Daten ohne dein eigenes Portfolio?
 6. **Habits-Granularität:** Welche der Streaks-App-Habits sind „öffentlich" genug für HQ-Anzeige? (Sport, Lesen — nicht alle persönlichen)
 7. **Voll-Kalender (Post-MVP):** Welcher konkrete Trigger startet die Implementierung? Was muss Phase 2.6 (Read-Only-Kalender) als API-Annahme treffen, damit das Voll-Kalender-Modul später sauber draufbauen kann?
+8. **Glassnode-Integration?** Industrie-Standard für On-Chain-Analytics · Studio-Subscription ab ~$39/Monat · API-Access kostenpflichtig · Mario ist offen für bezahlte Tools wenn Mehrwert klar · Entscheidung wenn Phase-4-Trading-Indikatoren produktiv laufen und Nutzungs-Pattern bekannt ist.
+9. **Trading-Daten-Tiefe vs Asset-Breite?** Glassnode hätte mehr Indikator-Tiefe (Hash Rate, Exchange Balances, ETF Net Flows, aggregierte Funding über alle Exchanges). Watchlist-Erweiterung (Slice 4.3–4.5) bringt mehr Asset-Breite (~30 Items). Welche Richtung hat Priorität für Mario?

@@ -175,6 +175,8 @@ Mario's HQ
 | **Phase 4 erweitert · Charts + Trading-Watchlist** | **13.5.** | **Editorial-Charts und Trading-Indikatoren plus Multi-Asset-Watchlist** alles auf /wirtschaft · 8 Slices |
 | ECharts als Chart-Library | 13.5. | Industrie-Standard für Finanz-Charts · DRG-Theme-Customization Pflicht für Editorial-Look · Dashboard-Default vermeiden |
 | Twelve Data für Aktien/Forex/Commodities | 13.5. | Free Tier 800 Calls/Tag · ein API-Key für alles · Indices möglicherweise im Free Tier limitiert · Fallback in Slice 4.5 klären |
+| Vercel-Doppel-Projekt-Hygiene · TODO | 13.5. | Zwei Projekte für dasselbe Repo entdeckt · ENV-Vars doppelt gepflegt · eines löschen wenn klar welches kanonisch · `mario-hq-qc6f.vercel.app` ist aktuelle Production |
+| Glassnode evaluieren | 13.5. | Industrie-Standard On-Chain-Analytics · Free Tier limitiert · Standard ~$39/Monat · Mario offen für bezahlte Tools wenn Mehrwert klar · Entscheidung nach Phase-4-Produktiv |
 
 ---
 
@@ -227,7 +229,7 @@ Diese Reihenfolge ist etabliert und stabil — sie ist der etablierte Briefing-V
 
 ---
 
-## 11. Aktuelle Tool-Landschaft (Stand 12.5.2026)
+## 11. Aktuelle Tool-Landschaft (Stand 13.5.2026)
 
 Wichtig für Verständnis welche Apps konsolidiert werden sollen und welche extern bleiben.
 
@@ -241,6 +243,7 @@ Wichtig für Verständnis welche Apps konsolidiert werden sollen und welche exte
 | Workout | Notion-Tracker | **Platzhalter** Phase 2 · Ausbau Phase 7+ |
 | Habits | Streaks-App | **Bleibt extern**, ausgewählte Habits gespiegelt |
 | Trading | Bitvavo | **Bleibt extern** · Daten-Anzeige im HQ |
+| On-Chain Analytics | — | **Evaluiert** · Glassnode ~$39/Monat · ggf. später wenn Nutzungs-Pattern klar |
 | News | RSS-Feeds, Browser-Bookmarks | **Konsolidiert im /news-Tab** |
 
 ---
