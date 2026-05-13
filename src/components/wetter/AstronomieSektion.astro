@@ -1,0 +1,157 @@
+---
+// AstronomieSektion — conditional: nur sichtbar wenn ist_bemerkenswert=true
+// Zeigt: aktiver Meteor-Schauer · Planeten-Event in 7 Tagen · Vollmond in 3 Tagen · Mondphase heute
+
+import type { AstronomieHighlights } from '../../lib/astronomieResolver';
+
+interface Props {
+  highlights: AstronomieHighlights;
+}
+
+const { highlights } = Astro.props;
+---
+
+{highlights.ist_bemerkenswert && (
+  <section class="astronomie-sektion">
+    <header class="astro-header">
+      <span class="eyebrow">Astronomie</span>
+      <span class="hint">Heute bemerkenswert</span>
+    </header>
+
+    <div class="astro-grid">
+      {highlights.meteor_aktiv && !highlights.meteor_aktiv.mond_problem && (
+        <div class="astro-card">
+          <span class="card-eyebrow">Meteor-Schauer</span>
+          <h3 class="card-titel">{highlights.meteor_aktiv.name}</h3>
+          <p class="card-meta">
+            Peak {highlights.meteor_aktiv.peak} · ~{highlights.meteor_aktiv.rate_pro_stunde}/h
+          </p>
+          <p class="card-hinweis">{highlights.meteor_aktiv.hinweis}</p>
+        </div>
+      )}
+
+      {highlights.planeten_naehe && (
+        <div class="astro-card">
+          <span class="card-eyebrow">Planeten-Event</span>
+          <h3 class="card-titel">{highlights.planeten_naehe.ereignis}</h3>
+          <p class="card-meta">
+            {highlights.planeten_naehe.datum} · {highlights.planeten_naehe.sichtbarkeit}
+          </p>
+          <p class="card-hinweis">{highlights.planeten_naehe.hinweis}</p>
+        </div>
+      )}
+
+      {highlights.vollmond_naehe && (
+        <div class="astro-card">
+          <span class="card-eyebrow">Vollmond</span>
+          <h3 class="card-titel">{highlights.vollmond_naehe.name}</h3>
+          <p class="card-meta">{highlights.vollmond_naehe.datum}</p>
+        </div>
+      )}
+
+      <div class="astro-card mondphase-card">
+        <span class="card-eyebrow">Mondphase heute</span>
+        <h3 class="card-titel">{highlights.mondphase_heute.phase_name}</h3>
+        <p class="card-meta">{highlights.mondphase_heute.beleuchtung_prozent}% beleuchtet</p>
+        {highlights.mondphase_heute.aufgang && (
+          <p class="card-zeiten">
+            Aufgang {highlights.mondphase_heute.aufgang}
+            {highlights.mondphase_heute.untergang && (
+              <> · Untergang {highlights.mondphase_heute.untergang}</>
+            )}
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .astronomie-sektion {
+    padding: 0;
+  }
+
+  .astro-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .hint {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--fg-muted);
+  }
+
+  .astro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--s-3);
+  }
+
+  .astro-card {
+    background: var(--bg-card);
+    padding: var(--s-4);
+    border-radius: 4px;
+  }
+
+  .card-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-1);
+  }
+
+  .card-titel {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.2;
+    font-variation-settings: "opsz" 24;
+    color: var(--fg);
+    margin: var(--s-1) 0 var(--s-2);
+  }
+
+  .card-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    margin: 0 0 var(--s-2);
+    line-height: 1.4;
+  }
+
+  .card-hinweis {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--fg-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .card-zeiten {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .astro-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

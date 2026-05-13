@@ -2,18 +2,21 @@
 export const prerender = false;
 
 // /wetter — SSR · Open-Meteo-Fetch bei jedem Request · 30min Edge-Cache
-// Foto-Spot-Empfehlung anhand Wetter + Tageszeit
+// Astronomie-Sektion conditional: nur wenn ist_bemerkenswert=true
 
 import DetailPage from '../layouts/DetailPage.astro';
 import WetterDetail from '../components/wetter/WetterDetail.astro';
+import AstronomieSektion from '../components/wetter/AstronomieSektion.astro';
 import FotoSpots from '../components/wetter/FotoSpots.astro';
 import { getWetterErgebnis } from '../lib/openMeteoFetcher';
 import { getFotoEmpfehlung } from '../lib/fotoSpotPicker';
+import { getAstronomieHeute } from '../lib/astronomieResolver';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
 
-const wetter = await getWetterErgebnis();
-const foto   = getFotoEmpfehlung(wetter.heute);
+const wetter     = await getWetterErgebnis();
+const foto       = getFotoEmpfehlung(wetter.heute);
+const astronomie = getAstronomieHeute();
 ---
 
 <DetailPage
@@ -23,6 +26,7 @@ const foto   = getFotoEmpfehlung(wetter.heute);
 >
   <div class="w-stack">
     <WetterDetail ergebnis={wetter} />
+    <AstronomieSektion highlights={astronomie} />
     <FotoSpots empfehlung={foto} />
   </div>
 </DetailPage>

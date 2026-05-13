@@ -1,0 +1,78 @@
+{
+  "meteor_schauer": [
+    {
+      "name": "Lyriden",
+      "peak": "2026-04-22",
+      "fenster": { "start": "2026-04-16", "ende": "2026-04-25" },
+      "rate_pro_stunde": 18,
+      "mond_problem": false,
+      "hinweis": "Mässiges Maximum · klare Nächte ideal"
+    },
+    {
+      "name": "Eta-Aquariden",
+      "peak": "2026-05-06",
+      "fenster": { "start": "2026-04-19", "ende": "2026-05-28" },
+      "rate_pro_stunde": 50,
+      "mond_problem": false,
+      "hinweis": "Halley-Komet-Spuren · vor Morgendämmerung beobachten"
+    },
+    {
+      "name": "Perseiden",
+      "peak": "2026-08-12",
+      "fenster": { "start": "2026-07-17", "ende": "2026-08-24" },
+      "rate_pro_stunde": 100,
+      "mond_problem": false,
+      "hinweis": "Sommer-Highlight · hohe Rate · warm und bequem"
+    },
+    {
+      "name": "Orioniden",
+      "peak": "2026-10-21",
+      "fenster": { "start": "2026-10-02", "ende": "2026-11-07" },
+      "rate_pro_stunde": 20,
+      "mond_problem": true,
+      "hinweis": "Mond stört dieses Jahr"
+    },
+    {
+      "name": "Leoniden",
+      "peak": "2026-11-17",
+      "fenster": { "start": "2026-11-06", "ende": "2026-11-30" },
+      "rate_pro_stunde": 15,
+      "mond_problem": false,
+      "hinweis": "Mässig · gute Sichtbedingungen"
+    },
+    {
+      "name": "Geminiden",
+      "peak": "2026-12-14",
+      "fenster": { "start": "2026-12-04", "ende": "2026-12-17" },
+      "rate_pro_stunde": 120,
+      "mond_problem": true,
+      "hinweis": "Jahres-Highlight · aber Vollmond stört · trotzdem versuchen"
+    }
+  ],
+  "planeten_events": [
+    {
+      "datum": "2026-06-30",
+      "ereignis": "Venus-Mars-Konjunktion",
+      "sternbild": "Krebs",
+      "sichtbarkeit": "abends im Westen",
+      "hinweis": "Schöne Foto-Komposition mit Mond-Sichel"
+    },
+    {
+      "datum": "2026-09-14",
+      "ereignis": "Saturn in Opposition",
+      "sternbild": "Wassermann",
+      "sichtbarkeit": "die ganze Nacht",
+      "hinweis": "Saturn am hellsten · Ringe gut mit Teleskop"
+    }
+  ],
+  "vollmonde": [
+    { "datum": "2026-05-31", "name": "Blumenmond" },
+    { "datum": "2026-06-29", "name": "Erdbeermond" },
+    { "datum": "2026-07-29", "name": "Bockmond" },
+    { "datum": "2026-08-28", "name": "Störmond" },
+    { "datum": "2026-09-26", "name": "Erntemond" },
+    { "datum": "2026-10-26", "name": "Jägermond" },
+    { "datum": "2026-11-24", "name": "Bibermond" },
+    { "datum": "2026-12-24", "name": "Kalter Mond" }
+  ]
+}
