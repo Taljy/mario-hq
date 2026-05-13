@@ -1,5 +1,41 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 11) · Slice 2.2.4 implementiert
+
+### Was gemacht
+- krypto.json + macro.json + news.json statische Stubs
+- kryptoResolver.ts + macroResolver.ts + newsResolver.ts (Pattern 1:1 aus 2.2.3)
+- KryptoCard mit Fraunces-Preis · toLocaleString('de-CH') Schweizer Apostroph-Tausenderpunkt · Delta in Vermillon bei Minus
+- MacroCard mit conditional Event-Pulse-Animation (gekoppelt an eventResolver.ts aus Slice 2.2.2) · prefers-reduced-motion-Schutz · Indizes-Strip mit flat/+/−-Format im Frontmatter berechnet
+- NewsCard mit 3 Headlines-Stack · last-child margin-0
+- index.astro: .supporting-Grid repeat(3, minmax(0, 1fr)) · Mobile-Stack unter 768px
+- Conditional-Test via events.json-Datumswechsel bestanden · Pulse + Stempel verschwinden korrekt
+
+### Erkenntnisse
+- `@keyframes` in Astro-scoped `<style>` werden korrekt kompiliert — Animationsname wird mit data-astro-cid-Hash gescopert, Referenz im gleichen Block funktioniert automatisch
+- prefers-reduced-motion via `CSSMediaRule.conditionText` in den kompilierten Stylesheets verifizierbar — kein manueller macOS-System-Switch nötig für CI-nahe Verifikation
+- `border: 1.5px solid transparent` als Default-State hält Card-Grösse stabil wenn Event-Aktiv-Border erscheint — kein Layout-Shift
+
+### Offene Pendenzen
+- Slice 2.2.5 als letzter Cover-Slice (CoverFooter · Polish · Dark-Mode-Verbesserungen · Mobile-Volltest)
+- Live-CoinGecko-API, MeteoSwiss, RSS-Aggregator kommen spätere Phasen
+
+### Files dieser Session
+- `src/data/krypto.json` (neu)
+- `src/data/macro.json` (neu)
+- `src/data/news.json` (neu)
+- `src/lib/kryptoResolver.ts` (neu)
+- `src/lib/macroResolver.ts` (neu)
+- `src/lib/newsResolver.ts` (neu)
+- `src/components/KryptoCard.astro` (neu)
+- `src/components/MacroCard.astro` (neu)
+- `src/components/NewsCard.astro` (neu)
+- `src/pages/index.astro` (modifiziert)
+- `_pendenzen.md` (Slice 2.2.4 abgehakt)
+- `SESSION_LOG.md` (Update 11)
+
+---
+
 ## 26-05-13 (Update 10) · Slice 2.2.3 implementiert
 
 ### Was gemacht

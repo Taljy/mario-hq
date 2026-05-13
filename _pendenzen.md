@@ -84,7 +84,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.2.1** Eyebrow · Hero-Bild · Zitat · Hero-Datum
 - [x] **Slice 2.2.2** Geschichte-Strip · Event-Banner
 - [x] **Slice 2.2.3** Wetter+Foto-Card · Kalender-Card
-- [ ] **Slice 2.2.4** Krypto · Macro · News Cards
+- [x] **Slice 2.2.4** Krypto · Macro · News Cards
 - [ ] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
 
 **Phase 2.3 · /wirtschaft als Vertiefung** *(HAUPTMODUL)*
