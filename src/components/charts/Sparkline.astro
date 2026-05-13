@@ -1,0 +1,74 @@
+---
+// Sparkline.astro — Wiederverwendbare ECharts-Sparkline · Islands-Pattern
+// Keine Achsen · Kein Grid · Kein Tooltip — sumi-e-Reduktion
+// Client-Side via <script> · IntersectionObserver für lazy init
+// Trend-Farbe: Vermillon wenn fallend · Sumi/Papier wenn steigend · Theme-aware LIVE
+
+interface Props {
+  values: number[];
+  height?: number;
+  id?: string;
+}
+
+const { values, height = 64, id } = Astro.props;
+
+// Eindeutige ID pro Instanz (SSR-random ist ok — kein Hydration-Mismatch da SSR-only)
+const chartId = id ?? `sparkline-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={chartId}
+  class="sparkline-wrap"
+  style={`height: ${height}px;`}
+  data-values={JSON.stringify(values)}
+  aria-hidden="true"
+></div>
+
+<script>
+  import { initSparkline } from '../../lib/echartsRenderer';
+
+  function setupAllSparklines() {
+    document.querySelectorAll<HTMLElement>('.sparkline-wrap').forEach((el) => {
+      const raw = el.dataset.values;
+      if (!raw) return;
+
+      let values: number[];
+      try {
+        values = JSON.parse(raw) as number[];
+      } catch {
+        return;
+      }
+
+      if (values.length === 0) return;
+
+      let initialized = false;
+
+      // Lazy init via IntersectionObserver — ECharts erst initialisieren wenn sichtbar
+      const intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !initialized) {
+              initialized = true;
+              initSparkline(el, values);
+              intersectionObserver.disconnect();
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      intersectionObserver.observe(el);
+    });
+  }
+
+  // Astro module scripts laufen deferred — DOM ist ready
+  setupAllSparklines();
+</script>
+
+<style>
+  .sparkline-wrap {
+    width: 100%;
+    overflow: hidden;
+    /* Kein border-radius — Linie soll ans Edge gehen können */
+  }
+</style>

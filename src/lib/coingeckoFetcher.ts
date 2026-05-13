@@ -1,6 +1,7 @@
 // coingeckoFetcher — Live-Krypto-Daten via CoinGecko Free API · kein Auth
 // Fetch läuft server-side in /wirtschaft (SSR · prerender = false)
 // Fallback auf wirtschaft.json-Werte wenn API nicht erreichbar
+// getBTCHistory(): 7-Tage-Stundenwerte für Sparkline (168 Punkte) · Fallback []
 
 import fallbackData from '../data/wirtschaft.json';
 
@@ -82,5 +83,32 @@ export async function getKryptoStand(): Promise<KryptoErgebnis> {
     ];
     const fehler = err instanceof Error ? err.message : 'Unbekannter Fehler';
     return { coins, ist_live: false, fetch_zeit, fehler };
+  }
+}
+
+// getBTCHistory — BTC-Kursverlauf 7 Tage stündlich für Sparkline
+// Endpoint liefert ~168 [timestamp, price]-Paare · nur Preise extrahieren
+// Fallback: leeres Array [] · Sparkline rendert dann nicht
+export async function getBTCHistory(): Promise<number[]> {
+  try {
+    const url =
+      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart' +
+      '?vs_currency=usd&days=7&interval=hourly';
+
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const data = (await response.json()) as {
+      prices: Array<[number, number]>;
+    };
+
+    // Nur Preise · Timestamps werden für Sparkline nicht benötigt
+    return data.prices.map(([_, price]) => price);
+  } catch {
+    // Kein throw — Sparkline zeigt nichts bei leerem Array
+    return [];
   }
 }

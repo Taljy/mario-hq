@@ -1,15 +1,18 @@
 ---
-// KryptoHero — BTC-Hero gross + ETH/SOL/XRP/SUI-Strip darunter
+// KryptoHero — BTC-Hero gross + BTC-7d-Sparkline + ETH/SOL/XRP/SUI-Strip darunter
 // Negative Deltas in Vermillon · Schweizer Apostroph via toLocaleString('de-CH')
 // ist_live: true → "Live · HH:MM CEST" · false → "Fallback · API offline"
+// btcHistory: 168 Stunden-Punkte für Sparkline · [] = kein Chart
 
 import type { KryptoErgebnis } from '../../lib/coingeckoFetcher';
+import Sparkline from '../charts/Sparkline.astro';
 
 interface Props {
   ergebnis: KryptoErgebnis;
+  btcHistory: number[];
 }
 
-const { ergebnis } = Astro.props;
+const { ergebnis, btcHistory } = Astro.props;
 const btc      = ergebnis.coins[0];
 const altcoins = ergebnis.coins.slice(1);
 
@@ -43,6 +46,14 @@ const stempelLabel   = ergebnis.ist_live
         BTC · 24h <span class={`delta ${btcNegativ ? 'negativ' : ''}`}>{btcDelta}</span>
       </span>
     </div>
+
+    <!-- BTC-7d-Sparkline · nur wenn Daten vorhanden -->
+    {btcHistory.length > 0 && (
+      <div class="sparkline-row">
+        <Sparkline values={btcHistory} height={64} />
+        <span class="sparkline-label">7 Tage</span>
+      </div>
+    )}
   </div>
 
   <!-- Altcoin-Strip -->
@@ -126,6 +137,24 @@ const stempelLabel   = ergebnis.ist_live
 
   .delta.negativ {
     color: var(--accent);
+  }
+
+  /* Sparkline-Row */
+  .sparkline-row {
+    margin-top: 16px;
+    position: relative;
+  }
+
+  .sparkline-label {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    opacity: 0.6;
   }
 
   /* Altcoin-Strip */

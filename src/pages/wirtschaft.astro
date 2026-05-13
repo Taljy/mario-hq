@@ -9,12 +9,16 @@ import KryptoHero from '../components/wirtschaft/KryptoHero.astro';
 import IndizesGrid from '../components/wirtschaft/IndizesGrid.astro';
 import WirtschaftsNews from '../components/wirtschaft/WirtschaftsNews.astro';
 import TradeSetupsPlaceholder from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
-import { getKryptoStand } from '../lib/coingeckoFetcher';
+import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
 import { getWirtschaft } from '../lib/wirtschaftResolver';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
-const krypto = await getKryptoStand();
+// Parallel fetchen — beide Calls unabhängig voneinander
+const [krypto, btcHistory] = await Promise.all([
+  getKryptoStand(),
+  getBTCHistory(),
+]);
 const { indizes, news, trade_setups_placeholder } = getWirtschaft();
 ---
 
@@ -24,7 +28,7 @@ const { indizes, news, trade_setups_placeholder } = getWirtschaft();
   modul="wirtschaft"
 >
   <div class="w-stack">
-    <KryptoHero ergebnis={krypto} />
+    <KryptoHero ergebnis={krypto} btcHistory={btcHistory} />
     <IndizesGrid indizes={indizes} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />

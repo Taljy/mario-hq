@@ -48,6 +48,13 @@
       "url": null,
       "lizenz": "Eigenes Tool",
       "use": "4 Kategorien Tech · Foto · Architektur · Politik (ab Phase 5)"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Apache ECharts",
+      "url": "https://echarts.apache.org",
+      "lizenz": "Apache License 2.0",
+      "use": "Charts · Sparklines · Gauges · Visualisierungen"
     }
   ]
 }
