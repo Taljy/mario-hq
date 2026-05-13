@@ -1,5 +1,50 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 18) · Slice 2.3.5 + Phase-2.3-Abschluss
+
+### Was gemacht
+- `suncalc` + `@types/suncalc` installiert für lokale Mondphase-Berechnung
+- `astronomie-2026.json`: 6 Meteor-Schauer · 2 Planeten-Events · 8 Vollmonde · kuratiert aus astronomischen Jahresvorschauen
+- `astronomieResolver.ts`: `getAstronomieHeute()` mit Bemerkenswert-Logik:
+  Meteor aktiv ohne Mond-Problem · Planeten-Event ±7 Tage · Vollmond ±3 Tage · Mondphase immer via SunCalc
+- `AstronomieSektion.astro`: conditional rendering (`ist_bemerkenswert=false` → unsichtbar) · auto-fit-Grid · Mobile 1-Spalte
+- `wetter.astro`: Astronomie zwischen WetterDetail und FotoSpots integriert · `w-stack` auf `gap: var(--s-6)` erhöht
+- Cross-Page-Polish: Footer "Phase 2.2" → "Phase 2.3" · Eyebrows/Back-Links/SourceStempel auf allen 4 Pages verifiziert
+- Phase-2.3-Volltest: Build grün · Light/Dark/Mobile · Navigation · Console errors = 0 · Vermillon-Quote < 3%
+- `_pendenzen.md`: Phase 2.3 ✅ · aktuelle-phase auf "3 (geplant)" · Aufräum-Tasks entfernt (alle erledigt) · Phase-3-Start-Tasks ergänzt
+
+### Erkenntnisse
+- **SunCalc-Import funktioniert direkt.** `import SunCalc from 'suncalc'` mit `@types/suncalc` (export =) klappt in Astro v6 / Vite ohne Workaround.
+- **Conditional Rendering in Astro.** `{condition && (<section>...</section>)}` rendert exakt nil wenn `condition=false` — kein leeres DOM-Element, kein Layout-Platz verbraucht.
+- **Eta-Aquariden heute aktiv.** 13.5.2026 liegt im Fenster 19.4.–28.5. → `ist_bemerkenswert=true` → Sektion sofort visuell verifizierbar ohne Datum-Mock.
+- **Phase 2.3 hat alle 5 Slices an einem Tag geschafft.** SSR-Foundation aus 2.3.2 hat Folgeslices vereinfacht. DetailPage-Layout zentral war die richtige Entscheidung — Pattern-Klon-Strategie hat funktioniert.
+
+### Phase-2.3-Synthese
+- 4 Detail-Pages produktionsreif: /wirtschaft · /wetter · /news · /kalender
+- 3 Live-API-Anbindungen mit Fallback: CoinGecko · Open-Meteo · iCal
+- 8 Custom-SVG-Wetter-Symbole sumi-e-Stil
+- Astronomie-Sektion conditional: SunCalc lokal + kuratierte 2026-Events
+- Vercel-SSR-Hybrid-Mode aktiv (/wirtschaft · /wetter · /kalender = SSR · /news = SSG)
+- Quellen-Transparenz via sources.json + SourceStempel auf allen Pages
+- HQ ist als Site komplett — Cover hat 4 funktionierende Detail-Verlinkungen
+
+### Offene Pendenzen
+- **MARIO-TODO:** KALENDER_ICAL_URL in Vercel Dashboard eintragen (ohne das bleibt /kalender auf Fallback)
+- Phase 3 Content-Pipeline geplant: Briefing-Schema · Astro Content Collections · Archive-Auto-Build
+- Foto-Spots-Erweiterung über 4 Aargau-Spots hinaus (wenn Bedarf)
+
+### Files dieser Session
+- `src/data/astronomie-2026.json` (neu)
+- `src/lib/astronomieResolver.ts` (neu)
+- `src/components/wetter/AstronomieSektion.astro` (neu)
+- `src/pages/wetter.astro` (Astronomie-Integration + s-6-Spacing)
+- `src/components/layout/Footer.astro` (Phase 2.2 → 2.3)
+- `package.json` / `package-lock.json` (suncalc + @types/suncalc)
+- `_pendenzen.md` (Phase 2.3 ✅ · Phase 3 als nächste · Aufräum-Tasks entfernt)
+- `SESSION_LOG.md` (Update 18)
+
+---
+
 ## 26-05-13 (Update 17) · Slice 2.3.4 implementiert
 
 ### Was gemacht

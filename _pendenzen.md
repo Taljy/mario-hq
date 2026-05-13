@@ -2,7 +2,7 @@
 type: pendenzen
 projekt: mario-hq
 aktualisiert: 26-05-13
-aktuelle-phase: 2.3 (Start)
+aktuelle-phase: 3 (geplant)
 ---
 
 # Mario's HQ · Pendenzen
@@ -36,24 +36,25 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 2.3 — Slice 2.3.5 (fast fertig)
+## 🎯 Aktuelle Phase: 3 — Geplant
 
-**Phase 2.2 ist abgeschlossen (13.5.2026).** Cover-Page produktionsreif: 5 Slices, Editorial-Layout, Custom-SVG, Conditional-Logic, Live-Inseln vorbereitet, Light/Dark und Mobile verifiziert.
+**Phase 2.3 ist abgeschlossen (13.5.2026).** Detail-Pages Slim produktionsreif: 5 Slices, 4 Pages live (/wirtschaft mit CoinGecko · /wetter mit Open-Meteo + Astronomie · /news statisch · /kalender mit iCal-Read-Only). Foundation mit DetailPage-Layout · sources.json · SourceStempel etabliert. Vercel-SSR-Hybrid-Mode aktiv für drei der vier Detail-Pages.
 
-**Phase 2.3 · Detail-Pages Slim** konsolidiert die ursprünglichen Sub-Phasen 2.3/2.4/2.5/2.6 in eine Phase mit 5 Slices. Volle Vertiefung pro Modul verschiebt sich nach Phase 4 (Charts) und Phase 5 (Cowork-Automation).
+**Phase 3 · Content-Pipeline** kommt als Nächstes · Briefing-Schema mit Astro Content Collections · Archive-Page baut sich automatisch auf.
 
 ---
 
 ## ⏭️ Nächste konkrete Schritte
 
-### Aufräum-Tasks (vor Phase 2.1)
-- [ ] `_projekt.md` (HQ-Pivot) ins Repo · commit + push
-- [ ] `_pendenzen.md` (dieses File) ins Repo · commit + push
-- [ ] `SESSION_LOG.md` mit Phase-1-Abschluss + HQ-Pivot ergänzen
-- [ ] GitHub-Repo anlegen (`github.com/Taljy/mario-hq`, public)
-- [ ] Remote hinzufügen + erster Push
-- [ ] Vercel-Account verknüpfen → Auto-Deploy testen
-- [ ] Live-URL bestätigen
+### Mario-TODO (vor Phase 3)
+- [ ] **KALENDER_ICAL_URL** in Vercel Dashboard eintragen · Settings → Environment Variables → alle drei Environments · Wert: Geheime iCal-URL aus Google Calendar → Einstellungen → "Geheime Adresse im iCal-Format"
+
+### Phase 3 · Start
+- [ ] Zod 4 installieren für Schema-Validierung
+- [ ] Briefing-Frontmatter-Schema definieren
+- [ ] Content Collection `briefings/` aufbauen
+- [ ] Demo-Briefing in neue Struktur überführen
+- [ ] Archive-Page automatisch aus Collection generieren
 
 ---
 
@@ -87,13 +88,13 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.2.4** Krypto · Macro · News Cards
 - [x] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
 
-**Phase 2.3 · Detail-Pages Slim**
+**Phase 2.3 · Detail-Pages Slim** ✅ *(13.5.2026)*
 > **Detail-Spezifikation:** `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md`
 - [x] **Slice 2.3.1** Foundation · DetailPage-Layout · sources.json · SourceStempel
 - [x] **Slice 2.3.2** /wirtschaft Slim · Krypto-Hero (live) · Indizes · News · Trade-Placeholder
 - [x] **Slice 2.3.3** /wetter Slim · 8 Wetter-Symbole · Open-Meteo · Foto-Spots
 - [x] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
-- [ ] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
+- [x] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
 
 ### Phase 3 · Content-Pipeline
 - [ ] Schema für Briefing-Frontmatter definieren (Zod 4)
