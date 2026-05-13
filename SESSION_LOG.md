@@ -1,5 +1,35 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 8) · Slice 2.2.1 implementiert
+
+### Was gemacht
+- Daten-Layer: zitate.json (11 Zitate), ausgabe.ts (Counter + KW + Wochentag + Monat), zitatePicker.ts (deterministische Tages-Auswahl)
+- Drei neue Astro-Komponenten: HeroImage (sumi-e Berg-SVG), CoverHeader (Eyebrow + Hero-Datum), Zitat (Tages-Strip mit Vermillon-Eyebrow)
+- index.astro: Mini-Stub ersetzt durch echtes Layout
+- _pendenzen.md: Phase 2.2 in 5 Slices umgegliedert
+
+### Erkenntnisse
+- DateDisplay.astro aus Phase 2.1 nicht wiederverwendet — andere Grösse (44px vs. Display-Scale) und andere opsz (96 vs. 144). Build-time-computed ist für SSG + tägliche Rebuilds die richtige Wahl.
+- SVG-CSS aus inline-style in `<style>`-Block ausgelagert — Media-Query ohne `!important` möglich.
+- Terminal-Verifikation des Ausgabe-Counters vor Komponenten-Build: sauberes Vorgehen, deckt Logik-Bugs vor UI-Arbeit auf.
+
+### Offene Pendenzen
+- Slice 2.2.2 als Nächstes (Geschichte-Strip + Event-Banner)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `src/data/zitate.json` (neu)
+- `src/lib/ausgabe.ts` (neu)
+- `src/lib/zitatePicker.ts` (neu)
+- `src/components/HeroImage.astro` (neu)
+- `src/components/CoverHeader.astro` (neu)
+- `src/components/Zitat.astro` (neu)
+- `src/pages/index.astro` (modifiziert)
+- `_pendenzen.md` (Phase 2.2 Slice-Umgliederung)
+- `SESSION_LOG.md` (Update 8)
+
+---
+
 ## 26-05-13 (Update 7) · Phase 2.2 Spec dokumentiert
 
 ### Was gemacht

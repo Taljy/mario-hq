@@ -81,10 +81,11 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 
 **Phase 2.2 · Cover-Page Layout**
 > **Detail-Spezifikation:** `docs/PHASE-2.2-COVER-SPEC.md`
-- [ ] Hero-Datum mit Eyebrow („Mario's HQ · Dienstag, 12. Mai 2026")
-- [ ] 5 Modul-Cards: Geschichte · Wetter+Foto · Kalender · Krypto · Macro
-- [ ] Eingangsblock „Heute in der Geschichte" als Mini-Eyebrow
-- [ ] HQ-Identität visuell etabliert (DRG-Tokens konsequent angewendet)
+- [x] **Slice 2.2.1** Eyebrow · Hero-Bild · Zitat · Hero-Datum
+- [ ] **Slice 2.2.2** Geschichte-Strip · Event-Banner
+- [ ] **Slice 2.2.3** Wetter+Foto-Card · Kalender-Card
+- [ ] **Slice 2.2.4** Krypto · Macro · News Cards
+- [ ] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
 
 **Phase 2.3 · /wirtschaft als Vertiefung** *(HAUPTMODUL)*
 - [ ] Krypto-Detail-Layout (BTC-Hero, Altcoins ETH/SOL/XRP/SUI)
