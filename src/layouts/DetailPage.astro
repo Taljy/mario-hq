@@ -1,0 +1,89 @@
+---
+// DetailPage — gemeinsames Layout für alle 4 Detail-Pages (/wirtschaft · /wetter · /news · /kalender)
+// Wraps Magazine.astro · konsistenter Page-Header mit Back-Link, optionaler Eyebrow, Fraunces-H1
+
+import Magazine from './Magazine.astro';
+import SourceStempel from '../components/SourceStempel.astro';
+
+interface Props {
+  title: string;
+  eyebrow?: string;
+  modul: string;
+}
+
+const { title, eyebrow, modul } = Astro.props;
+---
+
+<Magazine title={`${title} · Mario's HQ`}>
+  <div class="detail-page">
+    <div class="detail-header">
+      <a href="/" class="back-link">← Zurück zum Cover</a>
+      {eyebrow && <span class="page-eyebrow">{eyebrow}</span>}
+      <h1 class="page-title">{title}</h1>
+    </div>
+
+    <div class="detail-content">
+      <slot />
+    </div>
+
+    <SourceStempel modul={modul} />
+  </div>
+</Magazine>
+
+<style>
+  .detail-page {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--s-5);
+    margin-top: var(--s-4);
+  }
+
+  .detail-header {
+    padding-bottom: var(--s-4);
+    margin-bottom: var(--s-5);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: var(--s-3);
+    transition: color 200ms ease-out;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: var(--s-2);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--fs-h1);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 96;
+    margin: 0;
+    color: var(--fg);
+  }
+
+  @media (max-width: 767px) {
+    .detail-page {
+      padding: 0 var(--s-4);
+    }
+  }
+</style>

@@ -1,11 +1,14 @@
 ---
-import Magazine from '../layouts/Magazine.astro';
-import PhasePlaceholder from '../components/PhasePlaceholder.astro';
+// /archiv nutzt DetailPage-Layout ab Slice 2.3.1 · Phase 3 baut Content Collections darauf auf
+import DetailPage from '../layouts/DetailPage.astro';
 ---
 
-<Magazine title="Archiv · Mario's HQ">
-  <PhasePlaceholder
-    phase="Phase 3 · folgt mit Content Collections"
-    beschreibung="Durchsuchbares Archiv aller bisherigen Briefings."
-  />
-</Magazine>
+<DetailPage
+  title="Archiv"
+  eyebrow="Alte Briefings"
+  modul="archiv"
+>
+  <p style="color: var(--fg-muted); font-size: var(--fs-body-m);">
+    Durchsuchbares Archiv aller bisherigen Briefings — folgt mit Phase 3 · Content Collections.
+  </p>
+</DetailPage>

@@ -1,0 +1,76 @@
+---
+// SourceStempel — Quellen-Footer pro Detail-Page · zeigt externe Datenquellen für Transparenz
+// Wird via DetailPage.astro automatisch eingebunden · modul-Prop steuert welche Quellen erscheinen
+
+import { getSourcesFor } from '../lib/sourceFilter';
+
+interface Props {
+  modul: string;
+}
+
+const { modul } = Astro.props;
+const sources = getSourcesFor(modul);
+---
+
+{sources.length > 0 && (
+  <div class="source-stempel">
+    <span class="eyebrow">Quellen</span>
+    <ul class="source-liste">
+      {sources.map((s) => (
+        <li class="source-item">
+          {s.url ? (
+            <a href={s.url} target="_blank" rel="noopener">{s.name}</a>
+          ) : (
+            <span>{s.name}</span>
+          )}
+          <span class="use">· {s.use}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+<style>
+  .source-stempel {
+    margin-top: var(--s-5);
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .source-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .source-item {
+    font-size: 11px;
+    color: var(--fg-muted);
+    line-height: 1.6;
+  }
+
+  .source-item a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--hairline-strong);
+    transition: color 200ms ease-out;
+  }
+
+  .source-item a:hover {
+    color: var(--accent);
+  }
+
+  .use {
+    color: var(--fg-subtle);
+  }
+</style>

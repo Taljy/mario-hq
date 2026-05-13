@@ -1,0 +1,53 @@
+{
+  "sources": [
+    {
+      "modul": "wirtschaft",
+      "name": "CoinGecko",
+      "url": "https://www.coingecko.com",
+      "lizenz": "Free API · Public Data",
+      "use": "BTC und Altcoin-Kurse · Live-Anbindung"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Cowork (statisch)",
+      "url": null,
+      "lizenz": "Eigenes Tool",
+      "use": "Aktienindizes · Wirtschafts-News (ab Phase 5 täglich)"
+    },
+    {
+      "modul": "wetter",
+      "name": "Open-Meteo",
+      "url": "https://open-meteo.com",
+      "lizenz": "Free for non-commercial · CC-BY 4.0",
+      "use": "Wetter-Daten Baden AG · Live-Anbindung"
+    },
+    {
+      "modul": "wetter",
+      "name": "SunCalc",
+      "url": "https://github.com/mourner/suncalc",
+      "lizenz": "BSD-2-Clause",
+      "use": "Mondphase · Sonnenauf/-untergang · Lokale Berechnung"
+    },
+    {
+      "modul": "wetter",
+      "name": "Astronomie-Highlights 2026",
+      "url": null,
+      "lizenz": "Kuratiert aus astronomischen Jahresvorschauen",
+      "use": "Meteor-Schauer · Planeten-Events · Vollmonde"
+    },
+    {
+      "modul": "kalender",
+      "name": "Google Calendar (iCal)",
+      "url": "https://calendar.google.com",
+      "lizenz": "Persönlicher Kalender · Read-Only via Geheim-URL",
+      "use": "Termine Heute + 7 Tage · Server-side Fetch"
+    },
+    {
+      "modul": "news",
+      "name": "Cowork (kuratiert)",
+      "url": null,
+      "lizenz": "Eigenes Tool",
+      "use": "4 Kategorien Tech · Foto · Architektur · Politik (ab Phase 5)"
+    }
+  ]
+}
