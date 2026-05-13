@@ -1,5 +1,34 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 14) · Slice 2.3.1 implementiert
+
+### Was gemacht
+- `sources.json` mit 7 Quellen-Einträgen: CoinGecko · Cowork (statisch) · Open-Meteo · SunCalc · Astronomie-Highlights · Google Calendar (iCal) · Cowork (kuratiert)
+- `sourceFilter.ts` mit `getSourcesFor(modul)` und `getAllSources()` · TypeScript strict · keine any
+- `SourceStempel.astro` mit externen Links (target="_blank" rel="noopener") und Use-Beschreibungen · conditional: rendert nur wenn Einträge vorhanden
+- `DetailPage.astro` als gemeinsames Layout für /wirtschaft · /wetter · /news · /kalender · wraps Magazine.astro · Back-Link "← Zurück zum Cover" · optionale Eyebrow · Fraunces-H1 · Hairline-Separator · SourceStempel am Ende
+- `/archiv.astro` auf DetailPage umgestellt · bewusst permanent da Phase 3 Content Collections direkt auf diesem Layout aufbaut · modul="archiv" → SourceStempel rendert korrekt nichts (kein Eintrag)
+
+### Erkenntnisse
+- **SourceStempel conditional-leer ist korrektes Verhalten.** `modul="archiv"` liefert leere Liste → `{sources.length > 0 && ...}` blendet Stempel aus. Kein Spezialfall nötig, das Muster skaliert sauber auf jedes Modul.
+- **DetailPage-`<title>` interpoliert.** `${title} · Mario's HQ` ergibt z.B. "Archiv · Mario's HQ" — konsistentes Browser-Tab-Pattern für alle Detail-Pages gesetzt.
+- **Dark-Mode via `data-theme` · nicht `prefers-color-scheme`.** Site nutzt localStorage-Toggle, nicht CSS Media Query. Preview-Verifikation via `preview_eval: document.documentElement.dataset.theme = 'dark'` statt `colorScheme`-Option.
+
+### Offene Pendenzen
+- Slice 2.3.2 als Nächstes (/wirtschaft Slim · Krypto-Hero live via CoinGecko · Indizes · News · Trade-Setups-Placeholder)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen (`<details>`-Stolperstein · Worktree-Falle in SKILL.md)
+
+### Files dieser Session
+- `src/data/sources.json` (neu)
+- `src/lib/sourceFilter.ts` (neu)
+- `src/components/SourceStempel.astro` (neu)
+- `src/layouts/DetailPage.astro` (neu)
+- `src/pages/archiv.astro` (auf DetailPage umgestellt)
+- `_pendenzen.md` (Slice 2.3.1 abgehakt)
+- `SESSION_LOG.md` (Update 14)
+
+---
+
 ## 26-05-13 (Update 13) · Phase 2.3 Konsolidierung + Spec
 
 ### Was gemacht
