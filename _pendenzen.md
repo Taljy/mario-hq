@@ -82,7 +82,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 **Phase 2.2 · Cover-Page Layout**
 > **Detail-Spezifikation:** `docs/PHASE-2.2-COVER-SPEC.md`
 - [x] **Slice 2.2.1** Eyebrow · Hero-Bild · Zitat · Hero-Datum
-- [ ] **Slice 2.2.2** Geschichte-Strip · Event-Banner
+- [x] **Slice 2.2.2** Geschichte-Strip · Event-Banner
 - [ ] **Slice 2.2.3** Wetter+Foto-Card · Kalender-Card
 - [ ] **Slice 2.2.4** Krypto · Macro · News Cards
 - [ ] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode

@@ -1,5 +1,37 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 9) · Slice 2.2.2 implementiert
+
+### Was gemacht
+- geschichte.json mit 5 Demo-Einträgen (gemischte Themen entsprechend Marios Bias)
+- events.json mit Powell-Demo-Event für heute
+- geschichtePicker.ts und eventResolver.ts (Pattern analog zu zitatePicker.ts aus Slice 2.2.1)
+- GeschichteStrip.astro (Pattern-Klon vom Zitat-Strip mit Eyebrow in Tinte-Mittel statt Vermillon)
+- EventBanner.astro mit conditional Rendering
+- index.astro integriert beide neuen Komponenten
+
+### Erkenntnisse
+- `(match as Event) ?? null` im Spec-Code ist TypeScript-Strict-Problem: `undefined as Event` ist fragwürdige Assertion. Sichere Lösung: ternäres `match ? (match as Event) : null`.
+- Conditional-Test via hartkodiertem Datum bestätigt: CSS-Klasse bleibt im `<style>`-Block, aber kein DOM-Element wenn Event null — korrektes Verhalten.
+- `grep -c` zählt Zeilen, nicht Vorkommen — für Conditional-Test `class="event-banner"` statt `.event-banner` als Suchmuster nutzen.
+
+### Offene Pendenzen
+- Slice 2.2.3 als Nächstes (Wetter+Foto Card · Kalender Card · Co-Heroes)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `src/data/geschichte.json` (neu)
+- `src/data/events.json` (neu)
+- `src/lib/geschichtePicker.ts` (neu)
+- `src/lib/eventResolver.ts` (neu)
+- `src/components/GeschichteStrip.astro` (neu)
+- `src/components/EventBanner.astro` (neu)
+- `src/pages/index.astro` (modifiziert)
+- `_pendenzen.md` (Slice 2.2.2 abgehakt)
+- `SESSION_LOG.md` (Update 9)
+
+---
+
 ## 26-05-13 (Update 8) · Slice 2.2.1 implementiert
 
 ### Was gemacht
