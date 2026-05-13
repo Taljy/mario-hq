@@ -1,0 +1,44 @@
+---
+// WetterSymbol — Wrapper · WMO-Code → korrektes SVG-Symbol
+// size-Prop steuert Grösse via inline-flex Wrapper · SVGs sind viewBox-skalierbar
+
+import Sonne from './Sonne.astro';
+import SonneWolken from './SonneWolken.astro';
+import Wolken from './Wolken.astro';
+import Nebel from './Nebel.astro';
+import Regen from './Regen.astro';
+import Schnee from './Schnee.astro';
+import Gewitter from './Gewitter.astro';
+import Sturm from './Sturm.astro';
+
+interface Props {
+  wmoCode: number;
+  size?: number;
+}
+
+const { wmoCode, size = 64 } = Astro.props;
+
+function symbolFor(code: number): string {
+  if (code === 0) return 'sonne';
+  if (code <= 2)  return 'sonne-wolken';
+  if (code === 3) return 'wolken';
+  if (code === 45 || code === 48) return 'nebel';
+  if ((code >= 51 && code <= 65) || (code >= 80 && code <= 82)) return 'regen';
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86)  return 'schnee';
+  if (code >= 95 && code <= 99) return 'gewitter';
+  return 'sonne-wolken'; // sicherer Default
+}
+
+const sym = symbolFor(wmoCode);
+---
+
+<span style={`display:inline-flex;width:${size}px;height:${size}px;flex-shrink:0`}>
+  {sym === 'sonne'        && <Sonne />}
+  {sym === 'sonne-wolken' && <SonneWolken />}
+  {sym === 'wolken'       && <Wolken />}
+  {sym === 'nebel'        && <Nebel />}
+  {sym === 'regen'        && <Regen />}
+  {sym === 'schnee'       && <Schnee />}
+  {sym === 'gewitter'     && <Gewitter />}
+  {sym === 'sturm'        && <Sturm />}
+</span>

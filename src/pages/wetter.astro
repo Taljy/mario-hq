@@ -1,11 +1,36 @@
 ---
-import Magazine from '../layouts/Magazine.astro';
-import PhasePlaceholder from '../components/PhasePlaceholder.astro';
+export const prerender = false;
+
+// /wetter — SSR · Open-Meteo-Fetch bei jedem Request · 30min Edge-Cache
+// Foto-Spot-Empfehlung anhand Wetter + Tageszeit
+
+import DetailPage from '../layouts/DetailPage.astro';
+import WetterDetail from '../components/wetter/WetterDetail.astro';
+import FotoSpots from '../components/wetter/FotoSpots.astro';
+import { getWetterErgebnis } from '../lib/openMeteoFetcher';
+import { getFotoEmpfehlung } from '../lib/fotoSpotPicker';
+
+Astro.response.headers.set('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
+
+const wetter = await getWetterErgebnis();
+const foto   = getFotoEmpfehlung(wetter.heute);
 ---
 
-<Magazine title="Wetter · Mario's HQ">
-  <PhasePlaceholder
-    phase="Phase 2.4 · in Arbeit"
-    beschreibung="Wetter Baden AG, Goldene und Blaue Stunde, Fotochancen und Astronomie."
-  />
-</Magazine>
+<DetailPage
+  title="Wetter"
+  eyebrow={wetter.ort}
+  modul="wetter"
+>
+  <div class="w-stack">
+    <WetterDetail ergebnis={wetter} />
+    <FotoSpots empfehlung={foto} />
+  </div>
+</DetailPage>
+
+<style>
+  .w-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+</style>

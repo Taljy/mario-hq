@@ -1,0 +1,40 @@
+{
+  "spots": [
+    {
+      "name": "Wasserturm Baden",
+      "lat": 47.4762,
+      "lng": 8.3056,
+      "tags": ["architektur", "stadt", "nah"],
+      "beste_bedingung": "blaue-stunde · klar",
+      "fahrzeit_minuten": 5,
+      "hinweis": "Architektur-Detail bei blauer Stunde · Reflexionen im Limmatkanal"
+    },
+    {
+      "name": "Kloster Wettingen",
+      "lat": 47.4604,
+      "lng": 8.3331,
+      "tags": ["architektur", "historisch", "innenhof"],
+      "beste_bedingung": "goldene-stunde · sonne-wolken",
+      "fahrzeit_minuten": 10,
+      "hinweis": "Klosterhof zur goldenen Stunde · warme Sandstein-Töne"
+    },
+    {
+      "name": "Geissberg",
+      "lat": 47.5167,
+      "lng": 8.2333,
+      "tags": ["landschaft", "weitsicht", "wandern"],
+      "beste_bedingung": "klar · weitsicht",
+      "fahrzeit_minuten": 15,
+      "hinweis": "Aussichtspunkt mit Blick übers Mittelland · Alpen-Panorama bei Föhn"
+    },
+    {
+      "name": "Lägern",
+      "lat": 47.4833,
+      "lng": 8.3667,
+      "tags": ["landschaft", "grat", "wandern"],
+      "beste_bedingung": "nebelmeer · sonnenaufgang",
+      "fahrzeit_minuten": 20,
+      "hinweis": "Gratwanderung mit Nebelmeer-Chance · Sonnenaufgang im Herbst beste Zeit"
+    }
+  ]
+}

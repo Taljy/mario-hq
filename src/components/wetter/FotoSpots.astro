@@ -1,0 +1,229 @@
+---
+// FotoSpots — Tages-Empfehlung gross + alle 4 Aargau-Spots als Karten
+// tages_spot === null → "Heute drinnen"-Hinweis · sonst Spot-Details mit Tags
+
+import type { FotoEmpfehlung } from '../../lib/fotoSpotPicker';
+
+interface Props {
+  empfehlung: FotoEmpfehlung;
+}
+
+const { empfehlung } = Astro.props;
+const { tages_spot, alle_spots, begruendung } = empfehlung;
+---
+
+<div class="foto-sektion">
+  <!-- Tages-Empfehlung -->
+  <div class="empfehlung-card">
+    <span class="eyebrow">Foto-Spot heute</span>
+
+    {tages_spot === null ? (
+      <div class="kein-spot">
+        <span class="kein-spot-text">Heute drinnen.</span>
+        <span class="begruendung">{begruendung}</span>
+      </div>
+    ) : (
+      <div class="spot-hero">
+        <div class="spot-head">
+          <span class="spot-name">{tages_spot.name}</span>
+          <span class="fahrzeit-badge">{tages_spot.fahrzeit_minuten} Min</span>
+        </div>
+        <p class="spot-hinweis">{tages_spot.hinweis}</p>
+        <span class="begruendung">{begruendung}</span>
+        <div class="tags">
+          {tages_spot.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- Alle Spots -->
+  <div class="alle-spots">
+    <span class="sektion-eyebrow">Alle Spots · Aargau</span>
+    <div class="spots-grid">
+      {alle_spots.map((spot) => (
+        <div class="spot-card">
+          <span class="spot-card-name">{spot.name}</span>
+          <span class="spot-card-fahrzeit">{spot.fahrzeit_minuten} Min</span>
+          <span class="spot-card-bedingung">{spot.beste_bedingung}</span>
+          <div class="spot-card-tags">
+            {spot.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Empfehlung-Card */
+  .empfehlung-card {
+    background: var(--bg-card);
+    padding: 22px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  /* Kein Spot */
+  .kein-spot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .kein-spot-text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: var(--fs-h3);
+    color: var(--fg-muted);
+  }
+
+  /* Spot Hero */
+  .spot-hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .spot-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+
+  .spot-name {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 1.1;
+    font-variation-settings: "opsz" 48;
+    color: var(--fg);
+  }
+
+  .fahrzeit-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+  }
+
+  .spot-hinweis {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--fg-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .begruendung {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+  }
+
+  /* Tags */
+  .tags,
+  .spot-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: var(--s-2);
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    border: 1px solid var(--hairline-strong);
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  /* Alle Spots Grid */
+  .alle-spots {
+    margin-top: var(--s-4);
+  }
+
+  .sektion-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-3);
+  }
+
+  .spots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .spot-card {
+    background: var(--bg-card);
+    padding: 14px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .spot-card-name {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.2;
+    font-variation-settings: "opsz" 24;
+    color: var(--fg);
+  }
+
+  .spot-card-fahrzeit {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .spot-card-bedingung {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 1023px) {
+    .spots-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .spots-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

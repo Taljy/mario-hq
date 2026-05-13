@@ -1,0 +1,248 @@
+---
+// WetterDetail — Heute-Hero (Symbol gross + Temp) + 7-Tage-Strip + Sonnenzeiten
+// ist_live: true → "Live · HH:MM CEST" · false → "Fallback · API offline"
+
+import WetterSymbol from '../wetter-symbole/WetterSymbol.astro';
+import type { WetterErgebnis } from '../../lib/openMeteoFetcher';
+
+interface Props {
+  ergebnis: WetterErgebnis;
+}
+
+const { ergebnis } = Astro.props;
+const { heute, woche, ist_live, fetch_zeit } = ergebnis;
+
+const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · API offline';
+---
+
+<div class="wetter-detail">
+  <!-- Heute-Hero -->
+  <div class="hero-card">
+    <div class="card-head">
+      <span class="eyebrow">Heute · {ergebnis.ort}</span>
+      <span class={`live-stempel ${!ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+    </div>
+
+    <div class="hero-row">
+      <WetterSymbol wmoCode={heute.wmo_code} size={96} />
+      <div class="temp-block">
+        <span class="temp">{heute.temperatur}°</span>
+        <span class="temp-range">{heute.min}° — {heute.max}°</span>
+      </div>
+      <div class="meta-block">
+        <span class="bedingung">{heute.bedingung}</span>
+        <span class="wind">{heute.wind_kmh} km/h · {heute.wind_richtung}</span>
+        {heute.niederschlag_mm > 0 && (
+          <span class="niederschlag">{heute.niederschlag_mm} mm</span>
+        )}
+      </div>
+    </div>
+
+    <!-- Sonnenzeiten -->
+    <div class="sonnen-strip">
+      <div class="sonnen-item">
+        <span class="sonnen-eyebrow">Sonnenaufgang</span>
+        <span class="sonnen-zeit">{heute.sonnenaufgang}</span>
+      </div>
+      <div class="sonnen-item">
+        <span class="sonnen-eyebrow">Sonnenuntergang</span>
+        <span class="sonnen-zeit">{heute.sonnenuntergang}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7-Tage-Strip -->
+  <div class="woche-sektion">
+    <span class="sektion-eyebrow">Diese Woche</span>
+    <div class="woche-grid">
+      {woche.map((tag) => (
+        <div class="tag-card">
+          <span class="tag-name">{tag.wochentag_kurz}</span>
+          <WetterSymbol wmoCode={tag.wmo_code} size={32} />
+          <span class="tag-max">{tag.max}°</span>
+          <span class="tag-min">{tag.min}°</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Heute-Hero */
+  .hero-card {
+    background: var(--bg-card);
+    padding: 22px;
+    border-radius: 4px;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s-4);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .live-stempel {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .hero-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    margin-bottom: var(--s-4);
+  }
+
+  .temp-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .temp {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(3rem, 6vw + 1rem, 5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 72;
+    color: var(--fg);
+  }
+
+  .temp-range {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+
+  .meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bedingung {
+    font-size: 14px;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+
+  .wind,
+  .niederschlag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  /* Sonnenzeiten */
+  .sonnen-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--hairline);
+  }
+
+  .sonnen-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sonnen-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .sonnen-zeit {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg);
+  }
+
+  /* 7-Tage-Strip */
+  .woche-sektion {
+    margin-top: var(--s-4);
+  }
+
+  .sektion-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-3);
+  }
+
+  .woche-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .tag-card {
+    background: var(--bg-card);
+    padding: 12px 8px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tag-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .tag-max {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1;
+    font-variation-settings: "opsz" 24;
+    color: var(--fg);
+  }
+
+  .tag-min {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+
+  @media (max-width: 767px) {
+    .hero-row {
+      flex-wrap: wrap;
+    }
+
+    .woche-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>
