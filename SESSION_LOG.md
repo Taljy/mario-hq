@@ -1,5 +1,39 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 10) · Slice 2.2.3 implementiert
+
+### Was gemacht
+- wetter.json + kalender.json mit statischen Stubs
+- wetterPicker.ts + kalenderResolver.ts (Pattern aus 2.2.2)
+- WetterCard.astro mit custom sumi-e SVG-Symbol (var(--fg) für Dark-Mode-Auto-Anpassung, Wolke via var(--bg-card) als Painters-Model-Clip)
+- KalenderCard.astro mit Termin-Liste + Wochen-Strip
+- index.astro: co-heroes Grid minmax(0,1.7fr)/minmax(0,1fr), Mobile stackt
+- Beide Cards mit Vermillon-Eyebrows
+
+### Erkenntnisse
+- Astro-Dev-Server kann nach mehrfachen index.astro-Edits alten CSS-Cache halten — `display: grid` greift erst nach Server-Neustart. Symptom: eval zeigt `display: block`. Fix: Server killen + preview_start neu aufrufen.
+- SVG `fill="var(--bg-card)"` für Wolken-Masking funktioniert in inline SVG ohne Extra-Aufwand — Dark-Mode-Auto-Switch kostenfrei über semantische Tokens.
+- `minmax(0, 1.7fr) minmax(0, 1fr)` statt plain `1.7fr 1fr` verhindert Grid-Overflow bei langem Card-Inhalt.
+
+### Offene Pendenzen
+- Slice 2.2.4 als Nächstes (Krypto · Macro · News Cards · 3er-Reihe)
+- Wetter-Symbol-Set + MeteoSwiss-Anbindung kommt Phase 2.4
+- Google-Calendar-Read-Only kommt Phase 2.6
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `src/data/wetter.json` (neu)
+- `src/data/kalender.json` (neu)
+- `src/lib/wetterPicker.ts` (neu)
+- `src/lib/kalenderResolver.ts` (neu)
+- `src/components/WetterCard.astro` (neu)
+- `src/components/KalenderCard.astro` (neu)
+- `src/pages/index.astro` (modifiziert)
+- `_pendenzen.md` (Slice 2.2.3 abgehakt)
+- `SESSION_LOG.md` (Update 10)
+
+---
+
 ## 26-05-13 (Update 9) · Slice 2.2.2 implementiert
 
 ### Was gemacht
