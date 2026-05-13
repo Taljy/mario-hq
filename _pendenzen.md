@@ -2,7 +2,7 @@
 type: pendenzen
 projekt: mario-hq
 aktualisiert: 26-05-13
-aktuelle-phase: 3 (geplant)
+aktuelle-phase: 4 (geplant)
 ---
 
 # Mario's HQ · Pendenzen
@@ -29,32 +29,31 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - 🔧 **Apption.co Widget-Integration** prüfen (Timer mit Google-Calendar-Anbindung)
 - 🔧 **Foto-Pipeline** für DRG-Workflow
 
-**Open Question:** Welches Modul aus Phase 7+ ist als erstes wirklich gewünscht? — Klären, sobald MVP läuft.
+**Open Question:** Welches Modul aus Phase 7+ ist als erstes wirklich gewünscht? — Klären, sobald Phase 4 produktionsreif läuft.
 
 **Bewusst draussen (vielleicht für immer):**
 - ❌ Essen/Gesundheit · ❌ Shopping · ❌ Ziele/Planung · ❌ Lesen/Lernen
 
 ---
 
-## 🎯 Aktuelle Phase: 3 — Geplant
+## 🎯 Aktuelle Phase: 4 — Geplant
 
-**Phase 2.3 ist abgeschlossen (13.5.2026).** Detail-Pages Slim produktionsreif: 5 Slices, 4 Pages live (/wirtschaft mit CoinGecko · /wetter mit Open-Meteo + Astronomie · /news statisch · /kalender mit iCal-Read-Only). Foundation mit DetailPage-Layout · sources.json · SourceStempel etabliert. Vercel-SSR-Hybrid-Mode aktiv für drei der vier Detail-Pages.
+**Phase 2.3 ist abgeschlossen (13.5.2026).** Detail-Pages Slim produktionsreif: 5 Slices, 4 Pages live (/wirtschaft mit CoinGecko · /wetter mit Open-Meteo + Astronomie · /news statisch · /kalender mit iCal-Read-Only).
 
-**Phase 3 · Content-Pipeline** kommt als Nächstes · Briefing-Schema mit Astro Content Collections · Archive-Page baut sich automatisch auf.
+**Phase 4 · Charts + Trading-Watchlist auf /wirtschaft** kommt als Nächstes. Strategische Wende vom 13.5.2026 abends:
+
+- **Cowork-Automation entfällt komplett.** Live-APIs + manuelle JSON-Pflege ersetzen die geplante tägliche Cowork-Generation. Briefing-Bereitschaft um 06:00 CEST wird via Live-API-Fetches zum Page-Load gelöst.
+- **Phase 3 (Content-Pipeline) wartet** bis Bedarf konkret ist · Habits/Notizen-Tracking oder Archiv-Wunsch sind Trigger.
+- **Phase 4 wird breiter:** Editorial-Charts (Sparklines, F&G, Mondphase) plus Trading-Indikatoren (Funding Rates, Open Interest, Long/Short Ratio, Coinbase Premium, Stablecoin Supply) plus vollständige Multi-Asset-Watchlist (Crypto, Aktien, Forex, Commodities) alles auf /wirtschaft als langem scrollintensiven Wirtschafts-Hub.
 
 ---
 
 ## ⏭️ Nächste konkrete Schritte
 
-### Mario-TODO (vor Phase 3)
+### Mario-TODO
 - [ ] **KALENDER_ICAL_URL** in Vercel Dashboard eintragen · Settings → Environment Variables → alle drei Environments · Wert: Geheime iCal-URL aus Google Calendar → Einstellungen → "Geheime Adresse im iCal-Format"
-
-### Phase 3 · Start
-- [ ] Zod 4 installieren für Schema-Validierung
-- [ ] Briefing-Frontmatter-Schema definieren
-- [ ] Content Collection `briefings/` aufbauen
-- [ ] Demo-Briefing in neue Struktur überführen
-- [ ] Archive-Page automatisch aus Collection generieren
+- [ ] **Twelve-Data-Account** erstellen und API-Key bereitlegen (für Slice 4.3)
+- [ ] **PHASE-4-SPEC** wird in nächster Session erstellt
 
 ---
 
@@ -96,30 +95,28 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.3.4** /news Slim (4 Kategorien) + /kalender iCal Read-Only
 - [x] **Slice 2.3.5** Astronomie-Sektion · Polish · Volltest · Phase-2.3-Abschluss
 
-### Phase 3 · Content-Pipeline
-- [ ] Schema für Briefing-Frontmatter definieren (Zod 4)
-- [ ] Content Collection `briefings/` aufbauen
-- [ ] JSON-Schemas: `streaks.json`, `foto-spots.json`, `sources.json`
-- [ ] Demo-Briefing vom 12.5.2026 in neue Struktur überführen
-- [ ] Archive-Page baut sich automatisch aus Collection
+### Phase 3 · Content-Pipeline · *(zurückgestellt)*
 
-### Phase 4 · Charts (ECharts)
-- [ ] ECharts-Setup (Astro-Integration via Client-Island)
-- [ ] Fear & Greed Gauge
-- [ ] BTC 7-Tage Sparkline + Altcoins-Spark-Strip
-- [ ] Wetter-Wochen-Bars (Min/Max)
-- [ ] Macro-Timeline mit farbcodierten Events
-- [ ] Mondphase als SVG-Visualisierung
-- [ ] Indizes-Sparklines (SMI/DAX/S&P/Nasdaq)
-- [ ] Jupiter-Höhenkurve über Nacht (wenn relevant)
+Aufgeschoben bis Bedarf konkret · Trigger sind:
+- Habits/Notizen-Tracking braucht persistente Daten
+- Archiv-Wunsch · Mario möchte alte Briefings durchsuchen
 
-### Phase 5 · Automation
-- [ ] Cowork-Prompt für JSON+Markdown-Output schreiben
-- [ ] Scheduled Task einrichten (06:30 daily)
-- [ ] Cowork → Repo schreiben (lokaler Pfad)
-- [ ] **Obsidian-Sync via Doppel-Write** · Cowork schreibt Briefings parallel ins Repo UND in `~/Second_Brain/MorgenBriefings/`
-- [ ] Auto-Commit + Push via Cowork
-- [ ] Verifizieren: Briefing erscheint live auf Vercel-URL
+Bei Aktivierung: Briefing-Frontmatter-Schema · Content Collections · Archive-Page aus Collection.
+
+### Phase 4 · Charts + Trading-Watchlist auf /wirtschaft
+
+> **Detail-Spezifikation:** `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` *(folgt)*
+
+Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Watchlist analog Marios TradingView-Setup.
+
+- [ ] **Slice 4.1** ECharts-Foundation + DRG-Theme + BTC-Hero mit Sparkline
+- [ ] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
+- [ ] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
+- [ ] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
+- [ ] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion
+- [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
+- [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
+- [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)

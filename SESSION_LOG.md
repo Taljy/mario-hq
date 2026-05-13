@@ -1,5 +1,35 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 19) · Strategische Wende vor Phase 4
+
+### Was gemacht
+- Strategie-Chat zur Phase-Reihenfolge nach Phase 2.3
+- Entscheidung: Phase 4 (Charts) wird vorgezogen · Phase 3 (Content-Pipeline) auf wenn-dann-Status gesetzt · Phase 5 (Cowork-Automation) KOMPLETT entfernt aus Roadmap
+- Phase 4 umdefiniert von 5-Punkt-Liste zu 8 Slices · Charts UND Trading-Watchlist UND Multi-Asset-Tracker auf /wirtschaft
+- Trading-Indikatoren-Set definiert: Funding Rates, Open Interest, Long/Short Ratio, Coinbase Premium, Stablecoin Supply · alle gratis via Binance/Coinbase/DeFiLlama
+- Watchlist-Struktur nach Marios TradingView-Setup · ~30 Items in Gruppen (Index, BTC, Move2Earn, Aktien, Forex, Commodities) · manuell gepflegt in JSON
+- Twelve Data als API für Aktien/Forex/Commodities · Free Tier 800 Calls/Tag
+- Apption.co diskutiert und verworfen · Native ECharts ist visuell konsistenter als iframe-Widgets
+- Mario-Profile aktualisiert: Swing-Trader · Pragmatischer Maximalismus · 06:00 CEST Hard-Anforderung
+
+### Erkenntnisse
+- **Cowork-Verzicht ist Architektur-Befreiung.** Die ganze Scheduled-Task-Komplexität entfällt · Live-APIs liefern eh frische Daten · Read-First-Prinzip wird sauberer.
+- **Editorial-Charakter bleibt erhalten** auch ohne Cowork · Zitate/Geschichte rotieren deterministisch über dayOfYear-Algorithmus (schon implementiert in Slice 2.2.1/2.2.2).
+- **Trading-Watchlist auf /wirtschaft = Multi-Asset-Hub** · /wirtschaft wird zu langer scrollintensiver Seite · Editorial-Hero oben, Trading-Tools unten. Bewusste Architektur-Entscheidung.
+- **Phase 4 wird grösser als Phase 2.3** mit 8 Slices. Foundation-First-Strategie (Slice 4.1 = ECharts-Foundation) wird wieder die Risiko-Eingangshürde abräumen wie bei Slice 2.3.1 (DetailPage-Layout).
+
+### Offene Pendenzen
+- PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md folgt als Self-Contained-Spec in nächster Session
+- MARIO-TODO: Twelve-Data-Account erstellen und API-Key bereitlegen für Slice 4.3
+- MARIO-TODO weiterhin offen: KALENDER_ICAL_URL in Vercel Dashboard
+
+### Files dieser Session
+- `_pendenzen.md` (Phase 3 zurückgestellt · Phase 4 neu definiert · Phase 5 entfernt · aktuelle-phase auf 4)
+- `_projekt.md` (Mario-Profile · Decisions · Daten-Architektur · Cowork-Bezüge entfernt)
+- `SESSION_LOG.md` (Update 19)
+
+---
+
 ## 26-05-13 (Update 18) · Slice 2.3.5 + Phase-2.3-Abschluss
 
 ### Was gemacht

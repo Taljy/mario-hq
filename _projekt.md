@@ -4,7 +4,7 @@ projekt: mario-hq
 owner: Mario
 erstellt: 26-05-12
 aktualisiert: 26-05-13
-status: Phase 2.3 ✅ → Phase 3 geplant
+status: Phase 2.3 ✅ → Phase 4 geplant
 zweck: Einstiegs-Dokument für jeden neuen Chat — Vision, Stand, Architektur
 ---
 
@@ -123,24 +123,26 @@ Mario's HQ
 ┌─────────────────────────────────────────────────────────┐
 │  Quell-Systeme (read-only zugegriffen)                  │
 │  Google Calendar · Streaks-App · Bitvavo · Web-Search   │
-│  Cowork Scheduled Task · News-RSS                       │
 └────────────────────────┬────────────────────────────────┘
-                         ↓ liest/schreibt
+                         ↓ via Live-APIs zum Page-Load
 ┌─────────────────────────────────────────────────────────┐
-│  Daten im Repo                                          │
-│  src/content/briefings/2026-05-12.md (Cowork-generiert) │
-│  src/data/streaks.json · src/data/workouts.json         │
-│  src/data/foto-spots.json · src/data/sources.json       │
+│  Live-APIs                                              │
+│  CoinGecko · Open-Meteo · iCal · Twelve Data (4.3+)    │
 └────────────────────────┬────────────────────────────────┘
-                         ↓ liest beim Build
+                         ↓ SSR oder Build
+┌─────────────────────────────────────────────────────────┐
+│  Daten im Repo (manuell gepflegt)                       │
+│  src/data/*.json · sources.json · foto-spots.json       │
+└────────────────────────┬────────────────────────────────┘
+                         ↓ Build / SSR via Vercel
 ┌─────────────────────────────────────────────────────────┐
 │  Astro Website — Mario's HQ                             │
-│  Multi-Page · Charts inline (ECharts)                   │
+│  Multi-Page · SSR-Hybrid · Charts inline (ECharts)      │
 └────────────────────────┬────────────────────────────────┘
                          ↓ Push to GitHub
 ┌─────────────────────────────────────────────────────────┐
 │  Vercel · Auto-Deploy                                   │
-│  Production-URL: mario-hq.vercel.app                    │
+│  Production-URL: mario-hq-qc6f.vercel.app               │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -164,11 +166,15 @@ Mario's HQ
 | Content Collections für Briefings | 12.5. | Astro-natives Pattern · Markdown lebt parallel im Obsidian-Vault |
 | Multi-Page statt Single-Page | 12.5. | Magazin-Gefühl · echte URLs · Browser-Vor/Zurück |
 | ECharts statt Chart.js | 12.5. | Finanz-native, schickeres Editorial-Look |
-| Obsidian-Sync via Cowork-Doppel-Write (Phase 5) | 12.5. | 80% des Werts ohne API-Komplexität |
 | Voll-Kalender als eigenes Post-MVP-Modul | 13.5. | Bidirektionaler Google-Sync zu komplex für Briefing-MVP · Akiflow/Routine als visuelle Referenz · Reihenfolge innerhalb Post-MVP offen |
 | **Phase-2.3-Konsolidierung (Detail-Pages Slim)** | **13.5.** | **4 Sub-Phasen (2.3/2.4/2.5/2.6) zu einer Phase zusammengefasst** — Site-First-Tiefe-Later-Prinzip · alle 4 Detail-Pages slim produktionsreif statt eine tief ausgebaut |
 | **Vercel-Adapter SSR-Hybrid-Mode** | **13.5.** | **`output: 'static'` + `@astrojs/vercel` + per-page `prerender=false`** — SSR nur wo Live-APIs nötig (/wirtschaft · /wetter · /kalender) · SSG für statische Pages (/news u.a.) |
 | **iCal-Geheim-URL als Wegwerf-Brücke für /kalender** | **13.5.** | **Google-Calendar-iCal ohne OAuth** — pragmatisch für Phase 2.3 · URL als server-only ENV-Var · vollständige OAuth-Implementierung verschiebt sich auf Phase 8 (Voll-Kalender) |
+| **Cowork-Verzicht · Phase 5 gestrichen** | **13.5.** | **Live-APIs + manuelle JSON-Pflege reichen** · Briefing-Bereitschaft via Page-Load-Fetches · Architektur-Vereinfachung · Open-Source-Boilerplate-Wert steigt |
+| Phase 3 als wenn-dann-Aufschub | 13.5. | Content-Collections ohne Inhalt machen keinen Sinn · entsteht wenn Habits/Notizen-Tracking oder Archiv-Bedarf konkret |
+| **Phase 4 erweitert · Charts + Trading-Watchlist** | **13.5.** | **Editorial-Charts und Trading-Indikatoren plus Multi-Asset-Watchlist** alles auf /wirtschaft · 8 Slices |
+| ECharts als Chart-Library | 13.5. | Industrie-Standard für Finanz-Charts · DRG-Theme-Customization Pflicht für Editorial-Look · Dashboard-Default vermeiden |
+| Twelve Data für Aktien/Forex/Commodities | 13.5. | Free Tier 800 Calls/Tag · ein API-Key für alles · Indices möglicherweise im Free Tier limitiert · Fallback in Slice 4.5 klären |
 
 ---
 
@@ -180,7 +186,7 @@ Mario's HQ
 | GitHub-Repo | `https://github.com/Taljy/mario-hq` |
 | Dev-Server | `http://localhost:4321` (oder 4322/4323 wenn belegt) |
 | Production | `https://mario-hq-qc6f.vercel.app` |
-| Obsidian-Vault | `~/Second_Brain/` *(Briefings parallel dort)* |
+| Obsidian-Vault | `~/Second_Brain/` |
 | Briefing-Daten im Repo | `src/content/briefings/JJJJ-MM-TT.md` |
 | DRG-Design-System (Referenz) | claude.ai/design · Studio Da Rugna Design System |
 
@@ -188,7 +194,7 @@ Mario's HQ
 
 ## 9. Briefing-Struktur (sieben Blöcke)
 
-Diese Reihenfolge ist etabliert und stabil — sie ist Vertrag mit Cowork:
+Diese Reihenfolge ist etabliert und stabil — sie ist der etablierte Briefing-Vertrag:
 
 1. 📅 **Heute in der Geschichte** — ein prägnanter Satz
 2. 🌤️ **Wetter Baden AG** — Temp, Wind, Sonne, Goldene + Blaue Stunde
@@ -215,6 +221,9 @@ Diese Reihenfolge ist etabliert und stabil — sie ist Vertrag mit Cowork:
 - **Foto-affines Auge:** DRG-Look ist sein eigenes — kennt jede Token-Entscheidung
 - **Lernend, nicht Pro-Dev:** baut sein erstes echtes Web-Projekt · braucht erklärende Antworten, nicht nur Code
 - **Reibungsfrei-Fokus:** „Mir ist extrem wichtig, dass ich ein System habe das reibungslos funktioniert"
+- **Swing-Trader (aktuell)** — tradet aktiv aber zeitlich entspannter · nicht Daytrader · 1H- bis Tages-Setups
+- **Pragmatischer Maximalismus** — lieber zu viele Tools jetzt · später ausbauen wenn ungenutzt
+- **06:00 CEST Briefing-Bereitschaft** — Hard-Anforderung · HQ muss morgens orientiert sein
 
 ---
 
@@ -250,9 +259,6 @@ cd ~/Developer/mario-hq
 claude
 ```
 Claude Code liest automatisch `SKILL.md` aus dem Repo-Root und kennt damit alle Konventionen inkl. DRG-Tokens.
-
-### Tägliches Briefing-Generieren (Cowork)
-Scheduled Task läuft eigenständig — kein Chat-Einstieg nötig.
 
 ---
 
