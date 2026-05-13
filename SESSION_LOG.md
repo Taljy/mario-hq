@@ -1,5 +1,29 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 7) · Phase 2.2 Spec dokumentiert
+
+### Was gemacht
+- Strategie-Chat zu Phase 2.2 Cover-Page durchgeführt
+- Skizze A v3 als visuelle Referenz iteriert (3 Versionen)
+- Architektur-Entscheidung: Modell C (Hybrid mit Live-Inseln)
+- 5 Slices definiert (2.2.1 bis 2.2.5)
+- Spec-File docs/PHASE-2.2-COVER-SPEC.md committed
+
+### Erkenntnisse
+- Modell C ist editorial-konform · Magazin-Charakter bleibt, kritische Daten sind live · kein Update-Suffix nötig
+- Spec-File als Brücke zwischen claude.ai-Sessions · Token-Limit in Strategie-Chats macht Repo-Dokumente wichtig
+
+### Offene Pendenzen
+- Slice 2.2.1 implementieren (Eyebrow, Hero-Bild, Zitat)
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `docs/PHASE-2.2-COVER-SPEC.md` (neu)
+- `_pendenzen.md`
+- `SESSION_LOG.md` (Update 7)
+
+---
+
 ## 26-05-13 (Update 6) · Voll-Kalender als Post-MVP-Modul dokumentiert
 
 ### Was gemacht

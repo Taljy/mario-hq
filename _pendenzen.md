@@ -80,6 +80,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] Mobile-Layout iPad 768px verifizieren
 
 **Phase 2.2 · Cover-Page Layout**
+> **Detail-Spezifikation:** `docs/PHASE-2.2-COVER-SPEC.md`
 - [ ] Hero-Datum mit Eyebrow („Mario's HQ · Dienstag, 12. Mai 2026")
 - [ ] 5 Modul-Cards: Geschichte · Wetter+Foto · Kalender · Krypto · Macro
 - [ ] Eingangsblock „Heute in der Geschichte" als Mini-Eyebrow
