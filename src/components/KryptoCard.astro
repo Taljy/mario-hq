@@ -1,0 +1,100 @@
+---
+// KryptoCard — Supporting-Grid links (1fr) · statischer BTC-Stub
+// Schweizer Apostroph-Tausenderpunkt via toLocaleString('de-CH')
+// Delta in Vermillon bei Minus · var(--fg-muted) bei Plus/Null
+// Live-CoinGecko-Anbindung kommt späterer Slice
+
+import { getBTCHeute } from '../lib/kryptoResolver';
+
+const btc = getBTCHeute();
+
+// Delta-Format: "+1.2%" oder "-1.8%"
+const deltaFormatiert = `${btc.delta_24h_prozent > 0 ? '+' : ''}${btc.delta_24h_prozent.toFixed(1)}%`;
+const deltaIstNegativ = btc.delta_24h_prozent < 0;
+---
+
+<div class="krypto-card">
+  <!-- Header-Row: Eyebrow links · Live-Stempel rechts -->
+  <div class="card-head">
+    <span class="eyebrow">Krypto</span>
+    <span class="live-stempel">Live · {btc.stand}</span>
+  </div>
+
+  <!-- Preis-Block -->
+  <div class="preis-block">
+    <span class="preis">${btc.preis_usd.toLocaleString('de-CH')}</span>
+    <span class="delta-zeile">
+      BTC · 24h <span class={`delta ${deltaIstNegativ ? 'negativ' : ''}`}>{deltaFormatiert}</span>
+    </span>
+    <span class="fear-greed">{btc.fear_greed_label} · F&amp;G {btc.fear_greed}</span>
+  </div>
+</div>
+
+<style>
+  .krypto-card {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 4px;
+  }
+
+  /* Header-Row */
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s-4);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .live-stempel {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  /* Preis-Block */
+  .preis-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .preis {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--fg);
+    font-variation-settings: "opsz" 48;
+  }
+
+  .delta-zeile {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  .delta {
+    color: var(--fg-muted);
+  }
+
+  .delta.negativ {
+    color: var(--accent);
+  }
+
+  .fear-greed {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+  }
+</style>

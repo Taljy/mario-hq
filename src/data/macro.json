@@ -1,0 +1,8 @@
+{
+  "tagesthema": "Fed · Powell",
+  "zeit": "20:00 CEST",
+  "indizes": [
+    { "name": "SMI", "delta_prozent": 0.3 },
+    { "name": "DAX", "delta_prozent": 0.0 }
+  ]
+}

@@ -1,0 +1,57 @@
+---
+// NewsCard — Supporting-Grid rechts (1fr) · statischer Headlines-Stub
+// Source-Attribution + Originalartikel-Links kommen Phase 2.5
+// RSS-Aggregator kommt späterer Phase
+
+import { getNewsHeute } from '../lib/newsResolver';
+
+const news = getNewsHeute();
+---
+
+<div class="news-card">
+  <!-- Eyebrow -->
+  <span class="eyebrow">News</span>
+
+  <!-- Headlines-Stack -->
+  <div class="headlines">
+    {news.headlines.map((h) => (
+      <div class="headline">{h}</div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .news-card {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 4px;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  /* Headlines-Stack */
+  .headlines {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .headline {
+    font-size: 11px;
+    color: var(--fg);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .headline:last-child {
+    margin-bottom: 0;
+  }
+</style>

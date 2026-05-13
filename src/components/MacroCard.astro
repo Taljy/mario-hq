@@ -1,0 +1,117 @@
+---
+// MacroCard — Supporting-Grid Mitte (1fr) · Event-Pulse-Animation
+// Pulse-Border conditional an getAktivenEvent() — gleiche Logik wie EventBanner
+// prefers-reduced-motion-Schutz ist Pflicht (A11Y)
+
+import { getMacroHeute } from '../lib/macroResolver';
+import { getAktivenEvent } from '../lib/eventResolver';
+
+const macro = getMacroHeute();
+const event = getAktivenEvent();
+const istEventAktiv = event !== null;
+
+// Indizes-Strip: "SMI +0.3 · DAX flat"
+const indizesStrip = macro.indizes
+  .map((idx) => {
+    const delta =
+      idx.delta_prozent === 0
+        ? 'flat'
+        : `${idx.delta_prozent > 0 ? '+' : ''}${idx.delta_prozent.toFixed(1)}`;
+    return `${idx.name} ${delta}`;
+  })
+  .join(' · ');
+---
+
+<div class={`macro-card ${istEventAktiv ? 'event-aktiv' : ''}`}>
+  <!-- Header-Row: Eyebrow links · Event-Marker rechts (nur wenn aktiv) -->
+  <div class="card-head">
+    <span class="eyebrow">Macro</span>
+    {istEventAktiv && <span class="event-marker">Event aktiv</span>}
+  </div>
+
+  <!-- Body -->
+  <div class="macro-body">
+    <span class="tagesthema">{macro.tagesthema}</span>
+    <span class="zeit">{macro.zeit}</span>
+    <span class="indizes">{indizesStrip}</span>
+  </div>
+</div>
+
+<style>
+  .macro-card {
+    background: var(--bg-card);
+    padding: 18px;
+    border-radius: 4px;
+    /* Standard ohne Event: kein Border */
+    border: 1.5px solid transparent;
+  }
+
+  .macro-card.event-aktiv {
+    border: 1.5px solid rgba(227, 66, 52, 0.3);
+    animation: hq-pulse-border 2.4s ease-in-out infinite;
+  }
+
+  @keyframes hq-pulse-border {
+    0%, 100% { border-color: rgba(227, 66, 52, 0.18); }
+    50%       { border-color: rgba(227, 66, 52, 0.55); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .macro-card.event-aktiv {
+      animation: none;
+      border-color: rgba(227, 66, 52, 0.3);
+    }
+  }
+
+  /* Header-Row */
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s-4);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .event-marker {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--accent-hover);
+  }
+
+  /* Body */
+  .macro-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tagesthema {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+
+  .zeit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  .indizes {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    margin-top: 4px;
+  }
+</style>

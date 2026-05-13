@@ -7,6 +7,9 @@ import GeschichteStrip from '../components/GeschichteStrip.astro';
 import EventBanner from '../components/EventBanner.astro';
 import WetterCard from '../components/WetterCard.astro';
 import KalenderCard from '../components/KalenderCard.astro';
+import KryptoCard from '../components/KryptoCard.astro';
+import MacroCard from '../components/MacroCard.astro';
+import NewsCard from '../components/NewsCard.astro';
 ---
 
 <Magazine title="Cover · Mario's HQ">
@@ -20,6 +23,11 @@ import KalenderCard from '../components/KalenderCard.astro';
       <div class="co-heroes">
         <WetterCard />
         <KalenderCard />
+      </div>
+      <div class="supporting">
+        <KryptoCard />
+        <MacroCard />
+        <NewsCard />
       </div>
     </div>
   </div>
@@ -47,6 +55,20 @@ import KalenderCard from '../components/KalenderCard.astro';
 
   @media (max-width: 767px) {
     .co-heroes {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Supporting-3er-Reihe: Krypto · Macro · News */
+  .supporting {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  @media (max-width: 767px) {
+    .supporting {
       grid-template-columns: 1fr;
     }
   }
