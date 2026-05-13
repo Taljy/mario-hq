@@ -1,0 +1,50 @@
+---
+// EventBanner — conditional · nur sichtbar wenn für heute ein Event eingetragen ist
+// Vermillon-soft Background + Left-Border signalisiert Marktereignis ohne zu schreien
+// Kein Event → leerer Output, kein DOM-Element
+
+import { getAktivenEvent } from '../lib/eventResolver';
+
+const event = getAktivenEvent();
+---
+
+{event && (
+  <div class="event-banner">
+    <span class="zeit">Heute · {event.uhrzeit}</span>
+    <span class="titel">{event.titel}</span>
+    <span class="beschr">· {event.beschreibung}</span>
+  </div>
+)}
+
+<style>
+  .event-banner {
+    background: rgba(227, 66, 52, 0.06);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 4px 4px 0;
+    margin-block: 14px;
+  }
+
+  /* Zeit-Stempel in Vermillon-deep — betont aber nicht aggressiv */
+  .zeit {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-hover);
+    font-weight: 500;
+    margin-right: 12px;
+  }
+
+  .titel {
+    font-size: 13px;
+    color: var(--fg);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  .beschr {
+    font-size: 13px;
+    color: var(--fg-muted);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+// GeschichteStrip — Tages-Eintrag aus der Geschichte
+// Pattern-Klon vom Zitat-Strip — zwei bewusste Unterschiede:
+// 1. Eyebrow in var(--fg-subtle) — Geschichte ist sekundäres Element,
+//    Vermillon bleibt dem Zitat-Eyebrow reserviert
+// 2. Jahr als Mono-Lead vor dem Text — kein Autor-Feld
+
+import { getTagesgeschichte } from '../lib/geschichtePicker';
+
+const geschichte = getTagesgeschichte(new Date());
+---
+
+<div class="geschichte-strip">
+  <span class="eyebrow">Heute in der Geschichte</span>
+  <span class="jahr">{geschichte.jahr}</span>
+  <span class="text">— {geschichte.text}</span>
+</div>
+
+<style>
+  .geschichte-strip {
+    padding: 6px 0 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  /* Eyebrow in Tinte-Mittel — bewusst nicht Vermillon */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-right: 12px;
+  }
+
+  /* Jahr als Mono-Lead */
+  .jahr {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg);
+    margin-right: 4px;
+  }
+
+  /* Text in Fraunces italic — leicht gedämpft */
+  .text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.4;
+  }
+</style>
