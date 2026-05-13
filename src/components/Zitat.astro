@@ -1,0 +1,47 @@
+---
+// Zitat — deterministischer Tages-Strip
+// Eyebrow in Vermillon · Text in Fraunces italic · Autor in Mono
+// Edge-Case: autor === null → Autoren-Span wird weggelassen
+
+import { getTageszitat } from '../lib/zitatePicker';
+
+const zitat = getTageszitat(new Date());
+---
+
+<div class="zitat-strip">
+  <span class="eyebrow">Zitat</span>
+  <span class="text">„{zitat.text}"</span>
+  {zitat.autor && <span class="autor">— {zitat.autor}</span>}
+</div>
+
+<style>
+  .zitat-strip {
+    padding: 6px 0 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-right: 10px;
+  }
+
+  .text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+
+  .autor {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    margin-left: 8px;
+  }
+</style>

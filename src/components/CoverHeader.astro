@@ -1,0 +1,91 @@
+---
+// CoverHeader — Eyebrow-Zeile + Hero-Datum
+// Build-time berechnet — korrekt für tägliche Rebuilds via Cowork (ab Phase 5).
+// DateDisplay.astro aus Phase 2.1 nicht wiederverwendet: andere Grösse (44px vs. Display-Scale)
+// und anderes opsz (96 vs. 144).
+
+import {
+  getAusgabeFormatiert,
+  getKW,
+  getWochentag,
+  getMonatsname,
+} from '../lib/ausgabe';
+
+const datum     = new Date();
+const ausgabe   = getAusgabeFormatiert(datum);   // "#0014"
+const kw        = getKW(datum);                  // 20
+const wochentag = getWochentag(datum);           // "Mittwoch"
+const monat     = getMonatsname(datum);          // "Mai"
+const tag       = datum.getDate();               // 13
+const jahr      = datum.getFullYear();           // 2026
+---
+
+<div class="cover-header">
+  <!-- Eyebrow-Zeile: Brand links · Metadaten rechts -->
+  <div class="eyebrow-row">
+    <span class="eyebrow-left">Mario&rsquo;s HQ</span>
+    <span class="eyebrow-right">
+      KW {kw}&nbsp;· Ausgabe {ausgabe}&nbsp;· <span class="wochentag">{wochentag}</span>
+    </span>
+  </div>
+
+  <!-- Hero-Datum: Fraunces Light · 44px · opsz 96 -->
+  <p class="hero-datum">{wochentag}, {tag}. {monat} {jahr}</p>
+</div>
+
+<style>
+  .cover-header {
+    padding-top: var(--s-4);
+  }
+
+  /* Eyebrow-Zeile — JetBrains Mono · 11px · uppercase */
+  .eyebrow-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-block: var(--s-4) var(--s-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .eyebrow-left {
+    color: var(--fg);
+  }
+
+  .eyebrow-right {
+    color: var(--fg-subtle);
+  }
+
+  /* Wochentag in Vermillon — DRG-Akzent */
+  .wochentag {
+    color: var(--accent);
+  }
+
+  /* Hero-Datum — Fraunces Light · opsz 96 für ~44px-Grösse */
+  .hero-datum {
+    margin: var(--s-4) 0 var(--s-3);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 44px;
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    color: var(--fg);
+  }
+
+  @media (max-width: 767px) {
+    .hero-datum {
+      font-size: 32px;
+    }
+
+    .eyebrow-right {
+      /* Auf sehr schmalen Viewports rechte Seite kürzer halten */
+      text-align: right;
+    }
+  }
+</style>

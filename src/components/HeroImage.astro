@@ -1,0 +1,50 @@
+---
+// HeroImage — sumi-e SVG-Platzhalter · abstrakte Bergsilhouette + Nebellinien
+// In späteren Slices durch echtes Naturfotos ersetzt.
+// Suchbegriffe für Bild-Recherche: ruhig · meditativ · entsättigt · monochrom ·
+// Natur · Nebel · Berge · Wasser · Licht · Stein · Wolken · Holz · keine Menschen
+---
+
+<svg
+  class="hero-image"
+  viewBox="0 0 1440 280"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Abstrakte Bergsilhouette mit Nebellinien"
+>
+  <path
+    d="M0,190 L140,150 L300,175 L490,115 L650,160 L830,100 L1010,148 L1180,124 L1340,162 L1440,148 L1440,280 L0,280 Z"
+    fill="#B8B6B0"
+    opacity="0.55"
+  />
+  <path
+    d="M0,225 L185,195 L370,215 L555,175 L740,200 L920,165 L1130,195 L1290,180 L1440,200 L1440,280 L0,280 Z"
+    fill="#8A8A8A"
+    opacity="0.45"
+  />
+  <path
+    d="M0,260 L230,240 L460,255 L690,230 L920,250 L1150,235 L1440,247 L1440,280 L0,280 Z"
+    fill="#4A4A4A"
+    opacity="0.35"
+  />
+  <line x1="0" y1="130" x2="1440" y2="130" stroke="#FAFAF7" stroke-width="0.5" opacity="0.4" />
+  <line x1="0" y1="165" x2="1440" y2="165" stroke="#FAFAF7" stroke-width="0.5" opacity="0.3" />
+</svg>
+
+<style>
+  .hero-image {
+    width: 100%;
+    height: 280px;
+    display: block;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #EEEBE3 0%, #E8E6E1 100%);
+  }
+
+  @media (max-width: 767px) {
+    /* Mobile: Letterbox-Vollbreite — kein Padding — beabsichtigt */
+    .hero-image {
+      height: 160px;
+      border-radius: 0;
+    }
+  }
+</style>

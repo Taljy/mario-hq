@@ -1,40 +1,28 @@
 ---
 import Magazine from '../layouts/Magazine.astro';
-import DateDisplay from '../components/layout/DateDisplay.astro';
+import HeroImage from '../components/HeroImage.astro';
+import CoverHeader from '../components/CoverHeader.astro';
+import Zitat from '../components/Zitat.astro';
 ---
 
 <Magazine title="Cover · Mario's HQ">
-  <main class="cover">
-    <p class="eyebrow">Mario&rsquo;s HQ · Phase 2.1</p>
-    <DateDisplay variant="hero" />
-    <p class="lead">
-      Information-Architektur steht. Die Module folgen in den nächsten Phasen —
-      siehe Navigation oben.
-    </p>
-  </main>
+  <div class="cover-page">
+    <HeroImage />
+    <div class="cover-content">
+      <CoverHeader />
+      <Zitat />
+    </div>
+  </div>
 </Magazine>
 
 <style>
-  .cover {
-    max-width: var(--container-text);
-    margin: var(--s-9) auto;
+  .cover-page {
+    max-width: var(--container);
+    margin: var(--s-4) auto 0;
+  }
+
+  /* Horizontales Padding für Text-Inhalte — Hero-Bild bleibt vollbreite */
+  .cover-content {
     padding: 0 var(--s-5);
-  }
-
-  .eyebrow {
-    margin: 0 0 var(--s-5);
-    font-size: var(--fs-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--fg-subtle);
-    font-weight: 500;
-  }
-
-  .lead {
-    margin: var(--s-6) 0 0;
-    font-size: var(--fs-body-l);
-    color: var(--fg-muted);
-    max-width: 56ch;
-    line-height: 1.5;
   }
 </style>
