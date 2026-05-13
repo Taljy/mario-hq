@@ -36,11 +36,11 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 2.2 — Start
+## 🎯 Aktuelle Phase: 2.3 — Start
 
-**Phase 2.1 ist abgeschlossen (12.5.2026 Abend).** Layout-Foundation produktionsreif, 9 Routes funktional, live auf Vercel.
+**Phase 2.2 ist abgeschlossen (13.5.2026).** Cover-Page produktionsreif: 5 Slices durchgezogen, Editorial-Layout, Custom-SVG-Komponenten, Conditional-Logic für Events, Dark-Mode + Mobile verifiziert.
 
-**Phase 2.2 · Cover-Page Layout** startet jetzt — Hero-Datum, Modul-Cards, HQ-Identität visuell etabliert.
+**Phase 2.3 · /wirtschaft als Vertiefung** startet als nächstes — Krypto-Detail, Macro-Timeline, Indizes, News-Wirtschaft.
 
 ---
 
@@ -85,7 +85,7 @@ Toolchain · Konventionen · Visual-Identität · Astro-Foundation · Smoketest.
 - [x] **Slice 2.2.2** Geschichte-Strip · Event-Banner
 - [x] **Slice 2.2.3** Wetter+Foto-Card · Kalender-Card
 - [x] **Slice 2.2.4** Krypto · Macro · News Cards
-- [ ] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
+- [x] **Slice 2.2.5** Footer · Polish · Mobile · Dark-Mode
 
 **Phase 2.3 · /wirtschaft als Vertiefung** *(HAUPTMODUL)*
 - [ ] Krypto-Detail-Layout (BTC-Hero, Altcoins ETH/SOL/XRP/SUI)

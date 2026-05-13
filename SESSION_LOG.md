@@ -1,5 +1,39 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 12) · Slice 2.2.5 + Phase 2.2 Abschluss
+
+### Was gemacht
+- CoverFooter mit Generierungs- und Live-BTC-Stempel
+- src/lib/generierung.ts als zentrale Quelle (statisch in MVP, Phase 5 liefert echte Timestamps)
+- Dark-Mode-Polish an drei Komponenten:
+  · HeroImage: hardcodiertes Licht-Gradient (#EEEBE3) war helles Rechteck gegen dark-bg — auf #1E1E1E/#161616 umgestellt, Opacities leicht abgesenkt
+  · EventBanner: background von 0.06 auf 0.12 — war fast unsichtbar auf sumi-900
+  · MacroCard: separater hq-pulse-border-dark Keyframe (0.28/0.65 statt 0.18/0.55)
+- Volltest Light/Dark · 375px/1280px · Conditional-Tests · Console sauber
+
+### Erkenntnisse
+- Viewport-Höhe für Preview-Tests relevant: bei 800px-Höhe und 1380px-Seite sieht man nur Teile → Taller-Viewport (1500px+) macht Volltest in einem Screenshot möglich
+- `transferSize === 0` in performance.getEntriesByType('resource') ist kein 404 — das sind 304-Cached-Responses im Vite-Dev-Server
+- Dark-Mode-Background für SVG via `:root[data-theme="dark"] .hero-image { background: ... }` in Astro-scoped Style funktioniert sauber — Astro scopet nur den .hero-image-Selektor, :root bleibt global
+- Phase 2.2 ist die erste Phase mit echtem Editorial-Charakter · 5 Slices als Increment-Pattern bewährt
+
+### Offene Pendenzen
+- Phase 2.3 startet · /wirtschaft als Detail-Page (Krypto-Hero, Macro-Timeline, Indizes, News-Wirtschaft)
+- Aufräum-Tasks aus Phase 2.1: <details>-Stolperstein + Worktree-Falle in SKILL.md dokumentieren
+- Site-Footer noch auf "Phase 2.1" — sollte auf "Phase 2.2" nachgeführt werden (kleiner Aufräum-Task)
+
+### Files dieser Session
+- `src/lib/generierung.ts` (neu)
+- `src/components/CoverFooter.astro` (neu)
+- `src/pages/index.astro` (modifiziert · Footer integriert)
+- `src/components/HeroImage.astro` (Dark-Mode-Polish)
+- `src/components/EventBanner.astro` (Dark-Mode-Polish)
+- `src/components/MacroCard.astro` (Dark-Mode-Polish)
+- `_pendenzen.md` (Slice 2.2.5 abgehakt · Phase 2.3 als aktuelle Phase)
+- `SESSION_LOG.md` (Update 12)
+
+---
+
 ## 26-05-13 (Update 11) · Slice 2.2.4 implementiert
 
 ### Was gemacht
