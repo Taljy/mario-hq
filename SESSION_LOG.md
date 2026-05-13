@@ -1,5 +1,44 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 15) · Slice 2.3.2 implementiert
+
+### Was gemacht
+- `@astrojs/vercel` Adapter installiert · `astro.config.mjs` mit `adapter: vercel()` · `.vercel/` in `.gitignore`
+- `/wirtschaft.astro` auf SSR umgestellt via `export const prerender = false` · echter CoinGecko-Fetch bei jedem Request
+- `Cache-Control: s-maxage=60, stale-while-revalidate=300` via `Astro.response.headers`
+- `coingeckoFetcher.ts` mit 5s `AbortSignal.timeout()` · Try/Catch · JSON-Fallback bei API-Fehler · kein Auth nötig
+- `wirtschaftResolver.ts` für statische Indizes + News aus `wirtschaft.json`
+- 4 Komponenten in `src/components/wirtschaft/`: KryptoHero · IndizesGrid · WirtschaftsNews · TradeSetupsPlaceholder
+- Live-Verifikation: BTC $81'096 mit "LIVE · 12:24 CEST"-Stempel echte CoinGecko-Daten
+
+### Erkenntnisse
+- **Astro v6 Hybrid-SSR funktioniert sauber.** `output: 'static'` (Default) + `adapter: vercel()` + `export const prerender = false` per-Page ist der korrekte Ansatz in Astro v6 — kein `output: 'hybrid'` mehr nötig (deprecated). Build-Mode zeigt "server" sobald eine SSR-Page existiert.
+- **`AbortSignal.timeout()` ist Node 17.3+.** Mit Astro v6 auf Node 22 funktioniert das problemlos — kein separates `setTimeout`/`clearTimeout`-Pattern nötig.
+- **toLocaleString('de-CH') auf dem Vercel-Server.** Funktioniert mit Full-ICU in Node 22/Vercel-Runtime: Apostroph als Tausenderpunkt korrekt rendert.
+- **Fallback-Pattern als Vorlage.** Exakt das gleiche Try/Catch-Muster wird für Open-Meteo (Slice 2.3.3) und iCal (Slice 2.3.4) wiederverwendet.
+
+### Offene Pendenzen
+- Slice 2.3.3 als Nächstes (/wetter Slim · 8 Wetter-Symbol-SVGs · Open-Meteo · Foto-Spots)
+- CoinGecko-Rate-Limit (10–30/Min Free Tier) bei späteren Concurrent-Visitors prüfen
+- Aufräum-Tasks aus Phase 2.1 weiterhin offen
+
+### Files dieser Session
+- `astro.config.mjs` (Vercel-Adapter)
+- `.gitignore` (.vercel/ hinzugefügt)
+- `package.json` + `package-lock.json` (@astrojs/vercel)
+- `src/data/wirtschaft.json` (neu)
+- `src/lib/coingeckoFetcher.ts` (neu)
+- `src/lib/wirtschaftResolver.ts` (neu)
+- `src/components/wirtschaft/KryptoHero.astro` (neu)
+- `src/components/wirtschaft/IndizesGrid.astro` (neu)
+- `src/components/wirtschaft/WirtschaftsNews.astro` (neu)
+- `src/components/wirtschaft/TradeSetupsPlaceholder.astro` (neu)
+- `src/pages/wirtschaft.astro` (modifiziert · SSR + DetailPage)
+- `_pendenzen.md` (Slice 2.3.2 abgehakt)
+- `SESSION_LOG.md` (Update 15)
+
+---
+
 ## 26-05-13 (Update 14) · Slice 2.3.1 implementiert
 
 ### Was gemacht
