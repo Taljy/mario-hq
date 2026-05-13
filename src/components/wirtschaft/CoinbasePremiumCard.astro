@@ -1,0 +1,145 @@
+---
+// CoinbasePremiumCard — Coinbase vs Binance BTC-Preis-Differenz
+// Positiv = US-Demand stark · Negativ = US-Demand schwach
+// Eigenlogik: (Coinbase - Binance) / Binance * 100
+
+import type { CoinbasePremium } from '../../lib/coinbasePremiumFetcher';
+import { interpretierungsText } from '../../lib/coinbasePremiumFetcher';
+
+interface Props {
+  premium: CoinbasePremium;
+}
+
+const { premium } = Astro.props;
+
+const stempelLabel  = premium.ist_live ? `Live · ${premium.fetch_zeit}` : 'Fallback · API offline';
+const premiumSign   = premium.premium_prozent > 0 ? '+' : '';
+const premiumFormat = `${premiumSign}${premium.premium_prozent.toFixed(3)}%`;
+const istNegativ    = premium.premium_prozent < 0;
+
+function formatPreis(p: number): string {
+  return '$' + p.toLocaleString('de-CH', { maximumFractionDigits: 0 });
+}
+---
+
+<div class="indikator-card">
+  <div class="card-head">
+    <span class="eyebrow">Coinbase Premium · BTC</span>
+    <span class={`live-stempel ${!premium.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="premium-block">
+    <span class={`premium-wert ${istNegativ ? 'negativ' : ''}`}>{premiumFormat}</span>
+    <span class="interpretation">{interpretierungsText(premium.interpretation)}</span>
+  </div>
+
+  <div class="preis-vergleich">
+    <div class="preis-zeile">
+      <span class="preis-label">Binance</span>
+      <span class="preis-wert">{formatPreis(premium.binance_preis)}</span>
+    </div>
+    <div class="preis-zeile">
+      <span class="preis-label">Coinbase</span>
+      <span class="preis-wert">{formatPreis(premium.coinbase_preis)}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .indikator-card {
+    background:     var(--bg-card);
+    padding:        18px;
+    border-radius:  4px;
+    display:        flex;
+    flex-direction: column;
+    gap:            12px;
+  }
+
+  .card-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  /* Haupt-Block */
+  .premium-block {
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+  }
+
+  .premium-wert {
+    font-family: var(--font-display);
+    font-size:   clamp(1.5rem, 2.5vw + 0.5rem, 2rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 48;
+    color:       var(--fg);
+  }
+
+  .premium-wert.negativ {
+    color: var(--accent);
+  }
+
+  .interpretation {
+    font-family: var(--font-mono);
+    font-size:   11px;
+    color:       var(--fg-muted);
+  }
+
+  /* Preis-Vergleich */
+  .preis-vergleich {
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+    padding-top:    4px;
+    border-top:     1px solid var(--border, rgba(0,0,0,0.08));
+  }
+
+  :root[data-theme="dark"] .preis-vergleich {
+    border-top-color: rgba(255,255,255,0.08);
+  }
+
+  .preis-zeile {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .preis-label {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .preis-wert {
+    font-family: var(--font-mono);
+    font-size:   12px;
+    color:       var(--fg-muted);
+  }
+</style>

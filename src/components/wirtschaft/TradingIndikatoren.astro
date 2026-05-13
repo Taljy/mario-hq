@@ -1,0 +1,98 @@
+---
+// TradingIndikatoren — Wrapper für alle 5 Trading-Indikator-Cards
+// Layout: 3-Spalten-Grid (Funding · OI · L/S) + 2-Spalten-Grid (CB Premium · Stablecoin)
+// Sitzt zwischen KryptoHero und Indizes-Block auf /wirtschaft
+
+import type { BinanceErgebnis } from '../../lib/binanceFetcher';
+import type { CoinbasePremium } from '../../lib/coinbasePremiumFetcher';
+import type { StablecoinSupply } from '../../lib/defiLlamaFetcher';
+
+import FundingRatesCard      from './FundingRatesCard.astro';
+import OpenInterestCard      from './OpenInterestCard.astro';
+import LongShortRatioCard    from './LongShortRatioCard.astro';
+import CoinbasePremiumCard   from './CoinbasePremiumCard.astro';
+import StablecoinSupplyCard  from './StablecoinSupplyCard.astro';
+
+interface Props {
+  binance:       BinanceErgebnis;
+  coinbasePrem:  CoinbasePremium;
+  stablecoins:   StablecoinSupply;
+}
+
+const { binance, coinbasePrem, stablecoins } = Astro.props;
+---
+
+<section class="trading-sektion">
+  <div class="sektion-head">
+    <span class="sektion-eyebrow">Trading · Indikatoren</span>
+  </div>
+
+  <!-- Reihe 1: Funding · OI · L/S -->
+  <div class="grid-3">
+    <FundingRatesCard
+      funding={binance.funding}
+      ist_live={binance.ist_live}
+      fetch_zeit={binance.fetch_zeit}
+    />
+    <OpenInterestCard
+      open_interest={binance.open_interest}
+      ist_live={binance.ist_live}
+      fetch_zeit={binance.fetch_zeit}
+    />
+    <LongShortRatioCard
+      long_short={binance.long_short}
+      ist_live={binance.ist_live}
+      fetch_zeit={binance.fetch_zeit}
+    />
+  </div>
+
+  <!-- Reihe 2: Coinbase Premium · Stablecoin Supply -->
+  <div class="grid-2">
+    <CoinbasePremiumCard  premium={coinbasePrem}  />
+    <StablecoinSupplyCard supply={stablecoins}    />
+  </div>
+</section>
+
+<style>
+  .trading-sektion {
+    display:        flex;
+    flex-direction: column;
+    gap:            14px;
+  }
+
+  .sektion-head {
+    display:     flex;
+    align-items: center;
+    gap:         12px;
+  }
+
+  .sektion-eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  /* Reihe 1: 3 Spalten */
+  .grid-3 {
+    display:               grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:                   14px;
+  }
+
+  /* Reihe 2: 2 Spalten */
+  .grid-2 {
+    display:               grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:                   14px;
+  }
+
+  @media (max-width: 767px) {
+    .grid-3,
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

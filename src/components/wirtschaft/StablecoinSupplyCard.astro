@@ -1,0 +1,181 @@
+---
+// StablecoinSupplyCard — USDT + USDC Gesamtvolumen · DeFiLlama
+// Liquiditäts-Indikator: steigend = mehr Geld im Crypto-Markt
+// Keine Sparkline — Delta-Prozent 24h und 7d als Trendanzeige
+
+import type { StablecoinSupply } from '../../lib/defiLlamaFetcher';
+
+interface Props {
+  supply: StablecoinSupply;
+}
+
+const { supply } = Astro.props;
+
+const stempelLabel = supply.ist_live ? `Live · ${supply.fetch_zeit}` : 'Fallback · DeFiLlama offline';
+
+// Hauptwert in Milliarden: $266.7 Mrd
+const totalMrd = (supply.total / 1e9).toLocaleString('de-CH', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+function formatDelta(d: number): string {
+  const sign = d > 0 ? '+' : '';
+  return `${sign}${d.toFixed(2)}%`;
+}
+---
+
+<div class="indikator-card">
+  <div class="card-head">
+    <span class="eyebrow">Stablecoin Supply · USDT+USDC</span>
+    <span class={`live-stempel ${!supply.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="supply-block">
+    <span class="total-wert">${totalMrd} Mrd</span>
+
+    <div class="delta-zeile">
+      <span class={`delta ${supply.delta_24h_prozent < 0 ? 'negativ' : ''}`}>
+        24h {formatDelta(supply.delta_24h_prozent)}
+      </span>
+      <span class="trenner">·</span>
+      <span class={`delta ${supply.delta_7d_prozent < 0 ? 'negativ' : ''}`}>
+        7d {formatDelta(supply.delta_7d_prozent)}
+      </span>
+    </div>
+  </div>
+
+  <div class="sub-zeilen">
+    <div class="sub-zeile">
+      <span class="sub-label">USDT</span>
+      <span class="sub-wert">
+        ${(supply.usdt_supply / 1e9).toLocaleString('de-CH', { maximumFractionDigits: 1 })} Mrd
+      </span>
+    </div>
+    <div class="sub-zeile">
+      <span class="sub-label">USDC</span>
+      <span class="sub-wert">
+        ${(supply.usdc_supply / 1e9).toLocaleString('de-CH', { maximumFractionDigits: 1 })} Mrd
+      </span>
+    </div>
+  </div>
+
+  <p class="subtext">Liquiditäts-Indikator · steigend = mehr Geld im Crypto-Markt</p>
+</div>
+
+<style>
+  .indikator-card {
+    background:     var(--bg-card);
+    padding:        18px;
+    border-radius:  4px;
+    display:        flex;
+    flex-direction: column;
+    gap:            12px;
+  }
+
+  .card-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  /* Supply-Block */
+  .supply-block {
+    display:        flex;
+    flex-direction: column;
+    gap:            6px;
+  }
+
+  .total-wert {
+    font-family: var(--font-display);
+    font-size:   clamp(1.4rem, 2vw + 0.5rem, 1.8rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 48;
+    color:       var(--fg);
+  }
+
+  .delta-zeile {
+    display:     flex;
+    align-items: center;
+    gap:         6px;
+    font-family: var(--font-mono);
+    font-size:   11px;
+  }
+
+  .delta {
+    color: var(--fg-muted);
+  }
+
+  .delta.negativ {
+    color: var(--accent);
+  }
+
+  .trenner {
+    color: var(--fg-subtle);
+  }
+
+  /* Sub-Zeilen USDT / USDC */
+  .sub-zeilen {
+    display:        flex;
+    flex-direction: column;
+    gap:            3px;
+    padding-top:    4px;
+    border-top:     1px solid var(--border, rgba(0,0,0,0.08));
+  }
+
+  :root[data-theme="dark"] .sub-zeilen {
+    border-top-color: rgba(255,255,255,0.08);
+  }
+
+  .sub-zeile {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .sub-label {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .sub-wert {
+    font-family: var(--font-mono);
+    font-size:   12px;
+    color:       var(--fg-muted);
+  }
+
+  .subtext {
+    font-family: var(--font-mono);
+    font-size:   10px;
+    color:       var(--fg-subtle);
+    line-height: 1.4;
+    margin:      0;
+  }
+</style>

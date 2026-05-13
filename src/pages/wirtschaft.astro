@@ -1,23 +1,31 @@
 ---
 export const prerender = false;
 
-// /wirtschaft — SSR · CoinGecko-Fetch bei jedem Request · 60s Edge-Cache via Vercel
-// Statische Inhalte (Indizes · News) aus wirtschaft.json · Cowork befüllt ab Phase 5
+// /wirtschaft — SSR · 5 Live-APIs parallel · 60s Edge-Cache via Vercel
+// Statische Inhalte (Indizes · News) aus wirtschaft.json
 
 import DetailPage from '../layouts/DetailPage.astro';
-import KryptoHero from '../components/wirtschaft/KryptoHero.astro';
-import IndizesGrid from '../components/wirtschaft/IndizesGrid.astro';
-import WirtschaftsNews from '../components/wirtschaft/WirtschaftsNews.astro';
+import KryptoHero            from '../components/wirtschaft/KryptoHero.astro';
+import TradingIndikatoren    from '../components/wirtschaft/TradingIndikatoren.astro';
+import IndizesGrid           from '../components/wirtschaft/IndizesGrid.astro';
+import WirtschaftsNews       from '../components/wirtschaft/WirtschaftsNews.astro';
 import TradeSetupsPlaceholder from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
+
 import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
-import { getWirtschaft } from '../lib/wirtschaftResolver';
+import { getBinanceMetrics }             from '../lib/binanceFetcher';
+import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
+import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
+import { getWirtschaft }                 from '../lib/wirtschaftResolver';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
-// Parallel fetchen — beide Calls unabhängig voneinander
-const [krypto, btcHistory] = await Promise.all([
+// Alle 5 async Fetches parallel · jeder Fetcher hat eigenen Fallback
+const [krypto, btcHistory, binance, coinbasePrem, stablecoins] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
+  getBinanceMetrics(),
+  getCoinbasePremium(),
+  getStablecoinSupply(),
 ]);
 const { indizes, news, trade_setups_placeholder } = getWirtschaft();
 ---
@@ -29,6 +37,11 @@ const { indizes, news, trade_setups_placeholder } = getWirtschaft();
 >
   <div class="w-stack">
     <KryptoHero ergebnis={krypto} btcHistory={btcHistory} />
+    <TradingIndikatoren
+      binance={binance}
+      coinbasePrem={coinbasePrem}
+      stablecoins={stablecoins}
+    />
     <IndizesGrid indizes={indizes} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />

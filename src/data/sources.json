@@ -55,6 +55,27 @@
       "url": "https://echarts.apache.org",
       "lizenz": "Apache License 2.0",
       "use": "Charts · Sparklines · Gauges · Visualisierungen"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Binance Futures",
+      "url": "https://www.binance.com",
+      "lizenz": "Public API · Free",
+      "use": "Funding Rates · Open Interest · Long/Short Ratio"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Coinbase Exchange Rates",
+      "url": "https://www.coinbase.com",
+      "lizenz": "Public API · Free",
+      "use": "BTC-Preis für Coinbase Premium · US-Demand-Signal"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "DeFiLlama",
+      "url": "https://defillama.com",
+      "lizenz": "Free API · Public Data",
+      "use": "Stablecoin Supply · Liquiditäts-Indikator"
     }
   ]
 }

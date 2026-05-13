@@ -1,0 +1,132 @@
+---
+// OpenInterestCard — Open Interest BTC/ETH/SOL · Binance Futures
+// Anzahl offener Futures-Kontrakte · 24h-Sparkline pro Coin
+
+import type { OpenInterest } from '../../lib/binanceFetcher';
+import Sparkline from '../charts/Sparkline.astro';
+
+interface Props {
+  open_interest: OpenInterest[];
+  ist_live:      boolean;
+  fetch_zeit:    string;
+}
+
+const { open_interest, ist_live, fetch_zeit } = Astro.props;
+
+const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · Binance offline';
+
+function formatOI(v: number): string {
+  return v.toLocaleString('de-CH', { maximumFractionDigits: 0 });
+}
+---
+
+<div class="indikator-card">
+  <div class="card-head">
+    <span class="eyebrow">Open Interest · Binance</span>
+    <span class={`live-stempel ${!ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="coin-liste">
+    {open_interest.map((item) => (
+      <div class="coin-block">
+        <div class="coin-row">
+          <span class="coin-symbol">{item.symbol}</span>
+          <span class="coin-wert">{formatOI(item.value)}</span>
+        </div>
+        {item.history_24h.length > 0 && (
+          <div class="sparkline-container">
+            <Sparkline values={item.history_24h} height={32} />
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <p class="subtext">Offene Futures-Kontrakte · 24h</p>
+</div>
+
+<style>
+  .indikator-card {
+    background:     var(--bg-card);
+    padding:        18px;
+    border-radius:  4px;
+    display:        flex;
+    flex-direction: column;
+    gap:            12px;
+  }
+
+  .card-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  .coin-liste {
+    display:        flex;
+    flex-direction: column;
+    gap:            10px;
+  }
+
+  .coin-block {
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+  }
+
+  .coin-row {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+  }
+
+  .coin-symbol {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .coin-wert {
+    font-family: var(--font-display);
+    font-size:   18px;
+    font-weight: 300;
+    line-height: 1;
+    font-variation-settings: "opsz" 24;
+    color:       var(--fg);
+  }
+
+  .sparkline-container {
+    opacity: 0.7;
+  }
+
+  .subtext {
+    font-family: var(--font-mono);
+    font-size:   10px;
+    color:       var(--fg-subtle);
+    line-height: 1.4;
+    margin:      0;
+  }
+</style>
