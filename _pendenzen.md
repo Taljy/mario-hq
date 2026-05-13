@@ -110,7 +110,7 @@ Bei Aktivierung: Briefing-Frontmatter-Schema · Content Collections · Archive-P
 Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Watchlist analog Marios TradingView-Setup.
 
 - [x] **Slice 4.1** ECharts-Foundation + DRG-Theme + BTC-Hero mit Sparkline
-- [ ] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
+- [x] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
 - [ ] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
 - [ ] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
 - [ ] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion

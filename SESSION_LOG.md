@@ -1,5 +1,55 @@
 # Mario's HQ · Session Log
 
+## 26-05-13 (Update 22) · Slice 4.2 · Trading-Indikatoren-Block
+
+### Was gemacht
+- `binanceFetcher.ts`: 12 parallele Calls für BTC/ETH/SOL · Funding Rates / Open Interest (mit 24h-History) / Long/Short Ratio (mit 24h-History) · AbortSignal.timeout 5s · Fallback auf leere Arrays
+- `coinbasePremiumFetcher.ts`: Eigenlogik Binance vs Coinbase BTC-Preis-Differenz · 5 Interpretations-Stufen (±0.05% neutral · ±0.2% strong)
+- `defiLlamaFetcher.ts`: USDT+USDC Supply · Felder live verifiziert (`peggedAssets` · `circulating.peggedUSD` · `circulatingPrevDay.peggedUSD` · `circulatingPrevWeek.peggedUSD`)
+- 5 neue Card-Komponenten: FundingRatesCard · OpenInterestCard · LongShortRatioCard · CoinbasePremiumCard · StablecoinSupplyCard
+- `TradingIndikatoren.astro`: 3+2-Grid-Wrapper zwischen KryptoHero und Indizes-Block
+- `wirtschaft.astro`: `Promise.all` mit 5 async Fetches (krypto · btcHistory · binance · coinbasePrem · stablecoins)
+- `sources.json`: Binance Futures · Coinbase Exchange Rates · DeFiLlama ergänzt
+
+### Erkenntnisse
+- DeFiLlama Top-Level-Key ist `peggedAssets` (nicht `stablecoins`) · live verifiziert vor Code
+- Binance OI History liefert `sumOpenInterest` (nicht `openInterest`) · Verifikation-first hat Fehler verhindert
+- Funding-History-Endpoint bei Binance nicht vorhanden · `history_24h: []` für alle FundingRates gesetzt
+- Sparkline-Komponente aus Slice 4.1 sauber wiederverwendet in OI und L/S Cards (6 Sparklines total)
+- L/S Ratio ETH und SOL zeigten EXTREME (>2.0) beim Live-Test am 13.5.2026 — Badge korrekt ausgelöst
+- Coinbase Premium -0.021% bei Verifikation — neutral, realistisch, Eigenlogik stimmt
+
+### Verifikation
+- 5 Cards sichtbar zwischen KryptoHero und Indizes-Block
+- Funding: BTC +0.0012% · ETH +0.0042% · SOL -0.0132% (live)
+- OI: 105'121 BTC · 2'260'068 ETH · 10'479'448 SOL mit Sparklines
+- L/S: BTC 1.01 · ETH 2.86 EXTREME · SOL 2.30 EXTREME mit Sparklines
+- Coinbase Premium: -0.021% Neutral · Binance/Coinbase Preise korrekt
+- Stablecoin: $266.7 Mrd · USDT $189.7 Mrd · USDC $77 Mrd
+- Dark Mode · Mobile 375px · Console clean
+
+### Offene Pendenzen
+- Slice 4.3 als Nächstes (Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher)
+- MARIO-TODO: Twelve-Data-Account erstellen für TWELVE_DATA_API_KEY (Slice 4.3)
+- MARIO-TODO: KALENDER_ICAL_URL in Vercel (weiterhin offen)
+
+### Files dieser Session
+- `src/lib/binanceFetcher.ts` (neu)
+- `src/lib/coinbasePremiumFetcher.ts` (neu)
+- `src/lib/defiLlamaFetcher.ts` (neu)
+- `src/components/wirtschaft/TradingIndikatoren.astro` (neu)
+- `src/components/wirtschaft/FundingRatesCard.astro` (neu)
+- `src/components/wirtschaft/OpenInterestCard.astro` (neu)
+- `src/components/wirtschaft/LongShortRatioCard.astro` (neu)
+- `src/components/wirtschaft/CoinbasePremiumCard.astro` (neu)
+- `src/components/wirtschaft/StablecoinSupplyCard.astro` (neu)
+- `src/pages/wirtschaft.astro` (modifiziert)
+- `src/data/sources.json` (3 neue Anbieter)
+- `_pendenzen.md` (Slice 4.2 abgehakt)
+- `SESSION_LOG.md` (Update 22)
+
+---
+
 ## 26-05-13 (Update 21) · Slice 4.1 · ECharts Foundation + BTC-Hero Sparkline
 
 ### Was gemacht
