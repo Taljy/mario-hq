@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 5.1 · Teil-Slice / eskaliert)
-aktuelle-phase: 4 ABGESCHLOSSEN · 5.1 eskaliert zu Architektur-Frage
+aktualisiert: 26-05-14 (Phase 5 Slice 5.1 · Krypto-Card live)
+aktuelle-phase: 5 (Cover-Sync) · Slice 5.1 abgeschlossen
 ---
 
 # Mario's HQ · Pendenzen
@@ -59,8 +59,21 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.7 ✅ Macro-Timeline (Editorial-Liste) + Fear & Greed Gauge (Halbkreis-Tacho) auf /wirtschaft · 9 echte Macro-Events 14.5.-28.5.2026 · alternative.me-Fetcher mit 1h Cache
 - Slice 4.8 ✅ Polish + Volltest + Phase-4-Abschluss (inkl. §7.7-Realitäts-Notiz + Cover-Stempel)
 
-**Slice 5.1 · Teil-Slice / eskaliert (14.5.2026):**
-Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. Bybit-Fetcher technisch sauber gebaut, lokal alle 4 Cards live, Build grün, deployed (feat `91ef169`). **Production-Verifikation fehlgeschlagen** — Bybit ist von Vercel-US-Lambda-IPs ebenfalls geblockt. DeFiLlama läuft weiter → struktureller Befund: nicht Binance-spezifisch, sondern Derivate-Börsen-Klasse blockt US-Datacenter-IPs (siehe Production-Issues unten). **Schnell-Fix-Pfad ist erschöpft.** Verbleibend nur noch Architektur-Lösung (Fetch-und-ablegen, geparkt mit neuem Trigger). Bybit-Code bleibt auf main · UI-Wahrheit korrekt ("Fallback · Bybit offline"), funktional gleich wie vor 5.1.
+**Phase-4-Nachläufer-Slice · Binance/Bybit-Swap-Versuch (14.5.2026, Commits `91ef169` + `7de6592`):**
+Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. Bybit-Fetcher technisch sauber gebaut, lokal alle 4 Cards live, Build grün, deployed. **Production-Verifikation fehlgeschlagen** — Bybit ist von Vercel-US-Lambda-IPs ebenfalls geblockt. DeFiLlama läuft weiter → struktureller Befund: nicht Binance-spezifisch, sondern Derivate-Börsen-Klasse blockt US-Datacenter-IPs (siehe Production-Issues unten). **Schnell-Fix-Pfad ist erschöpft.** Verbleibend nur noch Architektur-Lösung (Fetch-und-ablegen, geparkt mit neuem Trigger). Bybit-Code bleibt auf main · UI-Wahrheit korrekt ("Fallback · Bybit offline"), funktional gleich wie vor dem Swap.
+
+**Slice-Nummerierungs-Klärung:** Die frühere Bezeichnung *"Slice 5.1 Binance/Bybit-Swap"* war ein Übergangs-Label am Ende von Phase 4. Phase 5 (Cover-Sync) startet die Slice-Zählung neu mit 5.1, 5.2, 5.3, 5.4 (siehe Roadmap unten). Commits aus dem Nachläufer bleiben unverändert (Git-Geschichte ist unveränderlich), wir referenzieren sie weiterhin per SHA (`91ef169`, `7de6592`), nicht per Slice-Nummer.
+
+## 🎯 Phase 5 · Cover-Sync · in Arbeit (14.5.2026)
+
+> **Detail-Spezifikation:** `docs/PHASE-5-COVER-SYNC-SPEC.md`
+
+Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben. Krypto-Card nutzt NUR CoinGecko-Preise (keine Trading-Indikatoren wegen IP-Block-Vererbung).
+
+- Slice 5.1 ✅ Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9` · Production live mit `$81'432 · +2.3% · Fear · F&G 34`
+- Slice 5.2 als Nächstes · Wetter-Card live (inkl. wmoSymbol-Helper + Goldene/Blaue Stunde via SunCalc)
+- Slice 5.3 · Kalender + Macro + News + EventBanner
+- Slice 5.4 · Polish + Volltest + Phase-5-Abschluss + Cover-Stempel "Phase 5"
 
 ---
 
@@ -70,8 +83,8 @@ Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. By
 - [x] **KALENDER_ICAL_URL** in Vercel Dashboard eingetragen · beide Projekte (mario-hq + mario-hq-qc6f) · /kalender zeigt Live-Termine
 - [x] **TWELVE_DATA_API_KEY** in .env (lokal) + Vercel Dashboard eingetragen · bereit für Slice 4.3
 - [x] **PHASE-4-SPEC** erstellt · `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md`
-- [ ] **Vercel-Doppel-Projekt bereinigen** · zwei Projekte für dasselbe Repo entdeckt · eines löschen · kanonische URL klären · Vorsicht bei DNS/Custom-Domain
-- [~] **Vercel-Derivate-Börsen-IP-Block** · in 5.1 zu struktureller Anbieter-Klassen-Block bestätigt (Binance + Bybit beide blockiert · DeFiLlama läuft). Anbieter-Swap-Pfad erschöpft. → Verbleibender Fix: **Architektur-Umbau Fetch-und-ablegen, GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1 vor Pipeline-Bau: testen ob GH-Actions-Runner Bybit/Binance erreicht — wenn nein, Residential-IP-Lösung nötig.
+- [x] **Vercel-Doppel-Projekt bereinigt** (14.5.2026) · ältere `mario-hq`-Instanz gelöscht · nur noch `mario-hq-qc6f` aktiv unter `mario-hq-qc6f.vercel.app`. Klarstellung: KEINES der beiden Projekte hatte je eine Custom Domain — beide liefen nur auf Default-`.vercel.app`. Custom Domain steht weiter aus (Phase 6).
+- [~] **Vercel-Derivate-Börsen-IP-Block** · im Phase-4-Nachläufer-Slice (Commits `91ef169` + `7de6592`) zu struktureller Anbieter-Klassen-Block bestätigt (Binance + Bybit beide blockiert · DeFiLlama läuft). Anbieter-Swap-Pfad erschöpft. → Verbleibender Fix: **Architektur-Umbau Fetch-und-ablegen, GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1 vor Pipeline-Bau: testen ob GH-Actions-Runner Bybit/Binance erreicht — wenn nein, Residential-IP-Lösung nötig.
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
 - [x] **Cover-Meta-Stempel** · CoverFooter.astro auf "Phase 4" aktualisiert (Slice 4.8)
 - [ ] **Worktree-Reste aufräumen** · zwei verwaiste Claude-Code-Worktrees im Repo: `.claude/worktrees/crazy-roentgen-49029d` (5c4e8a1 · HQ-Pivot 12.5.) und `.claude/worktrees/lucid-noyce-c570f5` (00535aa · Phase 2.2 · weit hinter main). Kein Risiko, nur Müll. Aufräumen via `git worktree remove <pfad>` plus ggf. `git branch -D <branch>`. An jeden künftigen Slice anhängbar — keine eigene Slice-Notwendigkeit.
@@ -142,15 +155,16 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [x] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · §7.7-Realitäts-Notiz · Cover-Stempel · SESSION_LOG Synthese
 
-### Phase 5 · Cover-Sync — Cover auf Live-Stand bringen
+### Phase 5 · Cover-Sync — Cover auf Live-Stand bringen · in Arbeit *(14.5.2026)*
 
-Die Cover-Daten-Cards zeigen teils noch Platzhalter, während die Detail-Seiten /wirtschaft + /wetter Live-Daten haben. Cover nachziehen.
+> **Detail-Spezifikation:** `docs/PHASE-5-COVER-SYNC-SPEC.md`
 
-**Scope (entschieden):** ALLE Daten-Cards auf dem Cover in einem Rutsch — Wetter+Foto, Krypto, Macro. Kalender + News: prüfen ob bereits live, sonst mitnehmen. Bewusst kein Halb-Zustand.
+Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben — kein Halb-Zustand. Krypto-Card nutzt NUR CoinGecko (keine Trading-Indikatoren wegen IP-Block-Vererbung).
 
-**Krypto-Card-Quelle (entschieden):** NUR CoinGecko-Preise. KEINE Trading-Indikatoren auf dem Cover — die erben sonst den 5.1-Block (US-Datacenter-IP-Block) auf die Startseite. CoinGecko läuft auf Production sauber (in 5.1 als Gegenbeweis zum Bybit-Block bestätigt).
-
-**Vorbereitung:** Slice-Aufteilung in der Cover-Spec planen (`docs/PHASE-2.2-COVER-SPEC.md` existiert als Pattern-Vorbild · entweder dort erweitern oder eigene Phase-5-Spec anlegen). Geschätzt 2–3 Slices je nach Card-Zahl und Aufwand pro Card.
+- [x] **Slice 5.1** Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9`
+- [ ] **Slice 5.2** Wetter-Card live (inkl. wmoSymbol-Helper + Goldene/Blaue Stunde via SunCalc)
+- [ ] **Slice 5.3** Kalender + Macro + News + EventBanner (Macro-Indizes-Zeile weggelassen · NewsCard zieht aus cover_headlines in news-voll.json · EventBanner-Trigger nach Event-Zählung)
+- [ ] **Slice 5.4** Polish + Volltest + Cover-Stempel "Phase 5" + Phase-5-Abschluss
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)
@@ -220,6 +234,12 @@ Datenmodell hängt daran. Muss Mario festlegen, bevor 4.6b geplant werden kann.
 
 ## ✅ Erledigt
 
+### 26-05-14 (Mario · Vercel-Doppel-Projekt bereinigt)
+- Älteres Vercel-Projekt `mario-hq` gelöscht · nur noch `mario-hq-qc6f` aktiv unter `mario-hq-qc6f.vercel.app`
+- Klarstellung: KEINES der beiden Projekte hatte je eine Custom Domain (frühere _pendenzen-Notiz "qc6f hat die Custom Domain" war falsch) — beide liefen nur auf Default-`.vercel.app`
+- Custom Domain `hq.dasdarugna.ch` o.ä. steht weiter aus (Phase 6)
+- ENV-Vars-Doppelpflege entfällt damit ab sofort · nur noch ein Projekt-Setup
+
 ### 26-05-12 (Abend · Phase 2.1 abgeschlossen)
 - Layout-Foundation für Mario's HQ produktionsreif gebaut
 - 9 Routes funktional: Cover, Wirtschaft, Wetter, News, Kalender, Archiv, Habits, Workout, Zeit
@@ -270,11 +290,11 @@ Datenmodell hängt daran. Muss Mario festlegen, bevor 4.6b geplant werden kann.
 
 ## 🐛 Bekannte Production-Issues
 
-**US-Datacenter-IPs sind von Derivate-Börsen geblockt — struktureller Befund** *(entdeckt 13.5.2026 · bestätigt 14.5.2026 in Slice 5.1)*
+**US-Datacenter-IPs sind von Derivate-Börsen geblockt — struktureller Befund** *(entdeckt 13.5.2026 · bestätigt 14.5.2026 im Phase-4-Nachläufer-Slice)*
 
 Auf `mario-hq-qc6f.vercel.app/wirtschaft` zeigen vier Trading-Indikator-Cards FALLBACK. Lokal (Schweizer Residential-IP) läuft alles live.
 
-**Bestätigte Anbieter-Blocks (Slice 5.1):**
+**Bestätigte Anbieter-Blocks (Phase-4-Nachläufer-Slice, Commits `91ef169` + `7de6592`):**
 - **Binance Futures Public API** — geblockt (13.5.)
 - **Bybit V5 Public API** — geblockt (14.5., feat `91ef169`)
 - **DeFiLlama** — läuft weiter problemlos → Beweis: anbieter-klassen-spezifisch (Derivate-Börsen mit US-Compliance-Risiko), kein Netzwerk-Problem
@@ -289,15 +309,7 @@ Auf `mario-hq-qc6f.vercel.app/wirtschaft` zeigen vier Trading-Indikator-Cards FA
 - **GEPARKT mit Trigger:** "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live." Alter Trigger ("nächster Anbieter blockt auch") ist verbraucht.
 - **Schritt 1 vor jedem Pipeline-Bau (Cheap-Test):** verifizieren ob ein GitHub-Actions-Runner (Azure-IP) Bybit oder Binance überhaupt erreicht. Wenn nein → Residential-IP-Lösung nötig (eigener Mini-Server, Cloudflare Tunnel, oder bezahlter Proxy) → grösserer Architektur-Schritt.
 
-**Aktueller UI-Stand (nach 5.1, akzeptiert):** Die 4 Cards zeigen "Fallback · Bybit offline" auf Production — ehrlicher als der vorherige "Binance offline"-Stand (Quellen-Wahrheit stimmt mit dem aktuellen Fetcher-Pfad), aber funktional identisch zu vorher.
-
-**Vercel-Doppel-Projekt** *(entdeckt 13.5.2026)*
-
-Zwei Vercel-Projekte deployen dasselbe GitHub-Repo:
-- `mario-hq` → `mario-hq.vercel.app`
-- `mario-hq-qc6f` → `mario-hq-qc6f.vercel.app` *(aktuelle Production-URL)*
-
-ENV-Vars (KALENDER_ICAL_URL, TWELVE_DATA_API_KEY) mussten in beiden separat eingetragen werden. Aufräum-Task: eines löschen, das andere als kanonisch markieren. Vorsicht beim Löschen wegen möglicher Custom-Domain-Bindung.
+**Aktueller UI-Stand (nach Phase-4-Nachläufer, akzeptiert):** Die 4 Cards zeigen "Fallback · Bybit offline" auf Production — ehrlicher als der vorherige "Binance offline"-Stand (Quellen-Wahrheit stimmt mit dem aktuellen Fetcher-Pfad), aber funktional identisch zu vorher.
 
 ---
 

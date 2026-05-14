@@ -1,5 +1,60 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 34) · Phase 5 · Slice 5.1 · SSR-Foundation + KryptoCard live
+
+### Phase-5-Eröffnung · Cover-Sync
+Phase 4 ist abgeschlossen, das HQ-MVP steht funktional auf /wirtschaft + /wetter. Phase 5 zieht das Cover (/) nach: alle Daten-Cards von statischen JSON-Stubs auf Live-Quellen umstellen. Bewusst alle Cards in einem Vorhaben, kein Halb-Zustand. Krypto-Card nutzt NUR CoinGecko (keine Trading-Indikatoren · würde IP-Block des Phase-4-Nachläufers vererben).
+
+Phase 5 = **4 Slices total** (5.1 Krypto, 5.2 Wetter, 5.3 Kalender+Macro+News+EventBanner, 5.4 Polish/Abschluss). Spec: `docs/PHASE-5-COVER-SYNC-SPEC.md`.
+
+### Slice-Nummerierungs-Klärung
+Die frühere Bezeichnung *"Slice 5.1 Binance/Bybit-Swap"* (Commits `91ef169` + `7de6592`, 14.5.) war ein Übergangs-Label am Ende von Phase 4. Phase 5 startet die Slice-Zählung neu mit 5.1, 5.2, 5.3, 5.4. Commits aus dem Phase-4-Nachläufer bleiben unverändert (Git-Geschichte ist unveränderlich), wir referenzieren sie weiterhin per SHA. Klärung in `_pendenzen.md`, `docs/PHASE-5-COVER-SYNC-SPEC.md` §9 und diesem SESSION_LOG-Eintrag einmal festgehalten.
+
+### Was gemacht (Slice 5.1)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` neu · §1 Ziel · §2 4-Slice-Reihenfolge mit Begründung · §3 Card-Live-Status-Tabelle · §4 Cards im Detail · §5 Mario-Entscheidungen · §6 Risiken (inkl. CoinGecko-Cache-Verhalten als dauerhaftes Cover-Pattern) · §7 Anti-Patterns · §8 Spec-Sync-Konvention · §9 Slice-Nummerierungs-Klärung
+- `src/pages/index.astro` SSR-Foundation: `export const prerender = false` · Cache-Header `s-maxage=60, stale-while-revalidate=300` analog /wirtschaft · `Promise.all` für parallele Fetches (`getKryptoStand` + `getFearGreed`)
+- `src/components/KryptoCard.astro` von Stub auf Live umgestellt: Props-Interface `{ krypto, fearGreed }`, BTC via `coins.find(c => c.symbol === 'BTC')` defensiv, Live-Stempel-Pattern, F&G-Fallback-Zeile `— · F&G —`, neue CSS-Regel `.live-stempel.offline` für Vermillon
+- `src/lib/kryptoResolver.ts` und `src/data/krypto.json` gelöscht
+- EventBanner bleibt **bewusst** auf eventResolver-Stub bis 5.3 (sauberer Übergang · explizit in Spec §4.6 dokumentiert)
+
+### Mario-Entscheidungen (Phase-5-Eröffnung)
+- **Macro-Indizes:** A · weglassen (statische Lüge auf Startseite ist worse than Schweigen)
+- **NewsCard-Quelle:** B · `cover_headlines` in `news-voll.json`, `news.json` löschen (Single-Source, Mario-Kuratierung bleibt)
+- **EventBanner-Trigger:** in 5.3 nach Event-Zählung entscheiden (datenabhängig)
+- **Spec-Anlage:** als erster Task in Slice 5.1, kein separater Vor-Slice
+
+### Mario-Doku-Schulden in diesem docs-Commit mit aufgeräumt
+- **Vercel-Doppel-Projekt** nach "Erledigt" (heute von Mario bereinigt, ältere `mario-hq`-Instanz gelöscht, nur noch `mario-hq-qc6f` aktiv)
+- **Custom-Domain-Notiz korrigiert:** KEINES der beiden Projekte hatte je eine Custom Domain (frühere Notiz "qc6f hat die Custom Domain" war falsch). Custom Domain steht weiter aus (Phase 6).
+
+### Verifikation
+- `npm run build` grün · `/index.html` nicht mehr in prerendering-Liste (SSR-Switch erfolgreich)
+- Dev-Server-Restart nach Komponenten-Edits (HMR-Falle)
+- Lokal /-Cover: KryptoCard zeigt live `$81'422 · BTC · 24h +2.4% · Fear · F&G 34 · Live · 21:47 CEST`
+- Light + Dark + Mobile 375px sauber, Console clean
+- Production-Check nach Push: live `$81'432 · +2.3% · Fear · F&G 34 · Live · 22:02 CEST`
+- **Stolperstein dokumentiert:** Erster Production-curl mit `?cb=$(date +%s)` (Sekunden-Resolution) traf Vercel-Edge-Cache des alten Builds — Werte sahen aus wie Stub. Zweiter curl mit `?bust=$(date +%s%N)` (Nanosekunden) lieferte sauber den neuen SSR-Output. Bei künftigen Production-Tests: Nanosekunden-Bust verwenden oder mehrfach reloaden.
+
+### Cover-Stand nach 5.1
+- KryptoCard: ✅ live (CoinGecko + Fear & Greed)
+- WetterCard: Stub (kommt in 5.2)
+- KalenderCard: Stub (kommt in 5.3)
+- MacroCard: Stub (kommt in 5.3)
+- NewsCard: Stub (kommt in 5.3)
+- EventBanner: Stub (kommt in 5.3, sauberer Übergang)
+
+### Files dieser Session
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` (neu)
+- `src/pages/index.astro` (SSR-Foundation)
+- `src/components/KryptoCard.astro` (Live)
+- `src/lib/kryptoResolver.ts` (gelöscht)
+- `src/data/krypto.json` (gelöscht)
+- `_pendenzen.md` (Phase 5 in Arbeit · Slice-Nummerierung geklärt · Doppel-Projekt nach Erledigt · Custom-Domain-Korrektur)
+- `SESSION_LOG.md` (Update 34)
+- `docs/HANDOVER.md` (Stand nach Phase 5 Slice 5.1)
+
+---
+
 ## 26-05-14 (Update 33) · Slice 5.1 · Bybit-Swap · Teil-Slice / eskaliert
 
 ### Wette und Befund
