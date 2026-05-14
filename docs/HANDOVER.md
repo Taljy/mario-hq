@@ -3,11 +3,10 @@ typ: handover
 projekt: mario-hq
 erstellt: 26-05-14
 zweck: Nahtloser Übergang in neue claude.ai-Session + neue Claude-Code-Session
-gilt-bis: Slice 4.5 abgeschlossen · danach neues Handover
-ersetzt: HANDOVER-2026-05-14.md (Slice-4.4-Handover)
+gilt-bis: Slice 4.5b abgeschlossen · danach neues Handover
 ---
 
-# Handover · Mario's HQ · Stand 14.5.2026 · nach Slice 4.4
+# Handover · Mario's HQ · Stand 14.5.2026 · nach Slice 4.5
 
 > **Für die neue claude.ai-Session:** Dieses Dokument als ersten Input geben.
 > Ausführliche Historie in `_pendenzen.md`, `_projekt.md`, `SESSION_LOG.md` und
@@ -39,145 +38,162 @@ Phase-4-Slice-Status:
 - Slice 4.1 ✅ ECharts-Foundation + DRG-Theme + BTC-Sparkline
 - Slice 4.2 ✅ Trading-Indikatoren-Block (lokal komplett · Production Binance-Fallback, siehe Issue)
 - Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation + Cleanup
-- Slice 4.4 ✅ Watchlist-UI-Komponenten auf /wirtschaft · inkl. Mini-Sparklines · Preis-Format-Fix
-- **Slice 4.5 ← NÄCHSTER SCHRITT** · Aktien + Forex/Commodities-Sektion
-- Slice 4.6 Wetter-Wochen-Bars + Mondphase-SVG
-- Slice 4.7 Macro-Timeline + Fear & Greed Gauge
-- Slice 4.8 Polish + Volltest + Phase-Abschluss
+- Slice 4.4 ✅ Watchlist-UI-Komponenten + Mini-Sparklines + Preis-Format-Fix
+- Slice 4.5 ✅ Aktien + Forex-Sektion · Twelve-Data-Endpoint-Architektur
+- **Slice 4.5b ← NÄCHSTER SCHRITT** · Krypto-Card-Rebuild + Watchlist-IA neu (NICHT in der Spec, von Mario nach 4.5 gewünscht)
+- Slice 4.6 Wetter-Wochen-Bars + Mondphase-SVG (Spec §7.6)
+- Slice 4.7 Macro-Timeline + Fear & Greed Gauge (Spec §7.7)
+- Slice 4.8 Polish + Volltest + Phase-Abschluss (Spec §7.8)
 
-Commits Slice 4.4: feat `9135f8e` · docs `576939d` · fix `58cff3a`
-
----
-
-## 3 · Nächster Schritt · Slice 4.5
-
-**Aktien-Sektion + Forex/Commodities-Sektion auf /wirtschaft.**
-Detail-Spezifikation in `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` §7.5.
-
-Foundation steht: `twelveDataFetcher.ts`, `watchlistAggregator.ts`, `watchlist.json`
-(6 Gruppen, 28 Items) sind aus 4.3/4.4 da. Die Twelve-Data-Items werden in der
-Watchlist aus 4.4 bereits gerendert — aber die meisten stehen auf `ist_live: false`.
-
-**KRITISCH vor Implementation — Twelve-Data-Free-Tier-Test (Spec §7.5):**
-Slice 4.5 MUSS mit dem echten API-Key testen, was der Free Tier liefert,
-BEVOR Code gebaut wird. Bekannter Stand aus 4.3-Test:
-- Aktien (AAPL, NVDA, TSLA, MSFT, AMZN, META) · Forex (EUR/USD, CHF/USD, GBP/USD, EUR/CHF) → ✅ live
-- Indizes (SPX, NDX, DAX, SMI) → ❌ nicht im Free Tier
-- BRENT (XBR/USD) → ❌ nicht im Free Tier
-- WTI → liefert $4.40 statt ~$60 · falsches Symbol oder Einheit · MUSS in 4.5 untersucht werden
-
-**Indizes-Entscheidung (Spec §7.5, Mario-Entscheidung nötig):**
-Wenn der Test bestätigt, dass Indizes/BRENT fehlen → Fallback wählen:
-- A: Alpha Vantage (25 Calls/Tag, eigene ENV-Var, nur für die 4 Indizes)
-- B: Indizes weglassen, nur Einzelaktien + Forex tracken
-→ Diese Entscheidung in der neuen claude.ai-Session mit Mario klären, bevor
-  der GO-Prompt geschrieben wird.
+Commits Slice 4.5: feat `7b0322b` · docs `a193f50`
 
 ---
 
-## 4 · Offene Punkte für Slice 4.5 (klären in der Strategie-Session)
+## 3 · Nächster Schritt · Slice 4.5b · Krypto-Card-Rebuild + Watchlist-IA neu
 
-1. **WTI-Symbol-Bug** · liefert $4.40 statt ~$60 · Symbol-/Einheiten-Problem ·
-   Claude Code soll als ersten Teilschritt einen API-Test-Call machen und das
-   richtige Symbol/Format finden.
-2. **Indizes-Fallback A oder B** · siehe oben · Mario-Entscheidung vor GO-Prompt.
-3. **Mini-Sparklines bei Twelve-Data-Items** · Free Tier liefert keine brauchbare
-   History · in 4.4 bewusst nur Crypto-Items mit Sparkline · bei 4.5 bleiben
-   Aktien/Forex/Commodities ohne Sparkline (Spec §9 Punkt 3).
-4. **Doppel-Anzeige Indizes** · /wirtschaft hat aktuell sowohl die alten Indizes-
-   Cards (SMI/DAX/S&P/NASDAQ aus Slice 2.3.2, statische Platzhalter-Werte) ALS
-   AUCH die Indizes-Gruppe in der neuen Watchlist. Klären: alte Cards ersetzen,
-   behalten, oder zusammenführen? Gehört in den 4.5-Scope.
+**Das ist KEIN Spec-Slice.** Mario hat nach Slice 4.5 entschieden, die
+Informationsarchitektur von /wirtschaft umzubauen. Spec §7.6 (Wetter) wird DAHINTER
+geschoben. Die Spec-Nummerierung bleibt, dieser Slice heisst 4.5b.
+
+**Hintergrund:** Slice 4.5 hat die AktienSektion als Card-Layout gebracht (Symbol ·
+Name · Preis · Delta · Tageshoch/-tief). Mario gefällt diese Card-Darstellung —
+und sie ist der Watchlist-Zeilen-Optik aus Slice 4.4 überlegen. Konsequenz: Die
+Card-Darstellung wird das Muster für die ganze /wirtschaft-Seite.
+
+**Was Mario entschieden hat:**
+1. **Aktien-Gruppe RAUS aus der Watchlist** — die AktienSektion aus 4.5 ist der
+   eine Ort für Aktien. Aktuell sind Aktien doppelt auf der Seite (Watchlist-Gruppe
+   "AKTIEN · US TECH" + AktienSektion) — das wird aufgelöst.
+2. **Krypto kriegt dasselbe Card-Layout** wie die Aktien — weg von den kompakten
+   Watchlist-Zeilen aus Slice 4.4, hin zu Cards.
+3. **Zwei Krypto-Blöcke, neue Zusammensetzung:**
+   - Block 1: BTC · ETH · SOL · XRP · SUI · TRX
+   - Block 2: ADA · AVAX · HBAR · JUP · GST · DOT
+
+**Offene strategische Frage — in der claude.ai-Session VOR dem GO-Prompt klären:**
+Wenn Krypto UND Aktien beide als Card-Sektionen dargestellt werden — was bleibt
+dann von der WatchlistSektion / WatchlistGruppe / WatchlistItem-Komponenten aus
+Slice 4.4 überhaupt übrig? Möglich, dass die ganze Watchlist-Komponente obsolet
+wird und /wirtschaft aus lauter Card-Sektionen besteht (KryptoSektion Block 1,
+KryptoSektion Block 2, AktienSektion, ForexSektion). Dann ist 4.5b kein
+"Aktien rausnehmen", sondern ein Teil-Rebuild der /wirtschaft-IA. Was bleibt,
+was fliegt — Mini-Sparklines, Collapsible-Gruppen, der Watchlist-Apparat — muss
+sauber durchgedacht werden, bevor das ein GO-Prompt wird.
+
+**Daten-Vorarbeit nötig (gehört in den 4.5b-Plan):**
+- `watchlist.json` muss umgebaut werden auf die neue Block-Struktur
+- Neue/geänderte Coin-IDs brauchen CoinGecko-Verifikation:
+  - TRX ist neu (war in keiner bisherigen Liste)
+  - GST und JUP waren schon in der alten Spec als unsichere Schätzungen markiert
+    (green-satoshi-token, jupiter-exchange-solana)
+  - HBAR (hedera-hashgraph) prüfen
+- Verifikation via `https://api.coingecko.com/api/v3/coins/list` — kostet keine
+  besonderen Credits, sollte erster Teilschritt im Slice sein
 
 ---
 
-## 5 · Kleinaufgaben (in Slice 4.5 oder separat einschiebbar)
+## 4 · Kleinaufgaben (einschiebbar)
 
-- **Footer-Phasen-Label** · /wirtschaft-Footer zeigt noch "Phase 2.3" · sollte
-  "Phase 4" sein · Quelle vermutlich Magazine-Layout oder eine Config-Konstante ·
-  trivialer Fix, kann in den 4.5-fix-Commit oder als eigener Mini-docs-Fix.
-- **Spec-Sync §4.1/§7.4** · die Phase-4-Spec beschreibt noch das alte TradingView-
-  Schema ("Move2Earn"-Gruppe, Coin-ID-Verifikation) · die echte watchlist.json ist
-  die generische 28-Item-Liste · §4.1 hat schon einen Vermerk, §7.4 noch nicht
-  vollständig · Spec an den realen Stand angleichen.
+- **Cover-Phasen-Stempel** · auf der Cover-Page steht unten rechts noch
+  "MARIO'S HQ · V0.1 · PHASE 2.2" — separates Layout-Meta-Element, nicht der
+  globale Footer (der ist schon auf "Phase 4"). Trivialer Mini-Hygiene-Fix.
+  In `_pendenzen.md` notiert.
+- **Spec-Sync §7.4 + §7.5** · DRINGEND geworden. Die Phase-4-Spec beschreibt
+  eine /wirtschaft-Realität, die es nicht mehr gibt: §7.4 redet vom alten
+  TradingView-Schema ("Move2Earn"), §7.5 hat zwar einen Realitäts-Hinweis am
+  Anfang (in 4.5 ergänzt), ist im Kern aber überholt — keine Commodities, keine
+  Indizes-Daten, Endpoint-Architektur statt Page-Fetch. Mit dem 4.5b-Rebuild
+  ändert sich die IA nochmal — sinnvoll, den Spec-Sync NACH 4.5b zu machen,
+  wenn die neue IA steht, und dann §7.4/§7.5 in einem Rutsch an die Realität
+  anzugleichen.
 
 ---
 
-## 6 · Bekannte Production-Issues (nicht blockierend für Slice 4.5)
+## 5 · Bekannte Production-Issues (nicht blockierend für Slice 4.5b)
 
-### 6.1 · Vercel blockt Binance-API
+### 5.1 · Vercel blockt Binance-API
 Auf Production zeigen 4 Trading-Indikator-Cards "FALLBACK · BINANCE OFFLINE"
 (Funding Rates, Open Interest, Long/Short Ratio, Coinbase Premium). Lokal
 funktioniert alles. Geo-/IP-Block von Binance gegen Vercel-Server-IPs.
 → **Mini-Reparatur-Slice.** Lösungswege: Edge-Function-Proxy, alternative API
-(Bybit/OKX), oder pragmatisch akzeptieren. Slice 4.5 ist NICHT betroffen ·
-Twelve Data hat keine Geo-Blocks.
+(Bybit/OKX), oder pragmatisch akzeptieren. Twelve Data und CoinGecko haben
+keine Geo-Blocks.
 
-### 6.2 · Vercel-Doppel-Projekt
+### 5.2 · Vercel-Doppel-Projekt
 Zwei Vercel-Projekte deployen dasselbe Repo: `mario-hq` und `mario-hq-qc6f`.
 Jeder Push baut doppelt, ENV-Vars doppelt gepflegt. `mario-hq-qc6f` ist
-kanonisch. **Gute Nachricht:** `qc6f` hat KEINE Custom Domain dran (verifiziert
-im Vercel-Dashboard 14.5.) · das überzählige `mario-hq`-Projekt kann gefahrlos
-gelöscht werden, es hängt keine Domain dran. → **Mini-Hygiene-Slice.**
+kanonisch. **`qc6f` hat KEINE Custom Domain** (verifiziert 14.5.) — das
+überzählige `mario-hq`-Projekt kann gefahrlos gelöscht werden.
+→ **Mini-Hygiene-Slice.**
 
-### 6.3 · Twelve Data Free Tier · Indices + Commodities limitiert
-Siehe §3 · wird in Slice 4.5 direkt adressiert.
+### 5.3 · Twelve Data Free Tier · harte Limits
+Aus Slice 4.5: 8 Credits/min UND 800 Credits/Tag, je 1 Credit pro Symbol im
+Bulk-Call. Hat die Endpoint-Architektur erzwungen (zwei getrennte API-Routes
+mit geteiltem Edge-Cache + stale-while-revalidate). Indizes, Commodities,
+SILVER/BRENT sind im Free Tier nicht verfügbar — bewusst weggelassen, nicht
+behelfsmässig dargestellt.
 
 ---
 
-## 7 · Mini-Slices die zwischendrin eingeschoben werden können
+## 6 · Mini-Slices die zwischendrin eingeschoben werden können
 
-Unabhängig von der Slice-Reihenfolge:
 - **Mini-Reparatur · Vercel-Binance-Block** · diagnostizieren und lösen
 - **Mini-Hygiene · Vercel-Doppel-Projekt** · `mario-hq` löschen (gefahrlos, keine
   Domain), `qc6f` als kanonisch bestätigen, Doku-URLs prüfen
+- **Mini-Hygiene · Cover-Phasen-Stempel** · "PHASE 2.2" → "Phase 4"
 
-**Empfehlung:** Slice 4.5 direkt · die Mini-Slices sind nicht blockierend.
-Der Doppel-Projekt-Slice ist sehr klein und risikoarm geworden — kann gut als
-Aufwärmer vor 4.5 dienen, wenn Mario niedrige Energie hat.
+**Empfehlung:** Slice 4.5b direkt — die Krypto-IA ist Marios aktueller Fokus.
+Die Mini-Slices sind nicht blockierend. Der Doppel-Projekt-Slice ist sehr klein
+und risikoarm — guter Aufwärmer bei niedriger Energie.
 
 ---
 
-## 8 · Etablierte Arbeitsweise (bewährt über Phase 2.2-4.4)
+## 7 · Etablierte Arbeitsweise (bewährt über Phase 2.2-4.5)
 
 - **Spec-First** · Plan-First · Slice-Pattern (feat-Commit + docs-Commit)
 - **Foundation-First** · Pattern-Klon · Verifikation: Build grün → Light/Dark/Mobile → Console → Vercel HTTP 200
 - **GO-Prompt-Stil:** claude.ai schreibt ausführliche strukturierte GO-Prompts,
   Mario kopiert sie in den Claude-Code-Chat
-- **Plan-First bewährt sich:** Bei Slice 4.4 hat der Plan-First-Schritt die
-  Spec-vs-Datei-Diskrepanz korrekt abgefangen, bevor falscher Code entstand
+- **Plan-First bewährt sich stark:** In Slice 4.5 hat der API-Test-vor-Code-Schritt
+  zwei strukturelle Probleme aufgedeckt (WTI/GOLD-Symbol-Konflikt, 8/min-Limit),
+  bevor falscher Code entstand. Bei komplexen Slices mehrere Plan-Runden machen.
 - **Stil-Treue:** Schweizer Hochdeutsch, du-Form, Em-Dash, Mittelpunkt, DRG-Tokens
 
 **Stolpersteine die immer gelten:**
 - Worktree-Falle · `cd /Users/mariomacstudio/Developer/mario-hq && ...` chainen
-- Build-Test vor Push · Pflicht
+- Build-Test vor Push · Pflicht, auch bei Doc-Änderungen
 - ENV-Vars: lokal in .env (gitignored) + beide Vercel-Projekte · Redeploy nötig
 - TypeScript strict · keine any
-- Twelve-Data-Symbol-Format · Aktien plain (TSLA), Forex Slash (EUR/USD),
-  Commodities Code (WTI, BRENT) · MUSS pro Symbol verifiziert werden (siehe WTI-Bug)
-- API-Key server-side only via `import.meta.env` · nie im Frontend-Bundle
+- prerender = false auf api/-Routes (SSR, sonst Build-Zeit-statisch)
+- Vercel-Edge-Cache greift NICHT in npm run dev — Cache-Verifikation immer auf
+  Production
+- Claude-Code-Preview-Browser kann nur localhost öffnen, keine Vercel-URLs —
+  Production-Verifikation via curl/HTTP-Checks, nicht Preview-Rendering
+- CoinGecko-Rate-Limit · Bulk-Call für alle Coin-IDs, nicht einzeln
 
 ---
 
-## 9 · Spec-/Doku-Files im Repo
+## 8 · Spec-/Doku-Files im Repo
 
-- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` · aktuelle Phase · §7.5 ist Slice 4.5
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` · aktuelle Phase · §7.4+§7.5 sind
+  durch die Realität überholt (Spec-Sync nach 4.5b geplant)
 - `docs/PHASE-2.2-COVER-SPEC.md` · abgeschlossen · Pattern-Vorbild
 - `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md` · abgeschlossen · Pattern-Vorbild
 - `_pendenzen.md` · Roadmap, offene Fragen, Production-Issues
 - `_projekt.md` · Architektur, Entscheidungen, Mario-Kontext
-- `SESSION_LOG.md` · chronologisches Log · letzter Eintrag Update 25 + Fix-Nachtrag
+- `SESSION_LOG.md` · chronologisches Log · letzter Eintrag Slice 4.5
 
 ---
 
-## 10 · Erster Schritt in der neuen Session
+## 9 · Erster Schritt in der neuen Session
 
 1. Neue claude.ai-Session: dieses Handover als ersten Input geben
-2. claude.ai klärt mit Mario: Indizes-Fallback A oder B · Doppel-Anzeige-Indizes
-3. claude.ai liest `PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` §7.5 und baut den GO-Prompt
-4. Neue Claude-Code-Session öffnen · GO-Prompt rüberkopieren
-5. Claude Code macht als ersten Teilschritt den Twelve-Data-API-Test (Aktien,
-   Forex, Indizes, WTI-Symbol) und zeigt Plan-First
+2. claude.ai klärt mit Mario die offene strategische Frage aus §3: Was bleibt
+   von der Watchlist-Komponente, wenn Krypto + Aktien Card-Sektionen werden?
+   Wird die WatchlistSektion ersetzt oder umgebaut?
+3. claude.ai baut daraus den GO-Prompt für Slice 4.5b — mit CoinGecko-ID-
+   Verifikation (TRX, GST, JUP, HBAR) als erstem Teilschritt
+4. Neue Claude-Code-Session öffnen · GO-Prompt rüberkopieren · Plan-First
 
-**Empfehlung:** Slice 4.5 direkt. Optional vorher der Doppel-Projekt-Mini-Slice
-als risikoarmer Aufwärmer.
+**Empfehlung:** Slice 4.5b direkt. Das ist Marios aktueller Fokus und ändert
+die /wirtschaft-IA — sollte vor den restlichen Phase-4-Slices (4.6/4.7) stehen.
