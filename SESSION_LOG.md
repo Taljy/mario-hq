@@ -1,5 +1,60 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 28) · Slice 4.5c · Daten-Architektur-Cleanup
+
+### Was gemacht
+Reiner interner Refactor · kein Pixel auf /wirtschaft ändert sich · keine API-Calls.
+
+- `src/lib/watchlistAggregator.ts` → `src/lib/kryptoAggregator.ts` via `git mv` (Historie erhalten)
+- Funktion `getWatchlist()` → `getKryptoWatchlist()`
+- `tdMapVorgegeben`-Parameter entfernt · der Aggregator ist jetzt reiner Krypto-Aggregator
+- `getTwelveDataStand` + `TwelveDataStand`-Imports entfernt
+- Toter twelvedata-Branch im Gruppen-Loop entfernt (watchlist.json hat seit 4.5b nur noch `anbieter: "coingecko"`)
+- `Promise.allSettled` → Direct-Await (single-Promise wurde überflüssig nach Cleanup)
+- `tageshoch`/`tagestief`-Felder aus `KryptoItemEnriched` entfernt (waren nur für Twelve-Data-Aktien)
+- Typ-Renames:
+  - extern exportiert: `WatchlistErgebnis` → `KryptoWatchlistErgebnis`, `WatchlistGruppeEnriched` → `KryptoGruppeEnriched`
+  - modul-intern (jetzt unexportiert): `WatchlistItem` → `RohItem`, `WatchlistGruppe` → `RohGruppe`, `WatchlistItemEnriched` → `KryptoItemEnriched`
+- `RohItem.anbieter` strikt auf `'coingecko'` typisiert (statt `'coingecko' | 'twelvedata'`)
+- `src/components/wirtschaft/KryptoSektion.astro`: Import-Pfad + Typ + obsolet-Kommentar entfernt
+- `src/components/wirtschaft/KryptoGruppe.astro`: Import-Pfad + Typ
+- `src/pages/wirtschaft.astro`: Import-Pfad + Aufruf `getKryptoWatchlist()`
+- `src/lib/coingeckoFetcher.ts:90`: Kommentar-Update "für watchlistAggregator" → "für kryptoAggregator"
+
+### Prüfpunkt vor Edit · Promise.allSettled → Direct-Await
+Verifiziert vor Refactor: `getKryptoStandFuerIds` ([coingeckoFetcher.ts:92-130](src/lib/coingeckoFetcher.ts:92)) hat den gesamten Fetch-Block in einem try mit ungefiltertem catch (Z.126 `catch {}` ohne Parameter), plus Early-Return bei leerem ids-Array (Z.93). Kein Code-Pfad kann eine Rejection werfen. Direct-Await ist sicher.
+
+### Bewusst NICHT angefasst
+- `watchlist.json`-Filename und Inhalt
+- UI-Eyebrow "Krypto · Watchlist" (sichtbarer Text)
+- Wortform "Watchlist" in historischen Kommentaren (aktien.ts, forex.ts, wirtschaftResolver.ts, KryptoGruppe.astro)
+
+### Datei-Schrumpfung
+`kryptoAggregator.ts`: 157 → 110 Zeilen · ~30% Reduktion durch Dead-Code-Entfernung. Lesbarkeit deutlich besser: ein einziger Datenpfad statt parallel-twelvedata-Branch.
+
+### Verifikation
+- Build ✅ lokal · keine TypeScript-Fehler
+- Final-grep `grep -rn "Watchlist\|watchlistAggregator\|getWatchlist" src/` zeigt nur noch:
+  - neue Identifier (KryptoWatchlistErgebnis, getKryptoWatchlist, kryptoAggregator)
+  - Wortformen "Watchlist" als Konzept-Begriff in Kommentaren (legitim)
+  - UI-Eyebrow "Krypto · Watchlist" (bewusst belassen)
+- /wirtschaft lokal: strukturell identisch zu 4.5b-Endstand · 18 Asset-Cards · 2 Krypto-Blöcke · gleicher Eyebrow
+- CoinGecko war heute zickig (heute viele API-Tests) → defensive Logik greift sauber (alle Items zeigen "—", kein Crash). Genau das richtige Verhalten für einen Refactor-Slice mit unzuverlässigem upstream.
+- Console clean (nach Dev-Server-Restart wegen HMR-Cache · Stolperstein 7)
+- Vercel-Deploy + Production-Verifikation steht aus (gehört zum docs-Commit-Push)
+
+### Files dieser Session
+- `src/lib/watchlistAggregator.ts` → `src/lib/kryptoAggregator.ts` (Rename + clean rewrite)
+- `src/components/wirtschaft/KryptoSektion.astro` (Imports + Typen)
+- `src/components/wirtschaft/KryptoGruppe.astro` (Imports + Typen)
+- `src/pages/wirtschaft.astro` (Imports + Funktionsaufruf)
+- `src/lib/coingeckoFetcher.ts` (Kommentar)
+- `_pendenzen.md` (4.5c ✅ · Spec-Sync als nächstes)
+- `SESSION_LOG.md` (Update 28)
+- `docs/HANDOVER.md` (Stand nach 4.5c · nächster Schritt = Spec-Sync, danach 4.6)
+
+---
+
 ## 26-05-14 (Update 27) · Slice 4.5b · Krypto-Card-Rebuild + Watchlist-IA-Umbau
 
 ### Was gemacht
