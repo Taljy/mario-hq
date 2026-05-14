@@ -46,7 +46,8 @@ function ersterTerminWort(tag: KalenderTag): string {
   if (titel.length === 0 || titel === '(kein Titel)') {
     return tag.termine.length === 1 ? '1 Termin' : `${tag.termine.length} Termine`;
   }
-  return titel.split(/\s+/)[0];
+  // Anhängende Satzzeichen abschneiden · "Daniela:" → "Daniela" · "Termin," → "Termin"
+  return titel.split(/\s+/)[0].replace(/[:;,.\-–—]+$/, '');
 }
 
 function wochentagKurz(d: Date): string {
