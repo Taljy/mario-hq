@@ -1,5 +1,99 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 26) · Slice 4.5 · Aktien + Forex/Commodities-Sektion · Twelve-Data-Endpoint-Architektur
+
+### Was gemacht
+- `src/components/wirtschaft/AktienSektion.astro` (neu): 6 US-Tech-Cards in 3-Spalten-Grid (Desktop) / 2-Spalten (Tablet) / 1-Spalten (Mobile) · Preis in Fraunces · Delta-Vermillon-Regel wie 4.4 · Tageshoch/-tief als Subtext aus quote.high/low
+- `src/components/wirtschaft/ForexCommoditiesSektion.astro` (neu): zwei kompakte Tabellen (Forex links, Commodities rechts) · Commodities-Gruppe leer → dezenter Leer-Hinweis "Im aktuellen Datentier nicht verfügbar" · strukturell vorbereitet für späteren Plan
+- `src/lib/twelveDataFetcher.ts`: `tageshoch`/`tagestief` aus `quote.high`/`quote.low` als optionale Felder (für Aktien-Card-Subtext)
+- `src/lib/watchlistAggregator.ts`: optionaler `tdMap`-Parameter für Endpoint-DI · per-default Direct-Call wie bisher
+- `src/pages/api/aktien.ts` (neu): SSR-Endpoint · 6 Aktien-Symbole · Cache-Control `s-maxage=1200, stale-while-revalidate=3600` · `no-store` bei Offline-Response (kein Cache-Poisoning)
+- `src/pages/api/forex.ts` (neu): SSR-Endpoint · 4 Forex-Paare · Cache-Control `s-maxage=1320` (TTL-Versatz +120s für auseinandergedriftete Background-Refreshes) · `no-store` bei Offline
+- `src/pages/wirtschaft.astro`: sequenzielle TD-Endpoint-Fetches via `holeTwelveDataStand(origin)` · `await fetch(/api/aktien)` dann `await fetch(/api/forex)` · ergebnis-Map an `getWatchlist(tdMap)` · Reihenfolge §7.8 (KryptoHero → TradingIndikatoren → Watchlist → Aktien → Forex/Commodities → News → TradeSetups)
+- `src/data/watchlist.json`: 4 Commodity-Items entfernt (WTI/GOLD/SILVER/BRENT — Free Tier liefert nichts Brauchbares · siehe Erkenntnisse) · Rohstoffe-Gruppe komplett entfernt · Indizes `td_symbol` weggelassen (rendern als Offline-Stub in der Watchlist, kosten keine Credits mehr)
+- `src/components/wirtschaft/IndizesGrid.astro`: gelöscht · einziger Indizes-Ort ist jetzt die Watchlist-Gruppe
+- `src/data/wirtschaft.json` + `src/lib/wirtschaftResolver.ts`: statische Indizes-Daten + `Index`-Type entfernt
+- `src/components/layout/Footer.astro`: "Phase 2.3" → "Phase 4" (global, auf allen Seiten)
+
+### Erkenntnisse · für Spec-Sync und künftige Slices
+
+**Twelve Data Free Tier hat zwei harte Limits:**
+- 800 API Credits/Tag
+- 8 API Credits/Minute (Sliding-Window)
+- **1 Credit pro Symbol** im Bulk-Call · ein 10-Symbol-Bulk = 10 Credits = sofort 429 ("10 API credits were used, with the current limit being 8")
+
+**Das hat eine Endpoint-Architektur erzwungen:**
+- Statt einem Page-Fetch mit 10 Symbolen: zwei getrennte API-Routes (`/api/aktien` 6 Credits, `/api/forex` 4 Credits)
+- Jeder Endpoint einzeln unter 8/min-Limit
+- Geteilter Vercel-Edge-Cache mit stale-while-revalidate (1200s/1320s mit TTL-Versatz)
+- Bei Offline-Response (z.B. 429): `no-store` Header verhindert Cache-Poisoning
+- Daily-Total: ~720 Credits/Tag (3×6 Aktien + 2.7×4 Forex pro Stunde × 24h)
+
+**Diese Architektur ist die einzige, die Mario's Asset-Vollständigkeit (alle 6 Aktien + alle 4 Forex) unter Free-Tier-Bedingungen erfüllt.** Sliding-Window ist hart, nicht weich. Pro Slice-Iteration: drei Pläne nötig, weil die ersten zwei (handgebauter Cache, single-Endpoint) am 8/min-Limit gescheitert wären.
+
+**WTI/GOLD im Twelve-Data-Free-Tier-Bug:**
+- `symbol=WTI` matched die NYSE-Common-Stock-Aktie **W&T Offshore Inc.** ($4.40) — das war der Bug aus 4.3-Test
+- `symbol=GOLD` matched die NYSE-Aktie **Gold.com, Inc.** ($41), nicht Gold-Spot
+- `symbol=SILVER` → 403 (nicht im Free Tier)
+- `symbol=XBR/USD` (Brent) → 403 (nicht im Free Tier)
+- Alle vier komplett aus `watchlist.json` entfernt · keine Blocklist-Hacks im Code · saubere Wurzel-Lösung
+- Crude-Oil-Spots gibt's im Free Tier nur als ETFs (USO, UCO) — semantisch nicht WTI-Spot, weggelassen
+
+**Indizes (SPX/NDX/DAX/SMI) bleiben als Offline-Stub in der Watchlist-Gruppe:**
+- `td_symbol`-Feld weggelassen → Aggregator-Filter schliesst sie automatisch vom API-Call aus
+- Items rendern weiterhin als Gruppe in der Watchlist-Sektion mit "· nicht verfügbar"-Label
+- Spart 4 Credits pro Refresh, ohne den UI-Block zu zerstören
+
+**Cold-Start auf Vercel (verifiziert):**
+- Erster Page-Hit nach Deploy: /api/aktien → 6 Credits ok, /api/forex → 4 Credits in derselben Minute → 6+4=10 → 429 → Forex offline auf erstem Hit
+- Zweiter Hit (~60s später): /api/aktien Cache-HIT (0 Credits), /api/forex frisch (4 Credits) → LIVE
+- Page-Cache `x-vercel-cache: STALE` → `HIT` mit aktualisiertem Inhalt
+- Genau wie geplant — kein Architektur-Issue, nur eine Cold-Start-Eigenheit
+
+### Spec-Sync nötig (Phase-4-Spec §7.5)
+Die Spec ist von vor diesem API-Test. Die Realität ist enger:
+- Commodities-Sektion zeigt nur Leer-Hinweis (vorher: "WTI live falls Test sauber, BRENT nicht verfügbar")
+- Indices-Fallback B gewählt (weglassen)
+- Endpoint-Architektur statt Direct-Call
+- Bezahlten Twelve-Data-Plan wäre die einzige Alternative für mehr Asset-Breite
+
+### Drei-Pläne-Iteration vor dem Bauen
+Plan 1 (Blocklist im Fetcher) verworfen — Wurzel: Symbole aus watchlist.json raus.
+Plan 2 (In-Memory-Cache + Selbst-Rate-Limiting) verworfen — pro Vercel-Instanz nicht zuverlässig + zu viel Maschinerie.
+Plan 3 (eigene API-Endpoints mit Edge-Cache + SWR) angenommen, ergänzt um Option 2 (zwei Endpoints sequenziell statt einem).
+
+Plan-First hat sich bewährt: drei Iterationen über Strategie haben sicheres Bauen vor Push ergeben.
+
+### Verifikation
+- Build ✅ lokal · Vercel-Deploy grün · /api/aktien + /api/forex liefern Live-JSON
+- Cache-Header per curl: `x-vercel-cache: HIT` mit `age: 12s` für /api/aktien
+- /wirtschaft auf Production: EUR/USD $1.17, CHF/USD $1.28, AAPL $298.87 etc. (nach 1× page-cache stale-while-revalidate-Refresh)
+- Light/Dark/Mobile 375px lokal verifiziert
+- Console clean
+- Footer "Phase 4" auf /wirtschaft + Cover gegengecheckt
+
+### Pendenz · Cover-Meta-Stempel
+Auf der Cover-Page (/) zeigt ein internes Meta-Element (nicht der globale Footer) noch "MARIO'S HQ · V0.1 · PHASE 2.2". Das ist ein anderer Cover-Layout-Bereich, im 4.5-Footer-Fix nicht erfasst. In `_pendenzen.md` notiert als Mini-Hygiene-TODO.
+
+### Files dieser Session
+- `src/components/wirtschaft/AktienSektion.astro` (neu)
+- `src/components/wirtschaft/ForexCommoditiesSektion.astro` (neu)
+- `src/components/wirtschaft/IndizesGrid.astro` (gelöscht)
+- `src/components/layout/Footer.astro` (Phase-Label)
+- `src/lib/twelveDataFetcher.ts` (tageshoch/tagestief)
+- `src/lib/watchlistAggregator.ts` (tdMap-DI · tageshoch/tagestief pass-through)
+- `src/lib/wirtschaftResolver.ts` (Indizes raus)
+- `src/data/watchlist.json` (Commodities raus · Indizes-td_symbol raus)
+- `src/data/wirtschaft.json` (indizes-Array raus)
+- `src/pages/api/aktien.ts` (neu)
+- `src/pages/api/forex.ts` (neu)
+- `src/pages/wirtschaft.astro` (sequenzielle TD-Endpoint-Fetches · neue Sektionen · Reihenfolge §7.8)
+- `_pendenzen.md` (Slice 4.5 ✅ · Phase-4-Status aktualisiert · Cover-Meta-Stempel als TODO)
+- `SESSION_LOG.md` (Update 26)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` (§6 Slice-4.5-Status + Realitäts-Hinweis)
+
+---
+
 ## 26-05-14 (Update 25) · Slice 4.4 · Watchlist-Komponenten mit Gruppierung
 
 ### Was gemacht

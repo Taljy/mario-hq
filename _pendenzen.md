@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.4)
+aktualisiert: 26-05-14 (Slice 4.5)
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -51,7 +51,8 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen Vercel-Binance-Block
 - Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation · watchlist.json · twelveDataFetcher · watchlistAggregator · coingeckoFetcher erweitert
 - Slice 4.4 ✅ Watchlist-Komponenten · WatchlistItem + WatchlistGruppe + WatchlistSektion · Mini-Sparklines für Crypto · collapsible Gruppen · in /wirtschaft integriert
-- Slice 4.5 als nächstes · Aktien + Forex/Commodities-Sektion · Indices-Fallback klären
+- Slice 4.5 ✅ Aktien + Forex/Commodities-Sektion · Endpoint-Architektur (/api/aktien + /api/forex) wegen hartem 8/min-Credits-Limit · Commodities/Indizes Fallback B (weglassen) · IndizesGrid + Footer-Fix
+- Slice 4.6 als nächstes · Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 
 ---
 
@@ -64,6 +65,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - [ ] **Vercel-Doppel-Projekt bereinigen** · zwei Projekte für dasselbe Repo entdeckt · eines löschen · kanonische URL klären · Vorsicht bei DNS/Custom-Domain
 - [ ] **Vercel-Binance-Block diagnostizieren** · 4 Trading-Indikator-Cards zeigen Fallback auf Production · Bybit/OKX als Alternative evaluieren oder Edge-Function-Proxy
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
+- [ ] **Cover-Meta-Stempel "PHASE 2.2"** · auf /-Cover unten rechts steht noch "MARIO'S HQ · V0.1 · PHASE 2.2" als separates Cover-Layout-Meta-Element (NICHT der globale Footer, der korrekt "Phase 4" zeigt). Im 4.5-Footer-Fix nicht erfasst weil andere Quelle. Kleinaufgabe für nächsten Slice oder Mini-Hygiene
 
 ---
 
@@ -123,7 +125,7 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
 - [x] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
 - [x] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
-- [ ] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion
+- [x] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur
 - [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss

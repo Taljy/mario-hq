@@ -327,7 +327,7 @@ const chart = echarts.init(domEl, 'drg');
 | **4.2** | Trading-Indikatoren-Block (Funding · OI · L/S · Coinbase Premium · Stablecoin Supply) | gross | ✅ abgeschlossen |
 | **4.3** | Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup · watchlist.json | mittel | ✅ abgeschlossen |
 | **4.4** | Watchlist-Komponenten mit Gruppierung · alle Crypto-Items · Mini-Sparklines | gross | ✅ abgeschlossen |
-| **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Indices-Fallback klären | mittel | offen |
+| **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur (zwei Endpoints + Edge-Cache + SWR) wegen 8/min-Credits-Limit · Commodities komplett raus · Indizes Fallback B (weglassen) | gross | ✅ abgeschlossen |
 | **4.6** | Wetter-Wochen-Bars (ECharts) + Mondphase-SVG (custom) auf /wetter | mittel | offen |
 | **4.7** | Macro-Timeline + Fear & Greed Gauge auf /wirtschaft | mittel | offen |
 | **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss | klein | offen |
@@ -501,6 +501,14 @@ Mein Tipp: **3 als Pattern** mit selbst-gerendertem Mono-Buchstabe in Sumi-Kreis
 **Mobile:** Items als kompakte Liste 1-spaltig. Mini-Sparkline weglassen auf Mobile (Platz).
 
 ### 7.5 Slice 4.5 · Aktien + Forex/Commodities-Sektion
+
+> **Realitäts-Hinweis (14.5.2026, nach Slice-Abschluss):** Diese §7.5-Spec ist von vor dem API-Test. Die Realität war enger:
+> - Twelve-Data-Free-Tier hat ein **hartes** 8-Credits/min-Limit (1 Credit pro Symbol im Bulk-Call). Ein 10-Symbol-Bulk → sofortiges 429. Das hat eine **Endpoint-Architektur erzwungen** (`/api/aktien` + `/api/forex` getrennt, jeder unter 8 Credits, mit Edge-Cache + stale-while-revalidate · TTL-Versatz 1200s / 1320s) statt eines Page-Fetches.
+> - **WTI/GOLD** matchen im Free Tier **falsche NYSE-Aktien** (W&T Offshore Inc. $4.40, Gold.com Inc. $41), nicht Spot-Preise. **SILVER/BRENT** sind 403. Alle vier komplett aus `watchlist.json` entfernt — Commodities-Tabelle zeigt nur einen ehrlichen Leer-Hinweis "Im aktuellen Datentier nicht verfügbar".
+> - **Indices** nicht im Free Tier (bestätigt) — `td_symbol`-Feld weggelassen, rendern als Offline-Stub in der Watchlist-Gruppe, kosten keine Credits mehr. **Fallback B (weglassen)** gewählt.
+> - Layout: Aktien als 3×2-Cards (Desktop), Forex/Commodities als zwei kompakte Tabellen unter gemeinsamem Sektion-Header.
+> - Daily-Credit-Total: ~720/Tag, unter 800/Tag-Limit.
+> - Cold-Start nach Deploy: Erster Page-Hit zeigt Forex offline (Aktien-6 + Forex-4 in derselben Minute), zweiter Hit liefert beides live (Aktien-Cache HIT, Forex frisch). Akzeptiert.
 
 **Ziel:** Twelve-Data-Anbindung produktiv. Aktien-Sektion + Forex/Commodities-Sektion als eigene Blöcke.
 
