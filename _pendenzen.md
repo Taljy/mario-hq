@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.7)
-aktuelle-phase: 4 (geplant)
+aktualisiert: 26-05-14 (Slice 4.8 · Phase-4-Abschluss)
+aktuelle-phase: 4 ABGESCHLOSSEN
 ---
 
 # Mario's HQ · Pendenzen
@@ -36,11 +36,11 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 ---
 
-## 🎯 Aktuelle Phase: 4 — Geplant
+## ✅ Phase 4 · Charts + Trading-Watchlist — Abgeschlossen (14.5.2026)
 
 **Phase 2.3 ist abgeschlossen (13.5.2026).** Detail-Pages Slim produktionsreif: 5 Slices, 4 Pages live (/wirtschaft mit CoinGecko · /wetter mit Open-Meteo + Astronomie · /news statisch · /kalender mit iCal-Read-Only).
 
-**Phase 4 · Charts + Trading-Watchlist auf /wirtschaft** kommt als Nächstes. Strategische Wende vom 13.5.2026 abends:
+**Phase 4 · Charts + Trading-Watchlist auf /wirtschaft** — alle 8 Slices abgeschlossen 14.5.2026. Strategische Wende vom 13.5.2026 abends:
 
 - **Cowork-Automation entfällt komplett.** Live-APIs + manuelle JSON-Pflege ersetzen die geplante tägliche Cowork-Generation. Briefing-Bereitschaft um 06:00 CEST wird via Live-API-Fetches zum Page-Load gelöst.
 - **Phase 3 (Content-Pipeline) wartet** bis Bedarf konkret ist · Habits/Notizen-Tracking oder Archiv-Wunsch sind Trigger.
@@ -57,7 +57,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Spec-Sync ✅ Phase-4-Spec an Realität nach 4.5b/c angeglichen · §2/§3/§4.1/§5/§6/§7.3/§7.4/§7.5/§7.8/§9/§11 aktualisiert · Eyebrow "WATCHLIST" → "MÄRKTE"
 - Slice 4.6 ✅ Wetter-Wochen-Bars (ECharts vertikale Floating-Bars) + Mondphase-SVG (Custom-SVG, mathematisch korrekt) auf /wetter · astronomieResolver um ist_zunehmend erweitert
 - Slice 4.7 ✅ Macro-Timeline (Editorial-Liste) + Fear & Greed Gauge (Halbkreis-Tacho) auf /wirtschaft · 9 echte Macro-Events 14.5.-28.5.2026 · alternative.me-Fetcher mit 1h Cache
-- Slice 4.8 als nächstes · Polish + Volltest + Phase-4-Abschluss (inkl. §7.7-Realitäts-Notiz für die Editorial-Listen-Entscheidung)
+- Slice 4.8 ✅ Polish + Volltest + Phase-4-Abschluss (inkl. §7.7-Realitäts-Notiz + Cover-Stempel)
 
 ---
 
@@ -70,7 +70,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - [ ] **Vercel-Doppel-Projekt bereinigen** · zwei Projekte für dasselbe Repo entdeckt · eines löschen · kanonische URL klären · Vorsicht bei DNS/Custom-Domain
 - [ ] **Vercel-Binance-Block diagnostizieren** · 4 Trading-Indikator-Cards zeigen Fallback auf Production · Bybit/OKX als Alternative evaluieren oder Edge-Function-Proxy
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
-- [ ] **Cover-Meta-Stempel "PHASE 2.2"** · auf /-Cover unten rechts steht noch "MARIO'S HQ · V0.1 · PHASE 2.2" als separates Cover-Layout-Meta-Element (NICHT der globale Footer, der korrekt "Phase 4" zeigt). Im 4.5-Footer-Fix nicht erfasst weil andere Quelle. Kleinaufgabe für nächsten Slice oder Mini-Hygiene
+- [x] **Cover-Meta-Stempel** · CoverFooter.astro auf "Phase 4" aktualisiert (Slice 4.8)
 
 ---
 
@@ -120,7 +120,7 @@ Aufgeschoben bis Bedarf konkret · Trigger sind:
 
 Bei Aktivierung: Briefing-Frontmatter-Schema · Content Collections · Archive-Page aus Collection.
 
-### Phase 4 · Charts + Trading-Watchlist auf /wirtschaft
+### Phase 4 · Charts + Trading-Watchlist auf /wirtschaft ✅ *(14.5.2026)*
 
 > **Detail-Spezifikation:** `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md`
 
@@ -136,9 +136,7 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Spec-Sync** Phase-4-Spec an Realität nach 4.5b/c angeglichen · Eyebrow-Fix
 - [x] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [x] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
-- [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · inkl. §7.7-Realitäts-Notiz für MacroTimeline = Editorial-Liste statt ECharts-Zeitachse
-- [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
-- [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss
+- [x] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · §7.7-Realitäts-Notiz · Cover-Stempel · SESSION_LOG Synthese
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)

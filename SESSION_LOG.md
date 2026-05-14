@@ -1,5 +1,62 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 32) · Slice 4.8 · Polish + Phase-4-Abschluss
+
+### Was gemacht
+- `src/components/CoverFooter.astro` · "Phase 2.2" → "Phase 4" (Cover-Stempel-Fix, in 4.5-Footer-Fix nicht erfasst weil andere Quelle)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` · §7.7-Realitäts-Box (faktisch korrekt nach macro-events.json und MacroTimeline.astro) · §5 macroEventsResolver.ts nachgetragen · §6 Slice 4.8 ✅ · Frontmatter status = ABGESCHLOSSEN
+- `_pendenzen.md` · Phase 4 als abgeschlossen markiert · Duplikat-Einträge (Z.140-141) bereinigt · Cover-Stempel-TODO erledigt · Slice 4.8 ✅
+- `docs/HANDOVER.md` · Rewrite für Phase-5-Übergang
+
+### Volltest Light / Dark / Mobile 375px
+- **/wirtschaft Light:** BTC-Hero + Sparkline ✅ · Trading-Indikatoren (5 Cards, live Binance) ✅ · KryptoSektion Block 1+2 (alle Sparklines) ✅ · AktienSektion + ForexSektion TWELVE DATA OFFLINE (erwartet lokal, kein Edge-Cache) ✅ · MacroTimeline 9 Events ✅ · FearGreedGauge 34 "Fear" ✅ · News + TradeSetups + Quellen ✅
+- **/wirtschaft Dark:** ECharts-Farben (Sparklines, FearGreedGauge) live Theme-Switch ✅ · alle Sektionen korrekt ✅
+- **/wirtschaft Mobile 375px:** MacroTimeline zweizeilig (Datum+Uhrzeit / Name) ✅ · FearGreedGauge rendert ✅ · Krypto-Cards ohne Sparklines (Desktop-only) ✅
+- **/wetter Light:** WetterDetail ✅ · WetterWochenBars (7 Floating-Bars, Fr–Do) ✅ · MondphaseSvg (Abnehmende Sichel 6%) ✅ · FotoSpots ✅
+- **/wetter Dark:** WetterWochenBars weiß auf dunkel ✅ · MondphaseSvg lesbar ✅
+- **/wetter Mobile 375px:** WetterWochenBars skaliert sauber · Spots gestapelt ✅
+- **Console:** 0 Errors auf beiden Pages ✅
+
+### Keine visuellen Issues gefunden
+
+### Phase-4-Synthese · alle Slices + Kernerkenntnisse
+
+**Phase 4 (Charts + Trading-Watchlist) · 14.5.2026 · 8 Slices + 3 Zwischen-Slices + 1 Spec-Sync:**
+
+| Slice | Kernarbeit | Kernentscheid |
+|---|---|---|
+| 4.1 | ECharts-Foundation + DRG-Theme + BTC-Hero mit Sparkline | client:visible-Island-Pattern für alle ECharts-Komponenten |
+| 4.2 | 5 Trading-Indikatoren-Cards · Binance/Coinbase/DeFiLlama | Binance auf Production geblockt (Production-Issue 5.1, offen) |
+| 4.3 | Multi-Anbieter-Watchlist-Foundation · twelveDataFetcher · watchlist.json | 8-Credits/min-Limit erst in 4.5 entdeckt — Architektur in 4.5 erzwungen |
+| 4.4 | Watchlist-Komponenten mit Gruppierung · Crypto-Items · Mini-Sparklines | Zeilen-Liste (4.4) → Card-Grid (4.5b) |
+| 4.5 | Aktien + Forex · Endpoint-Architektur wegen 8/min-Limit | Zwei separate Endpoints mit TTL-Versatz (1200s / 1320s) + SWR · Commodities komplett raus (WTI/GOLD matchen falsche NYSE-Aktien) |
+| 4.5b | Krypto-Card-Rebuild · gemeinsame AssetCard · KryptoSektion (Rename) | Sichtbarer IA-Umbau in eigenem Slice |
+| 4.5c | kryptoAggregator (rename + -30% Code-Reduktion) | Unsichtbarer Refactor bewusst getrennt von 4.5b |
+| Spec-Sync | Phase-4-Spec an Realität nach 4.5b/c angeglichen | Eyebrow "WATCHLIST" → "MÄRKTE" |
+| 4.6 | WetterWochenBars (ECharts Floating-Bars) + MondphaseSvg (Custom-SVG, k=1-2*f-Geometrie) | Mondphase: mathematische Pfad-Geometrie vor Code festnageln (SVG-Sweep-Flags kippen zwischen Sichel und Gibbous) |
+| 4.7 | MacroTimeline (Editorial-Liste) + FearGreedGauge (ECharts) + 9 echte Events | MacroTimeline: Liste statt ECharts-Zeitachse (Label-Kollisionen) — explizit genehmigt |
+| 4.8 | Polish · Volltest · Spec-Sync §7.7 · Cover-Stempel · Phase-4-Abschluss-Doku | — |
+
+**Bewährte Pattern Phase 4:**
+- Spec-First + Plan-First + Slice-Pattern (feat+docs)
+- Sichtbare vs. unsichtbare Änderungen trennen (4.5b vs. 4.5c)
+- Live-API vor Code testen (Twelve Data: 8/min-Limit, WTI/GOLD-Ambiguität)
+- Spec-Abweichung mit Begründung erlaubt — in Spec-Realitäts-Box dokumentieren
+- ECharts-Quirk: `title: { show: false }` explizit für Gauges (sonst doppeltes Label)
+
+**Offene Production-Issues nach Phase 4:**
+- 5.1 · Vercel blockt Binance-API → 4 Trading-Indikatoren-Cards Fallback auf Production
+- 5.2 · Vercel-Doppel-Projekt (`mario-hq` + `mario-hq-qc6f`) → eines löschen
+
+### Files dieser Session
+- `src/components/CoverFooter.astro` (Phase-4-Stempel)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` (§7.7-Box + §5 + §6 + Frontmatter)
+- `_pendenzen.md` (Phase-4-Abschluss + Duplikat-Bereinigung)
+- `SESSION_LOG.md` (Update 32)
+- `docs/HANDOVER.md` (Post-4.8-Rewrite)
+
+---
+
 ## 26-05-14 (Update 31) · Slice 4.7 · Macro-Timeline + Fear & Greed Gauge
 
 ### Was gemacht

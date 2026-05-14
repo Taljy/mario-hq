@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 4
 erstellt: 26-05-13
-aktualisiert: 26-05-14 (Spec-Sync nach Slice 4.5c)
-status: 4.1–4.5 abgeschlossen · 4.5b/c (IA-Umbau ausserhalb Spec) abgeschlossen · 4.6/4.7/4.8 offen
+aktualisiert: 26-05-14 (Slice 4.8 · Phase-4-Abschluss)
+status: ABGESCHLOSSEN · alle Slices 4.1–4.8 erledigt · 14.5.2026
 referenz: Strategie-Chat 13.5.2026 (claude.ai Web)
 ersetzt: ursprüngliche Phase-4-Roadmap aus _pendenzen.md (5-Punkt-Liste)
 ---
@@ -268,6 +268,7 @@ const chart = echarts.init(domEl, 'drg');
 | `src/components/wetter/MondphaseSvg.astro` (Custom-SVG) | Neu | 4.6 |
 | `src/data/macro-events.json` | Neu | 4.7 |
 | `src/lib/fearGreedFetcher.ts` | Neu | 4.7 |
+| `src/lib/macroEventsResolver.ts` (liest macro-events.json · 14-Tage-Filter · chronologische Sortierung) | Neu | 4.7 |
 | `src/components/wirtschaft/MacroTimeline.astro` | Neu | 4.7 |
 | `src/components/wirtschaft/FearGreedGauge.astro` (ECharts-Gauge) | Neu | 4.7 |
 | `src/pages/wirtschaft.astro` (zentrale Integration aller Sektionen) | Modifiziert | jeder Slice |
@@ -288,7 +289,7 @@ const chart = echarts.init(domEl, 'drg');
 | **4.5b/c** | (KEIN Spec-Slice · IA-Umbau nach Mario-Wunsch, eingeschoben zwischen 4.5 und 4.6) · 4.5b: gemeinsame AssetCard, Krypto auf Card-Layout, neue Block-Struktur (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT), Aktien-Doppelung weg, watchlist.json nur noch Krypto, aktien.ts/forex.ts neu, Eyebrow "Krypto · Märkte" · 4.5c: interner Daten-Architektur-Cleanup (Aggregator-Rename zu kryptoAggregator + Typ-Renames + Dead-Code-Removal, ~30% LOC-Reduktion) | mittel | 4.5b ✅ · 4.5c ✅ |
 | **4.6** | Wetter-Wochen-Bars (ECharts vertikale Floating-Bars) + Mondphase-SVG (Custom-SVG mit korrekter Sichel-/Gibbous-Geometrie) auf /wetter · astronomieResolver um ist_zunehmend-Feld erweitert | mittel | ✅ abgeschlossen |
 | **4.7** | Macro-Timeline (Editorial-Liste statt ECharts-Zeitachse · siehe §7.7-Realitäts-Notiz für 4.8) + Fear & Greed Gauge (ECharts Halbkreis-Tacho) auf /wirtschaft · 9 recherchierte Macro-Events 14.5.-28.5.2026 · fearGreedFetcher mit 1h Cache | mittel | ✅ abgeschlossen |
-| **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss | klein | offen |
+| **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss (Cover-Stempel Phase 4 · §7.7-Realitäts-Notiz · _pendenzen.md abgeschlossen · SESSION_LOG Phase-4-Synthese) | klein | ✅ abgeschlossen |
 
 **Anzahl Slices:** 8 (gegenüber 5 in Phase 2.3)
 **Geschätzter Umfang:** grösser als Phase 2.3 wegen ECharts-Lernkurve und Multi-Asset-Komplexität
@@ -549,6 +550,16 @@ Wenn Response = Error oder "Symbol not found":
 **Integration in /wetter:** WetterWochenBars unter WetterDetail · MondphaseSvg innerhalb AstronomieSektion.
 
 ### 7.7 Slice 4.7 · Macro-Timeline + Fear & Greed Gauge
+
+> **Realitäts-Hinweis (14.5.2026, nach 4.7):**
+> - `MacroTimeline.astro` wurde als **vertikale CSS-Liste** gebaut — **nicht als ECharts-Zeitachse** wie geplant.
+> - Grund: horizontale ECharts-Timeline mit Event-Punkten erzeugt bei mehreren Events am selben Tag (20.5.: 2 Events, 22.5.: 2 Events, 28.5.: 2 Events) Label-Kollisionen auf einer Zeitachse, die sich mit den verfügbaren ECharts-Label-Optionen nicht sauber lösen lassen.
+> - Entscheid von Mario in 4.7 explizit genehmigt: Robustheit > Spec-Treue.
+> - Tatsächliches Layout: 4-Spalten-CSS-Grid (Impact-Punkt · Datum · Uhrzeit · Eventname) auf Desktop — auf Mobile ≤640px zweizeilig (Datum+Uhrzeit in Zeile 1, Name in Zeile 2). Heutiger Tag mit Vermillon-Balken links. Reines SSR, keine ECharts-Islands.
+> - `src/lib/macroEventsResolver.ts` (nicht in ursprünglicher Files-Liste): liest macro-events.json, filtert auf 14-Tage-Fenster ab heute, sortiert chronologisch.
+> - `FearGreedGauge.astro`: exakt wie geplant (ECharts Halbkreis-Tacho). Einziger nicht-geplanter Fix: `title: { show: false }` in der gaugeOption verhindert, dass ECharts den data.name-Wert als doppeltes Label über dem Gauge rendert.
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
 
 **Ziel:** Zwei weitere Editorial-Charts auf /wirtschaft. Macro-Timeline als horizontale Event-Zeitachse. Fear & Greed Gauge als Halbkreis-Tachometer.
 
