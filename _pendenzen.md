@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Phase 5 Slice 5.1 · Krypto-Card live)
-aktuelle-phase: 5 (Cover-Sync) · Slice 5.1 abgeschlossen
+aktualisiert: 26-05-14 (Phase 5 Slice 5.2a · getStundenHeute)
+aktuelle-phase: 5 (Cover-Sync) · Slice 5.1 ✅ · 5.2a ✅ · 5.2b offen
 ---
 
 # Mario's HQ · Pendenzen
@@ -71,7 +71,8 @@ Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. By
 Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben. Krypto-Card nutzt NUR CoinGecko-Preise (keine Trading-Indikatoren wegen IP-Block-Vererbung).
 
 - Slice 5.1 ✅ Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9` · Production live mit `$81'432 · +2.3% · Fear · F&G 34`
-- Slice 5.2 als Nächstes · Wetter-Card live (inkl. wmoSymbol-Helper + Goldene/Blaue Stunde via SunCalc)
+- Slice 5.2a ✅ getStundenHeute() in astronomieResolver via SunCalc · feat `8decc27` · sanity-checked gegen api.sunrise-sunset.org (1-min-Drift). Plan-Befund: wmoSymbol-Helper aus Original-Plan ist unnötig (WetterSymbol-Wrapper schon zentralisiert seit 2.3) → 5.2 ist in 5.2a/5.2b geteilt analog 4.5b/4.5c, bleibt EIN Slice in der 4er-Phasen-Zählung
+- Slice 5.2b als Nächstes · WetterCard-Swap mit WetterSymbol-Wrapper + getWetterErgebnis + getStundenHeute + getFotoEmpfehlung
 - Slice 5.3 · Kalender + Macro + News + EventBanner
 - Slice 5.4 · Polish + Volltest + Phase-5-Abschluss + Cover-Stempel "Phase 5"
 
@@ -162,7 +163,9 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben — kein Halb-Zustand. Krypto-Card nutzt NUR CoinGecko (keine Trading-Indikatoren wegen IP-Block-Vererbung).
 
 - [x] **Slice 5.1** Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9`
-- [ ] **Slice 5.2** Wetter-Card live (inkl. wmoSymbol-Helper + Goldene/Blaue Stunde via SunCalc)
+- [~] **Slice 5.2** Wetter-Card live · in Bau-Aufteilung 5.2a/5.2b
+  - [x] **5.2a** getStundenHeute() in astronomieResolver · feat `8decc27`
+  - [ ] **5.2b** WetterCard-Swap mit WetterSymbol-Wrapper + getWetterErgebnis + getStundenHeute + getFotoEmpfehlung · wetterPicker + wetter.json löschen
 - [ ] **Slice 5.3** Kalender + Macro + News + EventBanner (Macro-Indizes-Zeile weggelassen · NewsCard zieht aus cover_headlines in news-voll.json · EventBanner-Trigger nach Event-Zählung)
 - [ ] **Slice 5.4** Polish + Volltest + Cover-Stempel "Phase 5" + Phase-5-Abschluss
 

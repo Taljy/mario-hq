@@ -1,5 +1,56 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 35) · Phase 5 · Slice 5.2a · getStundenHeute()
+
+### Plan-First-Befund · offen festgehalten
+Original-Slice-5.2-Plan sah einen `wmoSymbol.ts`-Helper + `WetterDetail.astro`-Refactor vor unter Verweis auf "Refactor-Schuld aus 2.3.3". Mario hat das so im GO-Prompt formuliert.
+
+**Befund nach Bestandsaufnahme (Plan-First):** Die vermutete Schuld existiert nicht in der angenommenen Form. `WetterSymbol.astro` ist bereits seit Phase 2.3 zentralisiert (`src/components/wetter-symbole/WetterSymbol.astro` mit eigener `symbolFor()`-Mapping-Funktion, 8 SVG-Sub-Komponenten daneben). WetterDetail nutzt diesen Wrapper bereits an zwei Stellen (Heute-Hero size=96 + 7-Tage-Strip size=32).
+
+**Echte Lokalisation der Duplikation:** Die Cover-`WetterCard.astro` (Stub) hat das `SonneWolken`-SVG **byte-genau inline dupliziert** — gleicher viewBox, gleicher d-Pfad, gleiche Sonnen-Geometrie, gleiche `fill="var(--bg-card)"`-Wolke. Diese Duplikation gehört aber in 5.2b (Card-Swap nutzt dann den Wrapper direkt).
+
+**Konsequenz:** Mario hat die Klärung "Wrapper reicht für 5.2b oder Roh-String nötig?" konkret entschieden — Wrapper reicht. Damit entfällt `wmoSymbol.ts` komplett. **5.2a schrumpft auf nur `getStundenHeute()`** — kleinerer sauberer Slice, keine tote Helper-Datei.
+
+### Bau-Aufteilung 5.2a / 5.2b
+Phase 5 hat weiterhin 4 Slices (5.1/5.2/5.3/5.4). 5.2 ist intern in **5.2a + 5.2b** geteilt — analog zum 4.5b/4.5c-Pattern (Bau-Aufteilung innerhalb EINES Slices, nicht neue Phasen-Nummer). In Spec §2 und §4.2 dokumentiert.
+
+### Was gemacht (Slice 5.2a)
+- `src/lib/astronomieResolver.ts` · neue Funktion `getStundenHeute(datum?: Date)` mit Interface `StundenHeute`
+- Goldene Stunde: `SunCalc.goldenHour` → `sunset` (≈ 45 min Range)
+- Blaue Stunde: `SunCalc.sunset` → `SunCalc.dusk` (Ende bürgerliche Dämmerung)
+- Bestehende `getAstronomieHeute()` und alle anderen Funktionen/Interfaces unverändert
+- Nutzt vorhandene `LAT`/`LNG`-Konstanten + `formatZeit()`-Helper im Resolver
+
+### Sanity-Check · gegen unabhängige Quelle (Spec-Notiz 2)
+Nicht zirkulär gegen die eigene SunCalc-Annahme geprüft, sondern gegen `api.sunrise-sunset.org` (freie Public API):
+
+| Wert | SunCalc-Code | sunrise-sunset.org | Drift |
+|---|---|---|---|
+| sunset Baden 14.5. | 20:56 CEST | 20:57 CEST | 1 min |
+| Ende Blaue Stunde (dusk / civil_twilight_end) | 21:32 CEST | 21:31 CEST | 1 min |
+| Start Goldene Stunde (45 min vor sunset) | 20:11 CEST | (kein Wert) | — |
+
+1-min-Differenz ist normaler Implementations-Drift zwischen astronomischen Bibliotheken (unterschiedliche Modelle für atmosphärische Brechung). Werte plausibel.
+
+### Blaue-Stunde-Definition · Spec-Notiz 1
+`blaue_stunde` = `sunset` → `dusk` (bürgerliche Dämmerung, Sonne 6° unter Horizont) ist eine fotografisch verteidigbare Definition, nicht die einzige. Alternative wäre bis `nauticalDusk` (Sonne 12° unter Horizont, längere "blaue" Phase). In Spec §4.2 explizit festgehalten — Mario kann das in 5.2b oder später anpassen wenn die Card auf der echten Seite nicht passt.
+
+### Verifikation
+- `npm run build` grün
+- Dev-Server-Restart (HMR-Falle nach Resolver-Edit)
+- /wetter Light: visuell unverändert (kein Code dort berührt — nur Add-Only-Edit in astronomieResolver)
+- Console clean
+- Kein Production-Check (5.2a ändert nichts Cover-sichtbar)
+
+### Files dieser Session
+- `src/lib/astronomieResolver.ts` (+27 Zeilen · StundenHeute-Interface + getStundenHeute-Funktion)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` (§2 Slice-Status · §4.2 Realitäts-Box + Blaue-Stunde-Definition + Sanity-Check-Quelle)
+- `_pendenzen.md` (5.2a ✅ · 5.2b als nächstes · Bau-Aufteilung-Hinweis)
+- `SESSION_LOG.md` (Update 35)
+- `docs/HANDOVER.md` (Stand nach 5.2a · 5.2b als nächster Schritt)
+
+---
+
 ## 26-05-14 (Update 34) · Phase 5 · Slice 5.1 · SSR-Foundation + KryptoCard live
 
 ### Phase-5-Eröffnung · Cover-Sync

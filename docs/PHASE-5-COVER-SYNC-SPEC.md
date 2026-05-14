@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 5
 erstellt: 26-05-14
-aktualisiert: 26-05-14 (Slice 5.1 angefangen)
-status: 5.1 in Arbeit · 5.2/5.3/5.4 offen
+aktualisiert: 26-05-14 (Slice 5.2a abgeschlossen)
+status: 5.1 ✅ · 5.2 in Bau-Aufteilung 5.2a ✅ / 5.2b offen · 5.3/5.4 offen
 referenz: Cover-Sync-Plan-Chat 14.5.2026 (claude.ai)
 ersetzt: Cover-Sync-Punkte aus _pendenzen.md vor Phase-5-Eröffnung
 ---
@@ -31,14 +31,14 @@ Phase 5 = **4 Slices total.**
 
 | Slice | Inhalt | Umfang | Status |
 |---|---|---|---|
-| **5.1** | Spec + SSR-Foundation (prerender=false, Cache-Header, Promise.all-Block) + KryptoCard live (CoinGecko + Fear & Greed) | klein-mittel | in Arbeit |
-| **5.2** | Wetter-Card live · `wmoSymbol.ts`-Helper neu (zentral · /wetter mit umgestellt) · `astronomieResolver.getStundenHeute()` ergänzt (Goldene + Blaue Stunde via SunCalc) · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` | mittel | offen |
+| **5.1** | Spec + SSR-Foundation (prerender=false, Cache-Header, Promise.all-Block) + KryptoCard live (CoinGecko + Fear & Greed) | klein-mittel | ✅ abgeschlossen |
+| **5.2** | Wetter-Card live · `astronomieResolver.getStundenHeute()` für Goldene/Blaue Stunde · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` · WetterSymbol-Wrapper direkt verwendet (kein eigener Helper nötig, siehe Bau-Aufteilung unten) | mittel | **Bau-Aufteilung 5.2a/5.2b · 5.2a ✅, 5.2b offen** |
 | **5.3** | KalenderCard (`getKalenderTermine()`) · MacroCard (`getMacroEvents()`, Indizes-Zeile weggelassen) · NewsCard (`cover_headlines`-Feld in `news-voll.json`) · EventBanner (auf `macroEventsResolver`, Trigger nach Event-Zählung entschieden) · alte Stub-Resolver löschen | mittel | offen |
 | **5.4** | Polish + Volltest Light/Dark/Mobile 375px + Cover-Stempel "Phase 4" → "Phase 5" + Phase-5-Synthese in SESSION_LOG + HANDOVER + Spec abschliessen | klein | offen |
 
 **Reihenfolge-Begründung:**
 - **5.1 zuerst:** CoinGecko hat im Phase-4-Nachläufer bewiesen, dass es von Vercel-IPs erreichbar ist → minimales Restrisiko. Beweist die SSR-Foundation (Cover wird zu `prerender = false`) auf der Live-Pipeline. Etabliert das Pattern für die folgenden Slices.
-- **5.2 als Zweites:** Open-Meteo läuft bereits stabil auf Production. Längste pro-Card-Arbeit (Symbol + Bedingung + Wind + 2× Stunde + Foto-Hinweis), plus erlaubter Refactor-Touch auf /wetter (`wmoSymbol.ts`).
+- **5.2 als Zweites:** Open-Meteo läuft bereits stabil auf Production. Längste pro-Card-Arbeit (Symbol + Bedingung + Wind + 2× Stunde + Foto-Hinweis). **Bewusst in 5.2a/5.2b geteilt** (komplexester Slice der Phase 5): 5.2a baut den Foundation-Baustein `getStundenHeute()`, 5.2b macht den eigentlichen WetterCard-Swap. Analoge Bau-Aufteilung wie 4.5b/4.5c — gehört in dieselbe 4er-Phasen-Zählung (5.1/5.2/5.3/5.4), ist keine neue Phasen-Nummer.
 - **5.3 als Drittes:** iCal + macroEventsResolver sind battle-tested aus Phase 4. Drei Cards + ein Banner in einem Slice — alle aber kleine Swaps.
 - **5.4 als Abschluss:** Volltest erst nach allen Swaps sinnvoll. Hygiene + Doku.
 
@@ -85,14 +85,29 @@ Phase 5 = **4 Slices total.**
 
 ### 4.2 WetterCard (Slice 5.2)
 
+> **Realitäts-Hinweis (14.5.2026, nach 5.2a):**
+> - Original-Plan sah einen `wmoSymbol.ts`-Helper + `WetterDetail.astro`-Refactor vor (vermutete "Refactor-Schuld aus 2.3.3"). Plan-First-Bestandsaufnahme hat ergeben: **`WetterSymbol.astro` ist bereits seit Phase 2.3 zentralisiert** (`src/components/wetter-symbole/WetterSymbol.astro` mit eigener `symbolFor()`-Mapping-Funktion, 8 SVG-Sub-Komponenten daneben). Keine Schuld vorhanden.
+> - **`wmoSymbol.ts` entfällt** komplett. Cover-WetterCard wird in 5.2b den bestehenden `<WetterSymbol wmoCode={...} size={64} />`-Wrapper direkt nutzen — kein Roh-String-Mapping nötig. Das Inline-SVG-Duplikat in der heutigen Cover-Card (byte-genau identisch zu `SonneWolken.astro`) wird in 5.2b durch den Wrapper ersetzt.
+> - **Bau-Aufteilung 5.2a / 5.2b** (analog 4.5b/4.5c-Pattern · gehört in EINEN Slice der 4er-Phase-5-Zählung):
+>   - **5.2a ✅** (14.5.2026, feat `8decc27`): nur `astronomieResolver.getStundenHeute()` neu — isolierter Foundation-Baustein
+>   - **5.2b offen**: WetterCard.astro-Live-Swap mit WetterSymbol-Wrapper + getWetterErgebnis + getStundenHeute + getFotoEmpfehlung + Stub-Files löschen
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
+
 **Heute:** Statischer Wetter-Stub aus `wetter.json`.
 
 **Live-Quellen:**
 - `getWetterErgebnis()` → `wetter.heute` (Temp, Min/Max, wmo_code, bedingung, wind_kmh, wind_richtung)
-- `getStundenHeute()` (neu in 5.2) via SunCalc → Goldene Stunde + Blaue Stunde Start/Ende
+- `getStundenHeute()` (neu in 5.2a) via SunCalc → Goldene Stunde + Blaue Stunde Start/Ende
 - `getFotoEmpfehlung(wetter.heute)` → `begruendung`-Text für `foto_hinweis`
 
-**Refactor-Schuld:** `wmoSymbol.ts`-Helper wird zentral angelegt. Mapping `wmo_code → SVG-Symbol-ID`. WetterCard nutzt es, **plus** `WetterDetail.astro` auf /wetter wird ebenfalls darauf umgestellt (einzige erlaubte Nicht-Cover-Änderung in Phase 5).
+**Goldene/Blaue-Stunde-Definition (fotografische Entscheidung, keine Naturkonstante):**
+- `goldene_stunde`: `SunCalc.goldenHour` (≈ 45 min vor Sonnenuntergang) → `SunCalc.sunset`
+- `blaue_stunde`: `SunCalc.sunset` → `SunCalc.dusk` (Ende der **bürgerlichen** Dämmerung, Sonne 6° unter Horizont)
+- Alternative wäre `blaue_stunde` bis `nauticalDusk` (Sonne 12° unter Horizont · längere "blaue" Phase). Mario kann das in 5.2b oder später anpassen.
+- Sanity-Check 5.2a: SunCalc-Werte für Baden 14.5.2026 stimmen auf 1 min mit unabhängiger Referenz `api.sunrise-sunset.org` überein (sunset 20:56 vs 20:57, dusk 21:32 vs civil_twilight_end 21:31). 1-min-Differenz ist normaler Implementations-Drift.
+
+**Symbol-Rendering:** WetterCard nutzt direkt `<WetterSymbol wmoCode={wetter.heute.wmo_code} size={64} />` aus `src/components/wetter-symbole/`. Wrapper hat ein `size`-Prop, das ist die einzige Variation gegenüber WetterDetail (das `size=96` und `size=32` nutzt).
 
 ### 4.3 KalenderCard (Slice 5.3)
 
