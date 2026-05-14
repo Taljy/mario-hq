@@ -1,5 +1,83 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 27) · Slice 4.5b · Krypto-Card-Rebuild + Watchlist-IA-Umbau
+
+### Was gemacht
+- `src/components/wirtschaft/AssetCard.astro` (neu): gemeinsame Karten-Basis · Layout grid-template-areas (symbol/delta oben, name/preis mitte, extra-Zelle als Fuss) · extra-Zelle disjunkt: Mini-Sparkline (Krypto) ODER Tageshoch/-tief-Range (Aktien) · Sparkline-Hairline auf Mobile ausgeblendet (kein "leerer Trenner")
+- `src/components/wirtschaft/KryptoSektion.astro` (Rename von WatchlistSektion via git mv) · Eyebrow "Krypto · Watchlist"
+- `src/components/wirtschaft/KryptoGruppe.astro` (Rename von WatchlistGruppe via git mv + Refactor) · Card-Grid statt Zeilen-Liste · collapsible-Pattern bleibt (Button + aria-expanded)
+- `src/components/wirtschaft/WatchlistItem.astro` (gelöscht) · KryptoGruppe iteriert direkt über `<AssetCard>`
+- `src/data/aktien.ts` (neu) · typesafe `AKTIEN_DEFINITION: AktieDefinition[]` mit { id, symbol, name, td_symbol }
+- `src/data/forex.ts` (neu) · analog für Forex
+- `src/data/watchlist.json`: nur noch zwei Krypto-Blöcke `krypto-block-1` (BTC/ETH/SOL/XRP/SUI/TRX) + `krypto-block-2` (ADA/AVAX/HBAR/JUP/GST/DOT) · Aktien/Forex/Indizes-Gruppen alle raus
+- `src/components/wirtschaft/AktienSektion.astro`: refactor auf AssetCard · Props { stand: TwelveDataStand[]; fetch_zeit: string } · mergt AKTIEN_DEFINITION mit stand-Map per id
+- `src/components/wirtschaft/ForexCommoditiesSektion.astro`: refactor · Tabellen-Layout bleibt · Datenquelle FOREX_DEFINITION + stand-Array · Commodities-Tabelle hat statischen Leer-Hinweis (keine items.length-Check mehr nötig)
+- `src/pages/api/aktien.ts` + `src/pages/api/forex.ts`: importieren aus aktien.ts/forex.ts statt watchlist.json
+- `src/pages/wirtschaft.astro`: KryptoSektion + AktienSektion + ForexCommoditiesSektion · drei separate Datenpfade · getWatchlist() OHNE tdMap-Parameter (Übergangszustand bis 4.5c) · Aktien NICHT mehr doppelt
+
+### CoinGecko-ID-Verifikationsergebnis (für 4.5c und später)
+Bulk-Live-Call gegen `/coins/markets` mit allen 12 Coins · alle plausible Preise, alle market_cap_rank gesetzt:
+
+| Symbol | CoinGecko-ID | Bemerkung |
+|---|---|---|
+| TRX | `tron` | **neu** · 3 ID-Kandidaten (tron, tron-bsc, solana-bridged-trx-solana); `tron` ist Mainnet (Rank 8) |
+| HBAR | `hedera-hashgraph` | nur 1 Match, eindeutig |
+| JUP | `jupiter-exchange-solana` | 2 ID-Kandidaten; `jupiter-exchange-solana` ist der Solana-DEX-Aggregator (Rank 86), `jupiter` ist ein älteres Projekt |
+| GST | `green-satoshi-token` | Symbol mehrdeutig (GST-SOL vs GST-BSC); historisch immer Solana-Variante in der Watchlist · BSC-Variante existiert als `green-satoshi-token-bsc` falls jemals nötig |
+| Weitere | bitcoin, ethereum, solana, ripple, sui, cardano, avalanche-2, polkadot | unverändert aus 4.3 |
+
+Im UI: GST-Symbol als `GST` anzeigen, nicht das CoinGecko-Symbol `GST-SOL` (war auch in 4.3-Watchlist so).
+
+### Architektur-Festlegung B2 · gemeinsame AssetCard
+EINE Karten-Basis, getrennte Gruppen-Logik:
+- Krypto: zwei thematische Blöcke, collapsible · Mini-Sparklines im AssetCard-extra
+- Aktien: flache 6er-Liste, nicht collapsible · Tageshoch/-tief im AssetCard-extra
+- Forex: bleibt **Tabellen-Layout**, keine Cards (Mario-Entscheidung — verdichtete Übersicht ist hier richtig)
+
+### Prüfpunkt 1 · getWatchlist() im Übergangszustand
+Verifiziert: Der alte watchlistAggregator durchläuft die neue Krypto-only watchlist.json sauber. `tdItems`-Filter matched nichts (keine `anbieter: "twelvedata"`-Items mehr). `getTwelveDataStand([])` hat Early-Return ohne API-Call. Keine stillen Fehler. 0 verbrannte Credits.
+
+### Prüfpunkt 2 · grep nach alten Komponenten-Namen
+Alle Treffer waren Typ-Namen (`WatchlistGruppeEnriched`, `WatchlistItem` als Interface), nicht Komponenten. Die Typ-Renames sind 4.5c-Scope.
+
+### Was BEWUSST NICHT in 4.5b
+Aufgeteilt nach Mario-Vorgabe in sichtbar (4.5b) vs unsichtbar (4.5c):
+- `watchlistAggregator.ts` → `kryptoAggregator.ts` Rename + tdMap-Parameter raus → **4.5c**
+- Typ-Renames (`WatchlistErgebnis` → `KryptoWatchlistErgebnis` etc.) → **4.5c**
+- Aggregator-Code-Cleanup → **4.5c**
+
+### Stolperstein-Notiz · Vite-HMR-Cache nach git mv
+Nach den zwei git-mv-Operationen (WatchlistSektion → KryptoSektion, WatchlistGruppe → KryptoGruppe) zeigte der Vite-Dev-Server HMR-Reload-Errors für die alten Pfade. Production-Build war sauber. Dev-Server-Neustart hat die Errors entfernt. Bekannt als SKILL.md Stolperstein 7 ("HMR-Cache-Bug bei Vite-Dev-Server nach Layout-Edits · Dev-Server neu starten").
+
+### Verifikation
+- Build ✅ lokal · keine TypeScript-Fehler
+- /wirtschaft visuell verifiziert: zwei Krypto-Blöcke (je 6 Cards mit Sparklines), AktienSektion (6 Cards mit H/T-Range), ForexCommoditiesSektion (Tabelle + Leer-Hinweis)
+- 18 Asset-Cards total (12 Krypto + 6 Aktien) · Aktien-Doppelung weg (vorher 6+6=12 Aktien-Anzeigen, jetzt nur 6)
+- Neue Coins live: TRX $0.3546 (+1.17%), HBAR $0.0935 (+0.87%), JUP $0.2208 (-3.13%), GST $0.0017 (+1.35%)
+- Light/Dark verifiziert · Vermillon nur bei negativem Delta
+- Mobile 375px: 1-Spalten-Cards, Sparkline-extra-Zelle ausgeblendet (sauber, kein leerer Trenner)
+- Console clean nach Dev-Restart
+- Vercel-Deploy + Production-Verifikation steht aus (gehört zum docs-Commit-Push)
+
+### Files dieser Session
+- `src/components/wirtschaft/AssetCard.astro` (neu)
+- `src/components/wirtschaft/KryptoSektion.astro` (Rename von WatchlistSektion + Kleanup)
+- `src/components/wirtschaft/KryptoGruppe.astro` (Rename von WatchlistGruppe + Card-Grid-Refactor)
+- `src/components/wirtschaft/WatchlistItem.astro` (gelöscht)
+- `src/components/wirtschaft/AktienSektion.astro` (Refactor auf AssetCard)
+- `src/components/wirtschaft/ForexCommoditiesSektion.astro` (Refactor · neue Datenquelle)
+- `src/data/aktien.ts` (neu)
+- `src/data/forex.ts` (neu)
+- `src/data/watchlist.json` (nur Krypto-Blöcke)
+- `src/pages/api/aktien.ts` + `src/pages/api/forex.ts` (Imports umgestellt)
+- `src/pages/wirtschaft.astro` (drei separate Datenpfade)
+- `_pendenzen.md` (4.5b ✅, 4.5c als nächstes)
+- `SESSION_LOG.md` (Update 27)
+- `docs/HANDOVER.md` (Stand nach 4.5b, 4.5c als nächstes)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` (4.5b/4.5c-Hinweis bei §6 — sind keine Spec-Slices)
+
+---
+
 ## 26-05-14 (Update 26) · Slice 4.5 · Aktien + Forex/Commodities-Sektion · Twelve-Data-Endpoint-Architektur
 
 ### Was gemacht

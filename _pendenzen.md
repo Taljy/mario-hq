@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.5)
+aktualisiert: 26-05-14 (Slice 4.5b)
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -52,7 +52,9 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation · watchlist.json · twelveDataFetcher · watchlistAggregator · coingeckoFetcher erweitert
 - Slice 4.4 ✅ Watchlist-Komponenten · WatchlistItem + WatchlistGruppe + WatchlistSektion · Mini-Sparklines für Crypto · collapsible Gruppen · in /wirtschaft integriert
 - Slice 4.5 ✅ Aktien + Forex/Commodities-Sektion · Endpoint-Architektur (/api/aktien + /api/forex) wegen hartem 8/min-Credits-Limit · Commodities/Indizes Fallback B (weglassen) · IndizesGrid + Footer-Fix
-- Slice 4.6 als nächstes · Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
+- Slice 4.5b ✅ Krypto-Card-Rebuild · gemeinsame AssetCard · KryptoSektion (Rename) · zwei neue Krypto-Blöcke (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT) · Aktien-Doppelung weg · watchlist.json nur noch Krypto · aktien.ts + forex.ts NEU als typesafe Konstanten
+- Slice 4.5c als nächstes · interner Daten-Architektur-Cleanup (watchlistAggregator → kryptoAggregator, Typ-Renames, tdMap-Parameter raus)
+- Slice 4.6 danach · Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 
 ---
 
@@ -126,6 +128,8 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
 - [x] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
 - [x] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur
+- [x] **Slice 4.5b** Krypto-Card-Rebuild · gemeinsame AssetCard · IA-Umbau
+- [ ] **Slice 4.5c** Interner Daten-Architektur-Cleanup (kein sichtbarer Effekt)
 - [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss

@@ -328,6 +328,7 @@ const chart = echarts.init(domEl, 'drg');
 | **4.3** | Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup · watchlist.json | mittel | ✅ abgeschlossen |
 | **4.4** | Watchlist-Komponenten mit Gruppierung · alle Crypto-Items · Mini-Sparklines | gross | ✅ abgeschlossen |
 | **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur (zwei Endpoints + Edge-Cache + SWR) wegen 8/min-Credits-Limit · Commodities komplett raus · Indizes Fallback B (weglassen) | gross | ✅ abgeschlossen |
+| **4.5b/c** | (KEIN Spec-Slice) · IA-Umbau nach Mario-Wunsch · 4.5b: gemeinsame AssetCard, Krypto auf Card-Layout, neue Block-Struktur (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT), Aktien-Doppelung weg, watchlist.json nur noch Krypto, aktien.ts/forex.ts neu · 4.5c: interner Daten-Architektur-Cleanup (Aggregator-Rename + Typ-Renames) | mittel | 4.5b ✅ · 4.5c offen |
 | **4.6** | Wetter-Wochen-Bars (ECharts) + Mondphase-SVG (custom) auf /wetter | mittel | offen |
 | **4.7** | Macro-Timeline + Fear & Greed Gauge auf /wirtschaft | mittel | offen |
 | **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss | klein | offen |
