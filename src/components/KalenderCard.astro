@@ -1,49 +1,138 @@
 ---
-// KalenderCard — Co-Hero rechts (1fr) · statischer Kalender-Stub
-// Google-Calendar-Read-Only-Anbindung kommt Phase 2.6
+// KalenderCard — Co-Hero rechts (1fr) · LIVE seit Slice 5.3
+// Quelle: icalFetcher.getKalenderTermine() (Google iCal via ENV, mit Fallback)
+// Heute = tage[0] · Wochen-Strip = generiert aus tage[1..7]
+// Live-Stempel mit eigener Zeit (icalFetcher liefert keinen fetch_zeit)
 
-import { getKalenderHeute } from '../lib/kalenderResolver';
+import type { KalenderErgebnis, KalenderTag, KalenderTermin } from '../lib/icalFetcher';
 
-const kalender = getKalenderHeute();
+interface Props {
+  ergebnis: KalenderErgebnis;
+}
+
+const { ergebnis } = Astro.props;
+
+function jetztCest(): string {
+  return (
+    new Date().toLocaleTimeString('de-CH', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Europe/Zurich',
+    }) + ' CEST'
+  );
+}
+
+const stempelLabel = ergebnis.ist_live
+  ? `Live · ${jetztCest()}`
+  : 'Fallback · Kalender offline';
+
+// Heute-Block: nicht via tage[0] (icalFetcher liefert NUR Tage mit Terminen,
+// "heute frei" wäre dann nicht in tage[0]) · sondern explizit per Datum suchen
+function isoDatum(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+const tageMap = new Map<string, KalenderTag>(ergebnis.tage.map((t) => [t.datum, t]));
+const heuteDate = new Date();
+const heuteIso  = isoDatum(heuteDate);
+const heuteTermine: KalenderTermin[] = (tageMap.get(heuteIso)?.termine ?? []).slice(0, 3);
+
+// Wochen-Strip: alle 7 Tage ab morgen explizit aufbauen · pro Tag "Wochentag-Kurz +
+// erstes-Wort-des-ersten-Termins" oder "frei". Defensive gegen icalFetcher-Eigenheit
+// (Tage ohne Termine fehlen im tage[]-Array komplett).
+function ersterTerminWort(tag: KalenderTag): string {
+  if (tag.termine.length === 0) return 'frei';
+  const titel = tag.termine[0].titel.trim();
+  if (titel.length === 0 || titel === '(kein Titel)') {
+    return tag.termine.length === 1 ? '1 Termin' : `${tag.termine.length} Termine`;
+  }
+  return titel.split(/\s+/)[0];
+}
+
+function wochentagKurz(d: Date): string {
+  return d
+    .toLocaleDateString('de-CH', { weekday: 'short', timeZone: 'Europe/Zurich' })
+    .replace('.', '');
+}
+
+const wochenStripText = Array.from({ length: 7 }, (_, i) => {
+  const d = new Date(heuteDate);
+  d.setDate(d.getDate() + i + 1);
+  const tag = tageMap.get(isoDatum(d));
+  const label = tag ? ersterTerminWort(tag) : 'frei';
+  return `${wochentagKurz(d)} ${label}`;
+}).join(' · ');
+
+// Termine-Zeit-Format: Uhrzeit aus iCal oder "ganztägig"
+function zeitLabel(t: KalenderTermin): string {
+  if (t.ganztag || t.zeit === null) return 'ganztägig';
+  return t.zeit;
+}
 ---
 
 <div class="kalender-card">
-  <!-- Eyebrow -->
-  <span class="eyebrow">Kalender · Heute</span>
+  <!-- Header-Row: Eyebrow links · Live-Stempel rechts -->
+  <div class="card-head">
+    <span class="eyebrow">Kalender · Heute</span>
+    <span class={`live-stempel ${!ergebnis.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
 
   <!-- Termin-Liste -->
   <div class="termine">
-    {kalender.heute.map((t) => (
-      <div class="termin">
-        <span class="zeit">{t.zeit}</span>
-        <span class="titel">{t.titel}</span>
-      </div>
-    ))}
+    {heuteTermine.length === 0 ? (
+      <p class="leer-hinweis">Heute frei.</p>
+    ) : (
+      heuteTermine.map((t) => (
+        <div class="termin">
+          <span class="zeit">{zeitLabel(t)}</span>
+          <span class="titel">{t.titel}</span>
+        </div>
+      ))
+    )}
   </div>
 
   <!-- Wochen-Strip -->
   <div class="woche-strip">
     <span class="woche-eyebrow">Diese Woche</span>
-    <p class="woche-text">{kalender.woche}</p>
+    <p class="woche-text">{wochenStripText}</p>
   </div>
 </div>
 
 <style>
   .kalender-card {
-    background: var(--bg-card);
-    padding: 22px;
+    background:    var(--bg-card);
+    padding:       22px;
     border-radius: 4px;
   }
 
+  /* Header-Row · Pattern aus KryptoCard/WetterCard (Slice 5.1/5.2) */
+  .card-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   var(--s-4);
+  }
+
   .eyebrow {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 400;
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: var(--s-4);
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
   }
 
   /* Termin-Liste */
@@ -51,48 +140,56 @@ const kalender = getKalenderHeute();
     margin-bottom: var(--s-3);
   }
 
+  .leer-hinweis {
+    margin:      0;
+    font-family: var(--font-display);
+    font-style:  italic;
+    font-size:   12px;
+    color:       var(--fg-muted);
+  }
+
   .termin {
-    display: flex;
-    gap: 10px;
+    display:     flex;
+    gap:         10px;
     margin-bottom: 8px;
     align-items: baseline;
   }
 
   .zeit {
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--fg-subtle);
-    min-width: 38px;
+    font-size:   11px;
+    color:       var(--fg-subtle);
+    min-width:   60px;
     flex-shrink: 0;
   }
 
   .titel {
-    font-size: 12px;
-    color: var(--fg);
+    font-size:   12px;
+    color:       var(--fg);
     line-height: 1.6;
   }
 
   /* Wochen-Strip */
   .woche-strip {
-    padding-top: 12px;
-    border-top: 1px solid var(--hairline);
-    display: flex;
+    padding-top:    12px;
+    border-top:     1px solid var(--hairline);
+    display:        flex;
     flex-direction: column;
-    gap: 4px;
+    gap:            4px;
   }
 
   .woche-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-family:    var(--font-mono);
+    font-size:      10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--fg-subtle);
+    color:          var(--fg-subtle);
   }
 
   .woche-text {
-    margin: 0;
-    font-size: 11px;
-    color: var(--fg-muted);
+    margin:      0;
+    font-size:   11px;
+    color:       var(--fg-muted);
     line-height: 1.5;
   }
 </style>

@@ -1,7 +1,8 @@
-// newsResolver — liefert News-Kategorien für /news-Detail-Page
-// getNewsHeute() bleibt für Cover-Kompatibilität (index.astro)
+// newsResolver — News-Quellen für Cover + /news-Detail-Page
+// getNewsHeute() für Cover-NewsCard (Slice 5.3: aus news-voll.cover_headlines)
+// getNewsKategorien() für /news Detail-Page (4 Kategorien × N Items)
+// Beide aus EINER Datei (news-voll.json) seit Slice 5.3 · Single-Source
 
-import data from '../data/news.json';
 import vollData from '../data/news-voll.json';
 
 export interface News {
@@ -21,7 +22,7 @@ export interface NewsKategorie {
 }
 
 export function getNewsHeute(): News {
-  return data as News;
+  return { headlines: vollData.cover_headlines as string[] };
 }
 
 export function getNewsKategorien(): NewsKategorie[] {

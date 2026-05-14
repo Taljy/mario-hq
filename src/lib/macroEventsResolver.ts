@@ -40,3 +40,14 @@ export function getMacroEvents(jetzt: Date = new Date()): MacroEvent[] {
       return a.uhrzeit.localeCompare(b.uhrzeit);
     });
 }
+
+// getNaechsteWichtigeEvents — Macro-Vorausschau für Cover-MacroCard (Slice 5.3)
+// "Wichtig" = impact 'kritisch' oder 'hoch' · 'mittel' wird übersprungen
+// Liefert bis zu `anzahl` Events ab heute, chronologisch · weniger wenn weniger
+// im aktuellen 14-Tage-Fenster verfügbar sind (defensive Pflicht — bei nicht-
+// gepflegter JSON oder dünnem Fenster zeigt die Card 2/1/0 Events, ist kein Bug)
+export function getNaechsteWichtigeEvents(anzahl = 3, jetzt: Date = new Date()): MacroEvent[] {
+  return getMacroEvents(jetzt)
+    .filter((e) => e.impact === 'kritisch' || e.impact === 'hoch')
+    .slice(0, anzahl);
+}

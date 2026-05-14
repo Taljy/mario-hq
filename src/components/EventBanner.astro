@@ -1,7 +1,18 @@
 ---
-// EventBanner — conditional · nur sichtbar wenn für heute ein Event eingetragen ist
-// Vermillon-soft Background + Left-Border signalisiert Marktereignis ohne zu schreien
-// Kein Event → leerer Output, kein DOM-Element
+// EventBanner — STILLGELEGT in Slice 5.3 (14.5.2026)
+// In index.astro nicht mehr eingebunden · MacroCard-3er-Vorausschau übernimmt
+// die Macro-Information auf dem Cover · ruhigerer Cover-Charakter.
+//
+// Wiederanschluss-Anleitung (~10 min):
+//   1. eventResolver wurde in 5.3 gelöscht · Import unten umstellen auf
+//      macroEventsResolver.getHeutigesBannerEvent() (Helper neu anlegen,
+//      Trigger: impact === 'kritisch' || 'hoch', datum === heute)
+//   2. Felder-Mapping: MacroEvent hat name/uhrzeit · keine beschreibung
+//      → Template anpassen (Banner-Text z.B. "Heute · {uhrzeit} · {name}")
+//   3. In src/pages/index.astro Import + <EventBanner /> wieder einhängen
+//
+// Datei bleibt mit gebrochenem Import — Build ignoriert sie weil nicht
+// imported. Astro bundelt nur referenzierte Komponenten.
 
 import { getAktivenEvent } from '../lib/eventResolver';
 

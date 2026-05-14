@@ -1,4 +1,13 @@
 {
+  "_schema_doku": {
+    "cover_headlines": "Kuratierte Top-3-Headlines für die Cover-NewsCard (Mario-gepflegt, ~täglich/wöchentlich)",
+    "kategorien": "4 Kategorien × N Items für die Detail-Page /news (Mario-gepflegt)"
+  },
+  "cover_headlines": [
+    "Schweizer AI-Act tritt in Kraft",
+    "Saharastaub am Wochenende erwartet",
+    "Tesla senkt EU-Preise"
+  ],
   "kategorien": [
     {
       "id": "tech",

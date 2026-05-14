@@ -11,7 +11,8 @@ import HeroImage from '../components/HeroImage.astro';
 import CoverHeader from '../components/CoverHeader.astro';
 import Zitat from '../components/Zitat.astro';
 import GeschichteStrip from '../components/GeschichteStrip.astro';
-import EventBanner from '../components/EventBanner.astro';
+// EventBanner in Slice 5.3 stillgelegt · Komponente bleibt im Repo erhalten
+// (Wiederanschluss möglich, siehe PHASE-5-COVER-SYNC-SPEC.md §4.6)
 import WetterCard from '../components/WetterCard.astro';
 import KalenderCard from '../components/KalenderCard.astro';
 import KryptoCard from '../components/KryptoCard.astro';
@@ -24,19 +25,23 @@ import { getFearGreed }        from '../lib/fearGreedFetcher';
 import { getWetterErgebnis }   from '../lib/openMeteoFetcher';
 import { getStundenHeute }     from '../lib/astronomieResolver';
 import { getFotoEmpfehlung }   from '../lib/fotoSpotPicker';
+import { getKalenderTermine }  from '../lib/icalFetcher';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
 // Parallele Fetches · jeder mit eigenem Fallback (siehe Fetcher-Implementierungen)
-const [krypto, fearGreed, wetter] = await Promise.all([
+const [krypto, fearGreed, wetter, kalender] = await Promise.all([
   getKryptoStand(),
   getFearGreed(),
   getWetterErgebnis(),
+  getKalenderTermine(),
 ]);
 
 // Synchron · brauchen kein await
 const stunden = getStundenHeute();
 const foto    = getFotoEmpfehlung(wetter.heute);  // braucht wetter.heute, muss NACH dem await stehen
+// MacroCard liest selbst aus macroEventsResolver (synchron, kein Props-Bottleneck nötig)
+// NewsCard liest selbst aus newsResolver (synchron, kein Props-Bottleneck nötig)
 ---
 
 <Magazine title="Cover · Mario's HQ">
@@ -46,10 +51,9 @@ const foto    = getFotoEmpfehlung(wetter.heute);  // braucht wetter.heute, muss 
       <CoverHeader />
       <Zitat />
       <GeschichteStrip />
-      <EventBanner />
       <div class="co-heroes">
         <WetterCard wetter={wetter} stunden={stunden} foto={foto} />
-        <KalenderCard />
+        <KalenderCard ergebnis={kalender} />
       </div>
       <div class="supporting">
         <KryptoCard krypto={krypto} fearGreed={fearGreed} />

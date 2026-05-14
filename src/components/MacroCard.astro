@@ -1,128 +1,131 @@
 ---
-// MacroCard — Supporting-Grid Mitte (1fr) · Event-Pulse-Animation
-// Pulse-Border conditional an getAktivenEvent() — gleiche Logik wie EventBanner
-// prefers-reduced-motion-Schutz ist Pflicht (A11Y)
+// MacroCard — Supporting-Grid Mitte (1fr) · LIVE seit Slice 5.3
+// 3er-Vorausschau auf wichtige Macro-Events (impact kritisch || hoch) ab heute
+// Quelle: macroEventsResolver.getNaechsteWichtigeEvents() · Mario-gepflegtes JSON
+// Kein Live-Stempel · kein Puls · keine Indizes-Zeile (Mario-Entscheidungen Phase 5)
+// Defensive: bei 0 Events graceful leer-Hinweis, bei <3 entsprechend weniger Zeilen
 
-import { getMacroHeute } from '../lib/macroResolver';
-import { getAktivenEvent } from '../lib/eventResolver';
+import { getNaechsteWichtigeEvents } from '../lib/macroEventsResolver';
+import type { MacroEvent } from '../lib/macroEventsResolver';
 
-const macro = getMacroHeute();
-const event = getAktivenEvent();
-const istEventAktiv = event !== null;
+const events: MacroEvent[] = getNaechsteWichtigeEvents(3);
+const heuteIso = new Date().toISOString().slice(0, 10);
 
-// Indizes-Strip: "SMI +0.3 · DAX flat"
-const indizesStrip = macro.indizes
-  .map((idx) => {
-    const delta =
-      idx.delta_prozent === 0
-        ? 'flat'
-        : `${idx.delta_prozent > 0 ? '+' : ''}${idx.delta_prozent.toFixed(1)}`;
-    return `${idx.name} ${delta}`;
-  })
-  .join(' · ');
+function formatDatum(iso: string): string {
+  if (iso === heuteIso) return 'Heute';
+  // "DD. Monat" via Intl, deutsche Schreibweise · z.B. "19. Mai"
+  const d = new Date(iso + 'T12:00:00Z');
+  return d.toLocaleDateString('de-CH', {
+    day:      'numeric',
+    month:    'long',
+    timeZone: 'Europe/Zurich',
+  });
+}
 ---
 
-<div class={`macro-card ${istEventAktiv ? 'event-aktiv' : ''}`}>
-  <!-- Header-Row: Eyebrow links · Event-Marker rechts (nur wenn aktiv) -->
+<div class="macro-card">
+  <!-- Header-Row: nur Eyebrow, kein Live-Stempel (JSON-gepflegt, nicht live) -->
   <div class="card-head">
     <span class="eyebrow">Macro</span>
-    {istEventAktiv && <span class="event-marker">Event aktiv</span>}
   </div>
 
-  <!-- Body -->
-  <div class="macro-body">
-    <span class="tagesthema">{macro.tagesthema}</span>
-    <span class="zeit">{macro.zeit}</span>
-    <span class="indizes">{indizesStrip}</span>
-  </div>
+  <!-- Body: 3er-Vorausschau · oder graceful Leer-Hinweis bei 0 Events -->
+  {events.length === 0 ? (
+    <p class="leer-hinweis">Keine wichtigen Macro-Events in den nächsten 14 Tagen.</p>
+  ) : (
+    <ul class="event-liste" role="list">
+      {events.map((e) => (
+        <li class="event-zeile">
+          <span class="event-datum">{formatDatum(e.datum)}</span>
+          <span class="event-zeit">{e.uhrzeit}</span>
+          <span class="event-name">{e.name}</span>
+        </li>
+      ))}
+    </ul>
+  )}
 </div>
 
 <style>
   .macro-card {
-    background: var(--bg-card);
-    padding: 18px;
+    background:    var(--bg-card);
+    padding:       18px;
     border-radius: 4px;
-    /* Standard ohne Event: kein Border */
-    border: 1.5px solid transparent;
   }
 
-  .macro-card.event-aktiv {
-    border: 1.5px solid rgba(227, 66, 52, 0.3);
-    animation: hq-pulse-border 2.4s ease-in-out infinite;
-  }
-
-  @keyframes hq-pulse-border {
-    0%, 100% { border-color: rgba(227, 66, 52, 0.18); }
-    50%       { border-color: rgba(227, 66, 52, 0.55); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .macro-card.event-aktiv {
-      animation: none;
-      border-color: rgba(227, 66, 52, 0.3);
-    }
-  }
-
-  /* Dark-Mode — Pulse stärker: 0.18/0.55 ist für hellen Hintergrund kalibriert
-     Auf dunklem Background sind 0.28/0.65 nötig für vergleichbare Wirkung */
-  :root[data-theme="dark"] .macro-card.event-aktiv {
-    animation-name: hq-pulse-border-dark;
-  }
-
-  @keyframes hq-pulse-border-dark {
-    0%, 100% { border-color: rgba(227, 66, 52, 0.28); }
-    50%       { border-color: rgba(227, 66, 52, 0.65); }
-  }
-
-  /* Header-Row */
   .card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    display:       flex;
+    align-items:   baseline;
     margin-bottom: var(--s-4);
   }
 
   .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 400;
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .event-marker {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--accent-hover);
+    color:          var(--accent);
   }
 
   /* Body */
-  .macro-body {
-    display: flex;
+  .leer-hinweis {
+    margin:      0;
+    font-family: var(--font-display);
+    font-style:  italic;
+    font-size:   12px;
+    color:       var(--fg-muted);
+    line-height: 1.4;
+  }
+
+  .event-liste {
+    list-style:     none;
+    margin:         0;
+    padding:        0;
+    display:        flex;
     flex-direction: column;
-    gap: 4px;
+    gap:            10px;
   }
 
-  .tagesthema {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--fg);
-    line-height: 1.3;
+  .event-zeile {
+    display:               grid;
+    grid-template-columns: auto auto 1fr;
+    align-items:           baseline;
+    column-gap:            10px;
+    row-gap:               2px;
   }
 
-  .zeit {
+  .event-datum {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    600;
+    letter-spacing: 0.04em;
+    color:          var(--fg);
+    white-space:    nowrap;
+  }
+
+  .event-zeit {
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--fg-muted);
+    font-size:   10px;
+    color:       var(--fg-subtle);
+    white-space: nowrap;
   }
 
-  .indizes {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--fg-subtle);
-    margin-top: 4px;
+  .event-name {
+    font-size:   12px;
+    color:       var(--fg-muted);
+    line-height: 1.4;
+  }
+
+  /* Mobile: Datum + Zeit in Zeile 1, Name in Zeile 2 (kompakter auf 375px) */
+  @media (max-width: 480px) {
+    .event-zeile {
+      grid-template-columns: auto auto;
+      grid-template-areas:
+        "datum zeit"
+        "name name";
+    }
+    .event-datum { grid-area: datum; }
+    .event-zeit  { grid-area: zeit; justify-self: end; }
+    .event-name  { grid-area: name; }
   }
 </style>
