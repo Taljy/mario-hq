@@ -1,5 +1,77 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 36) · Phase 5 · Slice 5.2b · WetterCard Live-Swap · Slice 5.2 abgeschlossen
+
+### Was gemacht
+- `src/lib/astronomieResolver.ts` · `blaue_stunde.ende` von `dusk` auf `nauticalDusk` umgestellt (Mario-Entscheidung in 5.2b · siehe unten)
+- `src/pages/index.astro` · Promise.all um `getWetterErgebnis()` erweitert · synchron danach `stunden = getStundenHeute()` + `foto = getFotoEmpfehlung(wetter.heute)` · WetterCard erhält Props
+- `src/components/WetterCard.astro` · Live-Swap:
+  - Inline-SonneWolken-SVG (byte-genau Duplikat zu `SonneWolken.astro`) **entfernt** → `<WetterSymbol wmoCode={wetter.heute.wmo_code} size={64} />`
+  - Props-Interface `{ wetter: WetterErgebnis; stunden: StundenHeute; foto: FotoEmpfehlung }` · Card liest nicht mehr selbst (Pattern wie KryptoCard in 5.1)
+  - Live-Stempel im `card-head`-Flex-Container · `Live · {fetch_zeit}` / `Fallback · Open-Meteo offline`
+  - Stunden-Formatierung in der Card (View-Logik): `{start} — {ende}` mit Em-Dash U+2014 + Leerzeichen
+  - Foto-Hinweis: `{foto.begruendung}` direkt (FotoEmpfehlung liefert fertigen Satz mit Punkt)
+  - Wind-Format: `{wind_richtung} {wind_kmh} km/h`
+  - Obsolete `.wetter-symbol`-CSS-Klasse entfernt
+  - `niederschlag_mm` bewusst nicht angezeigt · Layout-Treue · WetterDetail auf /wetter zeigt es weiterhin
+- Stub-Files gelöscht: `src/lib/wetterPicker.ts` + `src/data/wetter.json`
+
+### Mario-Entscheidung Blaue-Stunde-Definition: nauticalDusk
+In 5.2a war provisorisch `sunset → dusk` (bürgerliche Dämmerung, ≈ 36 min) gewählt mit Vermerk "Mario kann später anpassen". Mario hat in der 5.2b-Freigabe entschieden: **erweitertes fotografisches Fenster** `sunset → nauticalDusk` (Sonne 12° unter Horizont, ≈ 82 min). Begründung: Card ist Inspirations-Werkzeug, nicht Timing-Anker. Touch im astronomieResolver mit getStundenHeute() · gehört in DENSELBEN feat-Commit (Mario-GO).
+
+### Sanity-Check nauticalDusk · gegen unabhängige Quelle (nicht zirkulär)
+Vor dem Code-Touch: Erwartungswert unabhängig bestimmt via `api.sunrise-sunset.org`:
+- nautical_twilight_end Baden 14.5.2026 = 22:18 CEST
+
+Nach dem Code-Touch: SunCalc-Output gemessen:
+- SunCalc.nauticalDusk Baden 14.5.2026 = 22:19 CEST
+
+Drift: 1 min · normaler Implementations-Drift zwischen astronomischen Bibliotheken (atmosphärische Brechungs-Modelle). Plausibel · gleiche Größenordnung wie 5.2a-Check.
+
+### Mobile-Layout-Befund (Notiz 1 aus GO)
+Auf 375px wrappt der `card-head` Eyebrow + Live-Stempel je auf zwei Zeilen:
+- Eyebrow: "WETTER & FOTO · BADEN" / "AG"
+- Stempel: "LIVE · 22:51" / "CEST"
+
+Funktional ok (kein Overlap, kein Abschneiden), optisch sichtbar eng. **Bewusst nicht in 5.2b umdesignt** — Mario sagte "im Bericht melden, nicht selbst umdesignen". Slice 5.4 (Polish/Volltest) ist der Ort, falls Mario Anpassung will (z.B. Wrapping-Logik oder kompakteres Stempel-Format). In Spec §4.2 festgehalten.
+
+### niederschlag_mm-Auslassung (Notiz 2 aus GO)
+In Spec §4.2 als bewusste Layout-Treue-Entscheidung festgehalten: Wert ist in `WetterErgebnis.heute.niederschlag_mm` verfügbar, WetterDetail auf /wetter zeigt ihn (conditional `> 0`). Cover-Card zeigt ihn nicht, weil Phase-2.2-Stub-Layout kein Slot dafür hat. Falls Cover-Card jemals Niederschlag mitzeigen soll: dedizierte Mario-Entscheidung + Layout-Anpassung.
+
+### Verifikation
+- `npm run build` grün
+- Dev-Server-Restart (HMR-Falle)
+- Lokal /-Cover: WetterCard zeigt `6° · Vorwiegend klar · S 3 km/h · Goldene 20:11 — 20:56 · Blaue 20:56 — 22:19 · "Klarer Abend · goldene Stunde ideal für Architektur-Spots." · Live · 22:51 CEST`
+- KryptoCard weiterhin live (5.1), andere Cards weiter Stub — erwartet
+- Light + Dark sauber
+- Mobile 375px Befund (siehe oben)
+- /wetter Sicherheits-Check: WetterDetail visuell unverändert
+- Console clean
+- Production nach Push: live mit denselben Werten · Stempel `Live · 22:52 CEST`
+
+**Stolperstein erweitert (HANDOVER §5):** Auch zwischen `until curl -sf` (das nur Status-200 prüft) und dem Inhalts-curl kann der Edge-Cache noch alte Werte serve-en. Erster Inhalts-curl direkt nach Deploy-Ready erwischte teilweise alte Stub-Werte, zweiter sauber. Lehre: Status-200 ≠ Inhalts-Propagation, eventuell 2–3 Sekunden warten oder mehrfach versuchen.
+
+### Cover-Stand nach Slice 5.2
+- KryptoCard ✅ live (Slice 5.1)
+- WetterCard ✅ live (Slice 5.2)
+- KalenderCard: Stub (kommt in 5.3)
+- MacroCard: Stub (kommt in 5.3)
+- NewsCard: Stub (kommt in 5.3)
+- EventBanner: Stub (kommt in 5.3)
+
+### Files dieser Session
+- `src/lib/astronomieResolver.ts` (blaue_stunde.ende → nauticalDusk + Kommentar-Update)
+- `src/pages/index.astro` (Promise.all-Erweiterung + WetterCard-Props)
+- `src/components/WetterCard.astro` (Live-Swap, Inline-SVG entfernt, card-head-Pattern, Stunden-Formatierung)
+- `src/lib/wetterPicker.ts` (gelöscht)
+- `src/data/wetter.json` (gelöscht)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` (§2 Status · §3 Card-Status-Tabelle · §4.2 Realitäts-Box mit nauticalDusk-Korrektur + niederschlag-Auslassung + Mobile-Befund)
+- `_pendenzen.md` (Phase 5 Status · Slice 5.2 ✅ · 5.3 als Nächstes)
+- `SESSION_LOG.md` (Update 36)
+- `docs/HANDOVER.md` (Stand nach 5.2 · 5.3 als nächster Schritt)
+
+---
+
 ## 26-05-14 (Update 35) · Phase 5 · Slice 5.2a · getStundenHeute()
 
 ### Plan-First-Befund · offen festgehalten

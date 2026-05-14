@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 5
 erstellt: 26-05-14
-aktualisiert: 26-05-14 (Slice 5.2a abgeschlossen)
-status: 5.1 ✅ · 5.2 in Bau-Aufteilung 5.2a ✅ / 5.2b offen · 5.3/5.4 offen
+aktualisiert: 26-05-14 (Slice 5.2 abgeschlossen · 5.2a + 5.2b durch)
+status: 5.1 ✅ · 5.2 ✅ (5.2a + 5.2b) · 5.3/5.4 offen
 referenz: Cover-Sync-Plan-Chat 14.5.2026 (claude.ai)
 ersetzt: Cover-Sync-Punkte aus _pendenzen.md vor Phase-5-Eröffnung
 ---
@@ -32,7 +32,7 @@ Phase 5 = **4 Slices total.**
 | Slice | Inhalt | Umfang | Status |
 |---|---|---|---|
 | **5.1** | Spec + SSR-Foundation (prerender=false, Cache-Header, Promise.all-Block) + KryptoCard live (CoinGecko + Fear & Greed) | klein-mittel | ✅ abgeschlossen |
-| **5.2** | Wetter-Card live · `astronomieResolver.getStundenHeute()` für Goldene/Blaue Stunde · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` · WetterSymbol-Wrapper direkt verwendet (kein eigener Helper nötig, siehe Bau-Aufteilung unten) | mittel | **Bau-Aufteilung 5.2a/5.2b · 5.2a ✅, 5.2b offen** |
+| **5.2** | Wetter-Card live · `astronomieResolver.getStundenHeute()` für Goldene/Blaue Stunde · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` · WetterSymbol-Wrapper direkt verwendet (kein eigener Helper nötig, siehe Bau-Aufteilung) | mittel | ✅ abgeschlossen (5.2a + 5.2b) |
 | **5.3** | KalenderCard (`getKalenderTermine()`) · MacroCard (`getMacroEvents()`, Indizes-Zeile weggelassen) · NewsCard (`cover_headlines`-Feld in `news-voll.json`) · EventBanner (auf `macroEventsResolver`, Trigger nach Event-Zählung entschieden) · alte Stub-Resolver löschen | mittel | offen |
 | **5.4** | Polish + Volltest Light/Dark/Mobile 375px + Cover-Stempel "Phase 4" → "Phase 5" + Phase-5-Synthese in SESSION_LOG + HANDOVER + Spec abschliessen | klein | offen |
 
@@ -49,15 +49,15 @@ Phase 5 = **4 Slices total.**
 | Card | Vor Phase 5 | Quelle | Nach Phase 5 | Quelle | Slice |
 |---|---|---|---|---|---|
 | KryptoCard | Stub | `kryptoResolver` → `krypto.json` | Live | `coingeckoFetcher.getKryptoStand()` + `fearGreedFetcher.getFearGreed()` | 5.1 |
-| WetterCard | Stub | `wetterPicker` → `wetter.json` | Live | `openMeteoFetcher.getWetterErgebnis()` + `astronomieResolver.getStundenHeute()` + `fotoSpotPicker.getFotoEmpfehlung()` | 5.2 |
+| WetterCard | ~~Stub~~ ✅ | ~~`wetterPicker` → `wetter.json`~~ (gelöscht 5.2b) | ✅ Live | `openMeteoFetcher.getWetterErgebnis()` + `astronomieResolver.getStundenHeute()` + `fotoSpotPicker.getFotoEmpfehlung()` | 5.2 |
 | KalenderCard | Stub | `kalenderResolver` → `kalender.json` | Live | `icalFetcher.getKalenderTermine()` | 5.3 |
 | MacroCard | Stub | `macroResolver` → `macro.json` | Live | `macroEventsResolver.getMacroEvents()` (Indizes-Zeile weggelassen) | 5.3 |
 | NewsCard | Stub | `newsResolver.getNewsHeute()` → `news.json` | Live | `newsResolver` aus `news-voll.json#cover_headlines` (Mario-gepflegt) | 5.3 |
 | EventBanner | Stub | `eventResolver` → `events.json` | Live | `macroEventsResolver` (Trigger in 5.3 nach Zählung) | 5.3 |
 
 **Werden gelöscht (mit ihrem Slice):**
-- `src/lib/kryptoResolver.ts` + `src/data/krypto.json` (5.1)
-- `src/lib/wetterPicker.ts` + `src/data/wetter.json` (5.2)
+- `src/lib/kryptoResolver.ts` + `src/data/krypto.json` ✅ gelöscht in 5.1
+- `src/lib/wetterPicker.ts` + `src/data/wetter.json` ✅ gelöscht in 5.2b
 - `src/lib/kalenderResolver.ts` + `src/data/kalender.json` (5.3)
 - `src/lib/macroResolver.ts` + `src/data/macro.json` (5.3)
 - `src/lib/eventResolver.ts` + `src/data/events.json` (5.3)
@@ -85,12 +85,14 @@ Phase 5 = **4 Slices total.**
 
 ### 4.2 WetterCard (Slice 5.2)
 
-> **Realitäts-Hinweis (14.5.2026, nach 5.2a):**
-> - Original-Plan sah einen `wmoSymbol.ts`-Helper + `WetterDetail.astro`-Refactor vor (vermutete "Refactor-Schuld aus 2.3.3"). Plan-First-Bestandsaufnahme hat ergeben: **`WetterSymbol.astro` ist bereits seit Phase 2.3 zentralisiert** (`src/components/wetter-symbole/WetterSymbol.astro` mit eigener `symbolFor()`-Mapping-Funktion, 8 SVG-Sub-Komponenten daneben). Keine Schuld vorhanden.
-> - **`wmoSymbol.ts` entfällt** komplett. Cover-WetterCard wird in 5.2b den bestehenden `<WetterSymbol wmoCode={...} size={64} />`-Wrapper direkt nutzen — kein Roh-String-Mapping nötig. Das Inline-SVG-Duplikat in der heutigen Cover-Card (byte-genau identisch zu `SonneWolken.astro`) wird in 5.2b durch den Wrapper ersetzt.
+> **Realitäts-Hinweis (14.5.2026, nach 5.2a + 5.2b):**
 > - **Bau-Aufteilung 5.2a / 5.2b** (analog 4.5b/4.5c-Pattern · gehört in EINEN Slice der 4er-Phase-5-Zählung):
->   - **5.2a ✅** (14.5.2026, feat `8decc27`): nur `astronomieResolver.getStundenHeute()` neu — isolierter Foundation-Baustein
->   - **5.2b offen**: WetterCard.astro-Live-Swap mit WetterSymbol-Wrapper + getWetterErgebnis + getStundenHeute + getFotoEmpfehlung + Stub-Files löschen
+>   - **5.2a ✅** (feat `8decc27`): `astronomieResolver.getStundenHeute()` als isolierter Foundation-Baustein
+>   - **5.2b ✅** (feat `a5ffb9e`): WetterCard.astro-Live-Swap + Blaue-Stunde-Definitions-Anpassung + Inline-SVG-Duplikat durch Wrapper ersetzt + Stub-Files gelöscht
+> - **`wmoSymbol.ts` ist NICHT entstanden** (Plan-First-Befund in 5.2a): `WetterSymbol.astro` war bereits seit Phase 2.3 zentralisiert (`src/components/wetter-symbole/WetterSymbol.astro` mit eigener `symbolFor()`-Mapping-Funktion). Cover-WetterCard nutzt den Wrapper direkt mit `<WetterSymbol wmoCode={...} size={64} />`. Das Inline-SVG-Duplikat (byte-genau identisch zu `SonneWolken.astro`) wurde in 5.2b entfernt.
+> - **Blaue-Stunde-Definition korrigiert** (Mario-Entscheidung in 5.2b): von der in 5.2a vermerkten `sunset → dusk` (≈ 36 min, bürgerliche Dämmerung) auf **`sunset → nauticalDusk`** (≈ 82 min, Sonne 12° unter Horizont · erweitertes fotografisches Fenster). Begründung: Card als Inspirations-Werkzeug, nicht Timing-Anker. Sanity-Check Baden 14.5.: SunCalc.nauticalDusk 22:19 CEST vs sunrise-sunset.org 22:18 CEST (1-min-Drift wie in 5.2a, normal).
+> - **`niederschlag_mm` bewusst nicht auf Cover angezeigt** · Layout-Treue zum Phase-2.2-Stub-Layout. Wert ist in `WetterErgebnis.heute.niederschlag_mm` verfügbar, `WetterDetail.astro` auf /wetter zeigt ihn (conditional bei `> 0`). Falls Cover-Card jemals Niederschlag mitzeigen soll: dedizierte Mario-Entscheidung + Layout-Anpassung.
+> - **Mobile-Layout-Befund (Notiz aus 5.2b-Verifikation)**: card-head auf 375px wrappt Eyebrow + Live-Stempel je auf zwei Zeilen ("WETTER & FOTO · BADEN" / "AG" links, "LIVE · 22:51" / "CEST" rechts). Funktional ok, optisch eng. Bewusst nicht in 5.2b umdesignt — Slice 5.4 (Polish/Volltest) ist der Ort, falls Mario Anpassung will.
 >
 > Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
 
@@ -103,9 +105,9 @@ Phase 5 = **4 Slices total.**
 
 **Goldene/Blaue-Stunde-Definition (fotografische Entscheidung, keine Naturkonstante):**
 - `goldene_stunde`: `SunCalc.goldenHour` (≈ 45 min vor Sonnenuntergang) → `SunCalc.sunset`
-- `blaue_stunde`: `SunCalc.sunset` → `SunCalc.dusk` (Ende der **bürgerlichen** Dämmerung, Sonne 6° unter Horizont)
-- Alternative wäre `blaue_stunde` bis `nauticalDusk` (Sonne 12° unter Horizont · längere "blaue" Phase). Mario kann das in 5.2b oder später anpassen.
-- Sanity-Check 5.2a: SunCalc-Werte für Baden 14.5.2026 stimmen auf 1 min mit unabhängiger Referenz `api.sunrise-sunset.org` überein (sunset 20:56 vs 20:57, dusk 21:32 vs civil_twilight_end 21:31). 1-min-Differenz ist normaler Implementations-Drift.
+- `blaue_stunde`: `SunCalc.sunset` → `SunCalc.nauticalDusk` (Sonne 12° unter Horizont · **erweitertes fotografisches Fenster ≈ 82 min** · Mario-Entscheidung in 5.2b · Card als Inspirations-Werkzeug, nicht Timing-Anker)
+- Alternative wäre `blaue_stunde` bis `dusk` (bürgerliche Dämmerung, ≈ 36 min · kompaktere klassische Definition). Mario kann später anpassen.
+- Sanity-Check Baden 14.5.2026 gegen unabhängige Referenz `api.sunrise-sunset.org`: sunset 20:56 vs 20:57 · nauticalDusk 22:19 vs 22:18 · 1-min-Drift ist normaler Implementations-Drift zwischen astronomischen Bibliotheken.
 
 **Symbol-Rendering:** WetterCard nutzt direkt `<WetterSymbol wmoCode={wetter.heute.wmo_code} size={64} />` aus `src/components/wetter-symbole/`. Wrapper hat ein `size`-Prop, das ist die einzige Variation gegenüber WetterDetail (das `size=96` und `size=32` nutzt).
 

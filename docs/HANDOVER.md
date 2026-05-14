@@ -3,10 +3,10 @@ typ: handover
 projekt: mario-hq
 erstellt: 26-05-14
 zweck: Nahtloser Übergang in neue claude.ai-Session + neue Claude-Code-Session
-gilt-bis: Slice 5.2b begonnen oder abgeschlossen
+gilt-bis: Slice 5.3 begonnen oder abgeschlossen
 ---
 
-# Handover · Mario's HQ · Stand 14.5.2026 · nach Phase 5 Slice 5.2a
+# Handover · Mario's HQ · Stand 14.5.2026 · nach Phase 5 Slice 5.2
 
 > **Für die neue claude.ai-Session:** Dieses Dokument als ersten Input geben.
 
@@ -36,79 +36,90 @@ Mario: Architekturfotograf, Swing-Trader, Schweizer Hochdeutsch, du-Form.
 
 Phase-5-Status:
 - Slice 5.1 ✅ SSR-Foundation + KryptoCard live (feat `7af3bf9`)
-- **Slice 5.2 · in Bau-Aufteilung 5.2a/5.2b** (analog 4.5b/4.5c-Pattern · bleibt EIN Slice in der 4er-Phasen-Zählung)
-  - **5.2a ✅** `getStundenHeute()` in `astronomieResolver` (feat `8decc27`)
-  - **5.2b ← NÄCHSTER SCHRITT** · WetterCard-Live-Swap mit WetterSymbol-Wrapper + getWetterErgebnis + getStundenHeute + getFotoEmpfehlung + Stub-Files löschen
-- Slice 5.3 · Kalender + Macro + News + EventBanner
+- Slice 5.2 ✅ WetterCard live · Bau-Aufteilung 5.2a/5.2b
+  - 5.2a ✅ `getStundenHeute()` in `astronomieResolver` (feat `8decc27`)
+  - 5.2b ✅ WetterCard-Live-Swap + nauticalDusk-Korrektur (feat `a5ffb9e`)
+- **Slice 5.3 ← NÄCHSTER SCHRITT** · Kalender + Macro + News + EventBanner
 - Slice 5.4 · Polish + Cover-Stempel "Phase 5" + Phase-5-Abschluss
 
-**Zur Slice-Nummerierung:** Die frühere Bezeichnung *"Slice 5.1 Binance/Bybit-Swap"* war ein Phase-4-Nachläufer-Label. Phase 5 zählt 5.1, 5.2, 5.3, 5.4 (4-Slice-Zählung). 5.2 ist intern in 5.2a/5.2b geteilt (Bau-Aufteilung).
+**Zur Slice-Nummerierung:** Phase 5 zählt 5.1, 5.2, 5.3, 5.4 (4-Slice-Zählung). 5.2 ist intern in 5.2a/5.2b geteilt (Bau-Aufteilung analog 4.5b/4.5c, keine neue Phasen-Nummer). Frühere Bezeichnung *"Slice 5.1 Binance/Bybit-Swap"* war ein Phase-4-Nachläufer-Label · Commits per SHA referenziert.
 
 ### Cover-Stand
 
 | Card | Status | Quelle |
 |---|---|---|
 | KryptoCard | ✅ live | CoinGecko + Alternative.me |
-| WetterCard | Stub | wetterPicker (wird in 5.2b live) |
+| WetterCard | ✅ live | Open-Meteo + SunCalc + FotoSpotPicker |
 | KalenderCard | Stub | kalenderResolver (kommt in 5.3) |
 | MacroCard | Stub | macroResolver (kommt in 5.3) |
 | NewsCard | Stub | newsResolver (kommt in 5.3) |
 | EventBanner | Stub | eventResolver (kommt in 5.3) |
 
-**Production live:** `mario-hq-qc6f.vercel.app/` zeigt KryptoCard mit echten BTC-Preisen + Fear & Greed.
+**Production live auf `mario-hq-qc6f.vercel.app/`:** echte BTC-Preise + Wetter Baden AG + Goldene/Blaue Stunde + Foto-Hinweis. Macro/Kalender/News/EventBanner zeigen weiterhin Stub-Werte.
 
 ---
 
-## 3 · Nächster Schritt · Slice 5.2b · WetterCard live
+## 3 · Nächster Schritt · Slice 5.3 · Kalender + Macro + News + EventBanner
 
-**Spec §4.2.** Erbt die 5.2a-Foundation und macht den eigentlichen Card-Swap.
+**Spec §4.3, §4.4, §4.5, §4.6.** Drei Cards + ein Banner in einem Slice. Alle Quellen battle-tested aus Phase 4 oder Mario-gepflegt — kleinere Einzel-Swaps.
 
-**Tasks:**
-- `src/pages/index.astro` Promise.all erweitern: `+ getWetterErgebnis() + getAstronomieHeute()` (oder direkt `getStundenHeute()` und `getFotoEmpfehlung()`); WetterCard bekommt entsprechende Props
-- `src/components/WetterCard.astro` Live-Swap:
-  - Wechsel von `getWetterHeute()`-Stub auf Props-Interface
-  - **WetterSymbol-Wrapper direkt nutzen:** `<WetterSymbol wmoCode={wetter.heute.wmo_code} size={64} />` aus `src/components/wetter-symbole/` — ersetzt das aktuell inline-duplizierte `SonneWolken`-SVG
-  - Goldene + Blaue Stunde aus `getStundenHeute()` (5.2a-Foundation)
-  - `foto_hinweis` aus `getFotoEmpfehlung(wetter.heute).begruendung`
-  - Live-Stempel-Pattern wie KryptoCard (5.1)
-- `src/lib/wetterPicker.ts` + `src/data/wetter.json` löschen
+**Tasks (in einer sinnvollen Reihenfolge):**
 
-**Risiken:**
-- WetterSymbol-Wrapper `size`-Prop: aktuelle Cover-Card hat 64×64px → `size={64}` passt
-- Format Goldene/Blaue Stunde-Range: Cover zeigt aktuell `"20:00 — 20:48"` (Em-Dash, kein Bindestrich). Aus `StundenHeute.{start, ende}` zusammensetzen
-- Mario kann die Blaue-Stunde-Definition (heute `sunset` → `dusk`) in 5.2b oder später anpassen wenn sie auf der echten Card visuell unpassend ist · Alternative wäre bis `nauticalDusk`
-- Production-Check nach Push: WetterCard-Werte aus Open-Meteo, Goldene/Blaue Stunde aus SunCalc (lokal, kein API-Risiko)
+1. **KalenderCard live** · `getKalenderTermine()` aus `icalFetcher` (ENV-gestützt mit Fallback `kalender-fallback.json`, läuft seit Phase 2.3 stabil)
+   - `tage[0]` = heute → Termine
+   - `tage[1..7]` → kompakter Wochen-Strip-Text (Format des aktuellen Stub: `"Do Mail · Fr frei · Sa Glose · So Mami"` — daraus jetzt echte Daten ableiten oder Format neu denken)
+   - Stub-Files löschen: `kalenderResolver.ts` + `kalender.json`
 
-**Geschätzter Umfang:** klein-mittel · der Foundation-Baustein steht bereits aus 5.2a.
+2. **MacroCard live** · `getMacroEvents()` aus `macroEventsResolver` (Phase 4.7, 9 echte Events 14.5.–28.5.)
+   - Heutiges Event = `events.find(e => e.datum === heute)`
+   - `tagesthema` = event.name, `zeit` = event.uhrzeit
+   - **Indizes-Zeile entfällt** (Mario-Entscheidung Phase-5-Eröffnung · keine Indizes im Free Tier · statische Lüge vermeiden)
+   - Stub-Files löschen: `macroResolver.ts` + `macro.json`
+
+3. **NewsCard live** · neue Quelle: `cover_headlines: string[]`-Feld in `news-voll.json` (Mario-gepflegt, Single-Source-Entscheidung Phase-5-Eröffnung)
+   - `getNewsHeute()` zieht aus `news-voll.cover_headlines`
+   - **Initial-Befüllung von `cover_headlines`**: Mario kann die 3 bisherigen Headlines aus `news.json` (Schweizer AI-Act / Saharastaub / Tesla) übernehmen oder neu kuratieren
+   - Stub-Files löschen: `news.json`
+
+4. **EventBanner live** · von `eventResolver` (Stub) auf `macroEventsResolver` umstellen
+   - **Trigger-Entscheidung vor Verdrahten** (Mario-Entscheidung Phase-5-Eröffnung):
+     1. Zählen wie viele `impact === 'kritisch'`-Events in `macro-events.json` im aktuellen 14-Tage-Fenster liegen
+     2. Wenn 1–2 → Trigger lockern auf `kritisch || hoch`
+     3. Wenn 4–5 → `kritisch` allein
+     4. Ergebnis (Zählung + gewählter Trigger) im Slice-5.3-Bericht festhalten
+   - Stub-Files löschen: `eventResolver.ts` + `events.json`
+
+**Umfang:** mittel · drei Cards + ein Banner · alle Quellen vorhanden · keine API-Risiken.
 
 ---
 
-## 4 · Bekannte Production-Issues (nicht blockierend für 5.2b)
+## 4 · Bekannte Production-Issues (nicht blockierend für 5.3)
 
 - **US-Datacenter-IP-Block · Derivate-Börsen-Klasse** *(struktureller Befund, 14.5.)* — Binance + Bybit beide von Vercel-iad1-IPs geblockt. DeFiLlama, CoinGecko, Alternative.me, Coinbase, Open-Meteo, Twelve Data laufen normal. Verbleibender Lösungs-Pfad: Architektur (Fetch-und-ablegen) **GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1: GH-Actions-Runner-IP-Test gegen Bybit/Binance.
-- Auf /wirtschaft: 4 Trading-Indikator-Cards Fallback (UI-Wahrheit korrekt: "Fallback · Bybit offline").
+- **WetterCard Mobile 375px (5.2b-Befund)** · `card-head` wrappt Eyebrow + Live-Stempel je auf zwei Zeilen — funktional ok, optisch eng. Slice 5.4 ist der Ort für ggf. Anpassung.
 
 ---
 
-## 5 · Etablierte Arbeitsweise (bewährt über Phase 2.2–5.2a)
+## 5 · Etablierte Arbeitsweise (bewährt über Phase 2.2–5.2)
 
 - **Spec-First · Plan-First · Slice-Pattern** (feat-Commit + docs-Commit)
-- **Plan-First-Befund offen festhalten** wenn die GO-Annahme von der Realität abweicht — wie in 5.2a wo "Refactor-Schuld aus 2.3.3" nicht existierte. Keine tote Helper-Datei bauen, deren Begründung sich später als Luftnummer zeigt
-- **Sanity-Checks gegen unabhängige Quellen** — nicht zirkulär. 5.2a-Beispiel: SunCalc gegen `api.sunrise-sunset.org` validiert, nicht gegen die eigene Annahme
+- **Plan-First-Befund offen festhalten** wenn die GO-Annahme von der Realität abweicht — wie in 5.2a/5.2b
+- **Sanity-Checks gegen unabhängige Quellen** — nicht zirkulär. SunCalc-Werte werden gegen `api.sunrise-sunset.org` validiert
 - **Bau-Aufteilung innerhalb eines Slices** (4.5b/4.5c-Pattern · 5.2a/5.2b-Pattern) — bleibt EIN Slice in der Phasen-Zählung
+- **Daten-/View-Logik-Trennung** · Resolver liefern Werte, Cards formatieren (z.B. Stunden-Em-Dash in WetterCard, Schweizer-Apostroph in KryptoCard)
 - **UI-Wahrheit** — Eyebrows + Quellen-Labels stimmen mit dem aktuellen Fetcher-Code überein
 - **Build-Test vor Push** — Pflicht, auch bei reinem docs-Commit
 
 **Stolpersteine:**
 - Worktree-Falle · `cd /Users/mariomacstudio/Developer/mario-hq && ...` chainen
 - TypeScript strict · keine any
-- prerender = false auf api/-Routes und ab 5.1 auch auf `/`
+- prerender = false auf api/-Routes und `/` (seit 5.1)
 - Vercel-Edge-Cache greift NICHT in `npm run dev`
 - Vite-HMR-Cache-Bug nach `git mv` oder Komponenten-Edits: Dev-Server neu starten
 - ECharts in Astro: client:visible bzw. Astro-Islands-Pattern
 - ECharts-Gauge-Quirk: `title: { show: false }` explizit setzen
 - Lokale Erreichbarkeit ≠ Vercel-Erreichbarkeit (Phase-4-Nachläufer-Lehre)
-- Production-curl: Nanosekunden-Bust (`$(date +%s%N)`) oder Edge-Cache des alten Deploys riskiert Verwirrung
+- **Production-curl-Stolperstein (verschärft in 5.2b):** Nanosekunden-Bust (`$(date +%s%N)`) hilft gegen Edge-Cache, aber **auch zwischen `until curl -sf` und Inhalts-curl** kann der CDN noch alte Werte serve-en. Status-200 ≠ Inhalts-Propagation. Mehrfach curl-en oder kurz warten.
 - Node-Skripte ausserhalb des Projekt-Roots können Projekt-Dependencies nicht resolven — Test-Skripte im Projekt-Root ablegen (z.B. `_test-xyz.mjs`, danach löschen)
 - Custom Domain steht weiter aus (Phase 6) — keines der früheren Vercel-Projekte hatte je eine
 
@@ -116,21 +127,19 @@ Phase-5-Status:
 
 ## 6 · Spec-/Doku-Files im Repo
 
-- `docs/PHASE-5-COVER-SYNC-SPEC.md` · in Arbeit · §2 Status + §4.2 Realitäts-Box (nach 5.2a)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` · in Arbeit · §2-Status: 5.1 + 5.2 ✅
 - `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` · abgeschlossen
 - `docs/PHASE-2.2-COVER-SPEC.md` · abgeschlossen · Layout-Pattern-Vorbild (frozen)
 - `docs/PHASE-2.3-DETAIL-PAGES-SPEC.md` · abgeschlossen
-- `_pendenzen.md` · Roadmap · Phase 5 als aktive Phase · 5.2a ✅
+- `_pendenzen.md` · Roadmap · Phase 5 aktiv · Slice 5.2 ✅
 - `_projekt.md` · Architektur, Entscheidungen, Mario-Kontext
-- `SESSION_LOG.md` · chronologisches Log · letzter Eintrag Update 35 (Slice 5.2a)
+- `SESSION_LOG.md` · chronologisches Log · letzter Eintrag Update 36 (Slice 5.2b)
 
 ---
 
-## 7 · Erster Schritt in der neuen Session · Slice 5.2b
+## 7 · Erster Schritt in der neuen Session · Slice 5.3
 
-1. claude.ai liest §4.2 der Phase-5-Spec (inkl. Realitäts-Box aus 5.2a)
-2. Sieht durch: WetterCard-Swap nutzt **direkt** den `<WetterSymbol>`-Wrapper · kein wmoSymbol-Helper · `getStundenHeute()` aus 5.2a-Foundation
-3. Baut GO-Prompt für 5.2b mit Plan-First-Bestätigung
-4. In Claude Code: Plan-First mit konkretem Mapping welche Props die WetterCard kriegt + wie das Foto-Hinweis-Feld gefüllt wird
-
-**Empfehlung:** 5.2b ist der Card-Swap-Slice — kleiner als 5.2a-Original-Plan war, weil die Foundation steht. Production-Check nach Push: Open-Meteo läuft seit Phase 2.3 stabil auf Production, kein neuer API-Risiko-Faktor.
+1. claude.ai liest §4.3, §4.4, §4.5, §4.6 der Phase-5-Spec
+2. Sieht durch: vier Swaps, alle aus battle-tested Quellen · EventBanner-Trigger-Zählung als Plan-Schritt vor Verdrahten
+3. Baut GO-Prompt für 5.3 mit Plan-First-Bestätigung · besonders: Wochen-Strip-Format Kalender (heutiger Stub-Format vs. echtes Format) + News `cover_headlines` Initial-Befüllung + EventBanner-Trigger nach Zählung
+4. In Claude Code: Plan-First mit konkretem Bau-Schritt-Plan, dann bauen
