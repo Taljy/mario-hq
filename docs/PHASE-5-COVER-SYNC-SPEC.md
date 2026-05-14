@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 5
 erstellt: 26-05-14
-aktualisiert: 26-05-14 (Slice 5.2 abgeschlossen · 5.2a + 5.2b durch)
-status: 5.1 ✅ · 5.2 ✅ (5.2a + 5.2b) · 5.3/5.4 offen
+aktualisiert: 26-05-14 (Slice 5.3 abgeschlossen)
+status: 5.1 ✅ · 5.2 ✅ · 5.3 ✅ · 5.4 offen
 referenz: Cover-Sync-Plan-Chat 14.5.2026 (claude.ai)
 ersetzt: Cover-Sync-Punkte aus _pendenzen.md vor Phase-5-Eröffnung
 ---
@@ -33,7 +33,7 @@ Phase 5 = **4 Slices total.**
 |---|---|---|---|
 | **5.1** | Spec + SSR-Foundation (prerender=false, Cache-Header, Promise.all-Block) + KryptoCard live (CoinGecko + Fear & Greed) | klein-mittel | ✅ abgeschlossen |
 | **5.2** | Wetter-Card live · `astronomieResolver.getStundenHeute()` für Goldene/Blaue Stunde · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` · WetterSymbol-Wrapper direkt verwendet (kein eigener Helper nötig, siehe Bau-Aufteilung) | mittel | ✅ abgeschlossen (5.2a + 5.2b) |
-| **5.3** | KalenderCard (`getKalenderTermine()`) · MacroCard (`getMacroEvents()`, Indizes-Zeile weggelassen) · NewsCard (`cover_headlines`-Feld in `news-voll.json`) · EventBanner (auf `macroEventsResolver`, Trigger nach Event-Zählung entschieden) · alte Stub-Resolver löschen | mittel | offen |
+| **5.3** | KalenderCard (`getKalenderTermine()`) · MacroCard (3er-Vorausschau mit `getNaechsteWichtigeEvents()`, Indizes + Puls + Live-Stempel komplett raus) · NewsCard (`cover_headlines`-Feld in `news-voll.json`) · EventBanner **stillgelegt** (Datei bleibt, aus index.astro ausgebunden) · alte Stub-Resolver gelöscht | mittel | ✅ abgeschlossen |
 | **5.4** | Polish + Volltest Light/Dark/Mobile 375px + Cover-Stempel "Phase 4" → "Phase 5" + Phase-5-Synthese in SESSION_LOG + HANDOVER + Spec abschliessen | klein | offen |
 
 **Reihenfolge-Begründung:**
@@ -50,14 +50,19 @@ Phase 5 = **4 Slices total.**
 |---|---|---|---|---|---|
 | KryptoCard | Stub | `kryptoResolver` → `krypto.json` | Live | `coingeckoFetcher.getKryptoStand()` + `fearGreedFetcher.getFearGreed()` | 5.1 |
 | WetterCard | ~~Stub~~ ✅ | ~~`wetterPicker` → `wetter.json`~~ (gelöscht 5.2b) | ✅ Live | `openMeteoFetcher.getWetterErgebnis()` + `astronomieResolver.getStundenHeute()` + `fotoSpotPicker.getFotoEmpfehlung()` | 5.2 |
-| KalenderCard | Stub | `kalenderResolver` → `kalender.json` | Live | `icalFetcher.getKalenderTermine()` | 5.3 |
-| MacroCard | Stub | `macroResolver` → `macro.json` | Live | `macroEventsResolver.getMacroEvents()` (Indizes-Zeile weggelassen) | 5.3 |
-| NewsCard | Stub | `newsResolver.getNewsHeute()` → `news.json` | Live | `newsResolver` aus `news-voll.json#cover_headlines` (Mario-gepflegt) | 5.3 |
-| EventBanner | Stub | `eventResolver` → `events.json` | Live | `macroEventsResolver` (Trigger in 5.3 nach Zählung) | 5.3 |
+| KalenderCard | ~~Stub~~ ✅ | ~~`kalenderResolver` → `kalender.json`~~ (gelöscht 5.3) | ✅ Live | `icalFetcher.getKalenderTermine()` | 5.3 |
+| MacroCard | ~~Stub~~ ✅ | ~~`macroResolver` → `macro.json`~~ (gelöscht 5.3) | ✅ Live | `macroEventsResolver.getNaechsteWichtigeEvents(3)` (3er-Vorausschau · Indizes/Puls/Live-Stempel raus) | 5.3 |
+| NewsCard | ~~Stub~~ ✅ | ~~`newsResolver.getNewsHeute()` → `news.json`~~ (gelöscht 5.3) | ✅ Live | `newsResolver.getNewsHeute()` aus `news-voll.json#cover_headlines` (Mario-gepflegt, Single-Source) | 5.3 |
+| EventBanner | Stub | ~~`eventResolver` → `events.json`~~ (gelöscht 5.3) | **stillgelegt** | aus `index.astro` ausgebunden · Datei bleibt für Wiederanschluss · siehe §4.6 | 5.3 |
 
 **Werden gelöscht (mit ihrem Slice):**
 - `src/lib/kryptoResolver.ts` + `src/data/krypto.json` ✅ gelöscht in 5.1
 - `src/lib/wetterPicker.ts` + `src/data/wetter.json` ✅ gelöscht in 5.2b
+- `src/lib/kalenderResolver.ts` + `src/data/kalender.json` ✅ gelöscht in 5.3
+- `src/lib/macroResolver.ts` + `src/data/macro.json` ✅ gelöscht in 5.3
+- `src/lib/eventResolver.ts` + `src/data/events.json` ✅ gelöscht in 5.3
+- `src/data/news.json` ✅ gelöscht in 5.3 (Inhalt nach `news-voll.cover_headlines`)
+- `src/components/EventBanner.astro` bleibt erhalten · stillgelegt (siehe §4.6)
 - `src/lib/kalenderResolver.ts` + `src/data/kalender.json` (5.3)
 - `src/lib/macroResolver.ts` + `src/data/macro.json` (5.3)
 - `src/lib/eventResolver.ts` + `src/data/events.json` (5.3)
@@ -113,19 +118,46 @@ Phase 5 = **4 Slices total.**
 
 ### 4.3 KalenderCard (Slice 5.3)
 
+> **Realitäts-Hinweis (14.5.2026, nach 5.3):**
+> - **Logik-Bug vor Push gefunden + gefixt:** Original-Plan war `ergebnis.tage.slice(1, 8)` für den Wochen-Strip. `icalFetcher.parseIcal()` baut `tage`-Array aber **nur aus Tagen MIT Terminen** — leere Tage fehlen komplett. Wochen-Strip zeigte nur 1 Tag statt 7.
+> - **Fix:** Defensive Wochen-Strip-Generierung über `Array.from({length: 7})` mit explizitem Datum-Offset · pro Tag in `tageMap` (`Map<datum, KalenderTag>`) nachschauen · "frei" als Default-Label · Wochentag via `Intl.DateTimeFormat`.
+> - **Heute-Block analog:** nicht via `tage[0]`, sondern `tageMap.get(heuteIso)` — sonst würde "Heute frei" als `tage[1]` (nächster Tag mit Terminen) anzeigen.
+> - Live-Stempel: icalFetcher liefert keinen `fetch_zeit` → Card generiert eigene Zeit mit gleicher Format-Konvention wie KryptoCard/WetterCard.
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
+
 **Heute:** Statischer Termine-Stub aus `kalender.json`.
 
-**Live-Quelle:** `getKalenderTermine()` (icalFetcher, ENV-gestützt mit Fallback). `tage[0]` = Heute → Heute-Termine. `tage[1..7]` → Wochen-Strip kompakt formatiert.
+**Live-Quelle:** `getKalenderTermine()` (icalFetcher, ENV-gestützt mit Fallback). Heute-Termine + Wochen-Strip aus den 7 nächsten Tagen.
 
 ### 4.4 MacroCard (Slice 5.3)
 
+> **Realitäts-Hinweis (14.5.2026, nach 5.3):**
+> - **Konzept-Wechsel von Mario in 5.3-Freigabe:** Original-Plan war "heutiges Event" (1 Zeile) mit Pulse-Animation synchron zum EventBanner. Neues Konzept: **3er-Vorausschau** auf wichtige Events (kritisch || hoch) ab heute · kein Puls · kein Live-Stempel · ruhige Liste.
+> - Neue Helper-Funktion: `macroEventsResolver.getNaechsteWichtigeEvents(anzahl = 3): MacroEvent[]` · defensive (liefert 2/1/0 Events bei dünnem Fenster oder nicht-gepflegter JSON).
+> - Datum-Format: `"Heute"` (wenn datum === heute) sonst `"DD. Monat"` (z.B. `"20. Mai"`) via `Intl.DateTimeFormat('de-CH', {day:'numeric', month:'long', timeZone:'Europe/Zurich'})`.
+> - **Komplett entfernt:** Indizes-Zeile (Frontmatter `indizesStrip` + Template `.indizes` + CSS-Block) · Pulse-Animation (`.macro-card.event-aktiv` + `@keyframes hq-pulse-border` hell + dark + `prefers-reduced-motion`-Block + `.event-marker`).
+> - **Kein Live-Stempel:** Macro-Kalender ist Mario-gepflegtes JSON, kein Live-Fetch · UI-Wahrheits-Prinzip · `card-head` einseitig (nur Eyebrow links). Bonus: MacroCard ist auf 375px **nicht** vom card-head-Wrap-Problem betroffen (kein Stempel als Partner rechts).
+> - Mobile-Grid für Event-Zeilen ≤480px: Datum + Zeit oben, Name unten · kompakter auf engem Viewport.
+> - Empty-State bei 0 Events: italic Leer-Hinweis `"Keine wichtigen Macro-Events in den nächsten 14 Tagen."` · greift wenn macro-events.json nicht nachgepflegt ist.
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
+
 **Heute:** Statischer Macro-Stub aus `macro.json` (Tagesthema + Zeit + Indizes-Strip "SMI +0.3 · DAX flat").
 
-**Live-Quelle:** `getMacroEvents()` (aus Phase 4.7). Heutiges Event = `events.find(e => e.datum === heute)`.
+**Live-Quelle:** `getMacroEvents()` (aus Phase 4.7).
 
-**Indizes-Zeile entfällt komplett** (Mario-Entscheidung, siehe §5). Card wird schlanker: Eyebrow + Tagesthema + Zeit.
+**Indizes-Zeile entfällt komplett** (Mario-Entscheidung, siehe §5).
 
 ### 4.5 NewsCard (Slice 5.3)
+
+> **Realitäts-Hinweis (14.5.2026, nach 5.3):**
+> - 1:1 wie geplant umgesetzt · `news-voll.json` bekommt `cover_headlines: string[]`-Feld parallel zu `kategorien` · `_schema_doku`-Block ergänzt
+> - Initial-Befüllung mit den 3 alten `news.json`-Headlines (Schweizer AI-Act / Saharastaub / Tesla) · Mario kann ab jetzt direkt in `news-voll.json` kuratieren
+> - `getNewsHeute()` wechselt Quelle, `getNewsKategorien()` unverändert · `news.json`-Import komplett raus
+> - NewsCard-Template/CSS unverändert (zieht weiter `news.headlines: string[]`-Shape)
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
 
 **Heute:** 3 Headlines aus `news.json` (separate Quelle parallel zu `news-voll.json` für /news).
 
@@ -133,18 +165,16 @@ Phase 5 = **4 Slices total.**
 
 **Begründung Single-Source:** Behält Marios Kuratierungs-Hoheit, eliminiert zwei parallele Quellen.
 
-### 4.6 EventBanner (Slice 5.3)
+### 4.6 EventBanner (Slice 5.3 · STILLGELEGT)
 
-**Heute:** Pulse-Animation an Cover-Top, getriggert von `getAktivenEvent()` aus `events.json`.
+> **Realitäts-Hinweis (14.5.2026, nach 5.3):**
+> - **Mario-Entscheidung in 5.3-Freigabe:** EventBanner **stillgelegt** statt umverdrahtet. Ruhigerer Cover-Charakter · die neue MacroCard-3er-Vorausschau übernimmt die Macro-Information.
+> - `EventBanner.astro` **bleibt im Repo** · NICHT gelöscht. Aus `src/pages/index.astro` ausgebunden (Import + Render-Stelle entfernt).
+> - `eventResolver.ts` + `events.json` wurden **gelöscht** (waren Stub, EventBanner zog daraus). Der Import in `EventBanner.astro` bleibt drin (broken) — Astro bundelt die Komponente nicht weil nicht imported, Build bleibt grün.
+> - **Wiederanschluss-Anleitung im Datei-Header** der EventBanner.astro: 1) Import auf `macroEventsResolver` umstellen (neue Helper-Funktion z.B. `getHeutigesBannerEvent()` anlegen, Trigger `kritisch || hoch && datum === heute`), 2) Felder-Mapping anpassen (MacroEvent hat `name`/`uhrzeit`, keine `beschreibung`), 3) in `index.astro` wieder einhängen. ~10 min.
+> - **Was damit entfällt:** `getHeutigesBannerEvent()` Shared Helper · Pulse/Banner-Synchronitäts-Verifikation · Trigger-Zählungs-Live-Test 14.5.
 
-**Übergangs-Verhalten zwischen 5.1 und 5.3:** EventBanner **bleibt funktional unverändert** während Slice 5.1 + 5.2. Der Promise.all-Block in `index.astro` zieht weiterhin `getAktivenEvent()` aus dem Stub. Sauberer Übergang. Erst in 5.3 wird die Quelle ausgetauscht.
-
-**Nach 5.3:** Quelle ist `macroEventsResolver`. Trigger-Logik (`kritisch` allein vs. `kritisch || hoch`) wird in Slice 5.3 vor dem Verdrahten anhand der echten Event-Zählung in `macro-events.json` entschieden:
-- 1–2 kritische Events im aktuellen Fenster → lockern auf `kritisch || hoch`
-- 4–5 kritische Events → `kritisch` allein
-- Ergebnis im 5.3-Slice-Bericht festhalten
-
-**Ziel:** Banner soll lebendig wirken ohne abzustumpfen.
+**Original-Spec (vor 5.3-Konzept-Wechsel):** Banner wäre auf `macroEventsResolver` umgestellt worden mit `kritisch || hoch`-Trigger (Mario-Zählung: 1× kritisch, 5× hoch, 3× mittel → ~6 sichtbare Tage). Diese Entscheidung war getroffen, wurde dann zugunsten der Stilllegung verworfen.
 
 ---
 
@@ -154,7 +184,8 @@ Phase 5 = **4 Slices total.**
 |---|---|---|
 | Macro-Indizes-Zeile (SMI/DAX/etc) | **A · weglassen** | Stub stehenlassen wäre statische Lüge auf der Startseite. Ehrlich keine Indizes schlägt falsche Indizes. Indizes-API-Suche ist eigener Slice mit IP-Block-Risiko. |
 | NewsCard-Quelle | **B · `cover_headlines` in `news-voll.json`** | Single-Source. `news.json` wird gelöscht. Kuratierungs-Hoheit bleibt bei Mario. |
-| EventBanner-Trigger | **In 5.3 nach Zählung** | Datenabhängig, nicht vorab festlegen. Zählen vor Verdrahten. |
+| ~~EventBanner-Trigger~~ EventBanner-Stilllegung | **stillgelegt in 5.3** | Ursprünglich Trigger-Zählung 1/5/3 → kritisch∥hoch geplant. In 5.3-Freigabe verworfen zugunsten ruhigerer Cover · MacroCard-3er-Vorausschau übernimmt. Komponente bleibt für Wiederanschluss. |
+| MacroCard-Konzept (5.3-Freigabe) | **3er-Vorausschau · kein Puls · kein Live-Stempel** | Card wird ruhige Liste statt Pulse-Trigger-Karte. Indizes-Zeile komplett raus. Synchronitäts-Frage zum EventBanner entfällt (Banner ist weg). |
 | Spec-Anlage | **Erster Task in Slice 5.1** | Kein separater Vor-Slice (Slice-Inflation vermeiden). Phase-4-Pattern: Spec parallel zur ersten Foundation-Arbeit. |
 
 ---

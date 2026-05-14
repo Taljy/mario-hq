@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Phase 5 Slice 5.2 abgeschlossen · 5.2a + 5.2b)
-aktuelle-phase: 5 (Cover-Sync) · Slice 5.1 ✅ · 5.2 ✅ · 5.3 als Nächstes
+aktualisiert: 26-05-14 (Phase 5 Slice 5.3 abgeschlossen)
+aktuelle-phase: 5 (Cover-Sync) · Slice 5.1/5.2/5.3 ✅ · 5.4 als letzter Schritt
 ---
 
 # Mario's HQ · Pendenzen
@@ -72,9 +72,9 @@ Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben. Krypto
 
 - Slice 5.1 ✅ Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9` · Production live mit `$81'432 · +2.3% · Fear · F&G 34`
 - Slice 5.2a ✅ getStundenHeute() in astronomieResolver via SunCalc · feat `8decc27`. Plan-Befund: wmoSymbol-Helper aus Original-Plan unnötig (WetterSymbol-Wrapper schon zentralisiert seit 2.3) → 5.2 in 5.2a/5.2b geteilt analog 4.5b/4.5c, bleibt EIN Slice in der 4er-Phasen-Zählung
-- Slice 5.2b ✅ WetterCard live-Swap (Open-Meteo + getStundenHeute + getFotoEmpfehlung) · feat `a5ffb9e` · Production live mit `6° · Vorwiegend klar · S 3 km/h · Goldene 20:11 — 20:56 · Blaue 20:56 — 22:19 · "Klarer Abend · goldene Stunde ideal für Architektur-Spots."`. Mario-Entscheidung in 5.2b: Blaue-Stunde-Definition von `sunset → dusk` (≈ 36 min) auf `sunset → nauticalDusk` (≈ 82 min, erweitertes fotografisches Fenster) korrigiert.
-- Slice 5.3 als Nächstes · Kalender + Macro + News + EventBanner
-- Slice 5.4 · Polish + Volltest + Phase-5-Abschluss + Cover-Stempel "Phase 5"
+- Slice 5.2b ✅ WetterCard live-Swap (Open-Meteo + getStundenHeute + getFotoEmpfehlung) · feat `a5ffb9e` · Production live. Mario-Entscheidung 5.2b: Blaue-Stunde-Definition von `sunset → dusk` (≈ 36 min) auf `sunset → nauticalDusk` (≈ 82 min, erweitertes fotografisches Fenster) korrigiert.
+- Slice 5.3 ✅ Kalender + Macro + News live · EventBanner stillgelegt · feat `e491b44` · Production live. Mario-Konzept-Wechsel 5.3: MacroCard = ruhige 3er-Vorausschau (keine Pulse-Animation, kein Live-Stempel, keine Indizes-Zeile) · EventBanner aus index.astro ausgebunden, Datei bleibt für Wiederanschluss. Logik-Bug vor Push gefunden + gefixt: Wochen-Strip-Generierung defensive (icalFetcher liefert nur Tage mit Terminen).
+- Slice 5.4 als letzter Schritt · Polish + Volltest + Phase-5-Abschluss + Cover-Stempel "Phase 5" + card-head Mobile-Wrap zentral anschauen (siehe 5.2b-Befund, betrifft nur WetterCard)
 
 ---
 
@@ -166,8 +166,8 @@ Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben — kei
 - [x] **Slice 5.2** Wetter-Card live · Bau-Aufteilung 5.2a/5.2b
   - [x] **5.2a** getStundenHeute() in astronomieResolver · feat `8decc27`
   - [x] **5.2b** WetterCard-Live-Swap + nauticalDusk-Korrektur · feat `a5ffb9e`
-- [ ] **Slice 5.3** Kalender + Macro + News + EventBanner (Macro-Indizes-Zeile weggelassen · NewsCard zieht aus cover_headlines in news-voll.json · EventBanner-Trigger nach Event-Zählung)
-- [ ] **Slice 5.4** Polish + Volltest + Cover-Stempel "Phase 5" + Phase-5-Abschluss
+- [x] **Slice 5.3** Kalender + Macro + News live · EventBanner stillgelegt · feat `e491b44` · MacroCard-Konzept-Wechsel: 3er-Vorausschau statt Pulse-Karte
+- [ ] **Slice 5.4** Polish + Volltest + Cover-Stempel "Phase 5" + Phase-5-Abschluss · card-head Mobile-Wrap zentral anschauen
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)

@@ -1,5 +1,95 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 37) · Phase 5 · Slice 5.3 · Kalender + Macro + News live · EventBanner stillgelegt
+
+### Konzept-Wechsel in der 5.3-Freigabe (Mario)
+Original-Plan: MacroCard zeigt heutiges Event mit Pulse-Animation synchron zum EventBanner. **In der 5.3-Freigabe von Mario geändert:**
+- MacroCard = **3er-Vorausschau** auf wichtige Events (kritisch || hoch) · keine Pulse · kein Live-Stempel · ruhige Liste
+- EventBanner **stillgelegt** (nicht gelöscht) · aus index.astro ausgebunden · Datei bleibt für Wiederanschluss
+- Damit entfallen: Shared Helper `getHeutigesBannerEvent()` · Pulse/Banner-Synchronitäts-Verifikation · Trigger-Zählungs-Live-Test 14.5.
+
+Begründung Mario: ruhigerer Cover-Charakter · die Macro-Information bleibt prominent (3-Event-Liste), nur ohne Animation und Banner-Doppel.
+
+### Was gemacht
+- `src/lib/macroEventsResolver.ts` · neue Funktion `getNaechsteWichtigeEvents(anzahl = 3): MacroEvent[]` · filtert `kritisch || hoch`, ab heute, chronologisch · defensive (2/1/0 bei dünnem Fenster)
+- `src/data/news-voll.json` · neues Feld `cover_headlines: string[]` mit 3 initialen Headlines (aus alter news.json übernommen) · `_schema_doku`-Block ergänzt
+- `src/lib/newsResolver.ts` · `getNewsHeute()` zieht aus `vollData.cover_headlines` · `news.json`-Import komplett raus
+- `src/components/MacroCard.astro` · komplett neu gebaut:
+  - 3er-Vorausschau · Datum-Format `"Heute"` / `"DD. Monat"` · Mobile-Grid für Event-Zeilen
+  - Kein Live-Stempel · einseitiger card-head (UI-Wahrheits-Prinzip: kein Live-Fetch)
+  - Empty-State: italic `"Keine wichtigen Macro-Events in den nächsten 14 Tagen."` (greift bei nicht-gepflegter JSON)
+  - **Komplett entfernt:** Indizes-Zeile (Frontmatter + Template + CSS + Quelle) · Pulse-Animation (event-aktiv-Klasse + hq-pulse-border-Keyframes hell+dark + prefers-reduced-motion + event-marker)
+- `src/components/KalenderCard.astro` · komplett neu gebaut:
+  - Live-Stempel mit eigener Zeit (icalFetcher liefert keinen `fetch_zeit`)
+  - Heute-Termine via `tageMap.get(heuteIso)` · Empty-State `"Heute frei."`
+  - Wochen-Strip: defensive für 7 Tage explizit ab morgen aufbauen (siehe Logik-Bug unten)
+- `src/components/EventBanner.astro` · STILLGELEGT · Header-Kommentar mit Wiederanschluss-Anleitung · Import auf `eventResolver` bleibt drin (broken weil Resolver gelöscht, aber Komponente nicht imported → Build grün)
+- `src/pages/index.astro` · Promise.all erweitert um `getKalenderTermine()` · EventBanner-Import + Render-Stelle entfernt · KalenderCard erhält Props · MacroCard/NewsCard lesen selbst
+
+Gelöscht:
+- `src/lib/kalenderResolver.ts` + `src/data/kalender.json`
+- `src/lib/macroResolver.ts` + `src/data/macro.json`
+- `src/lib/eventResolver.ts` + `src/data/events.json`
+- `src/data/news.json`
+
+### Logik-Bug vor Push gefunden + gefixt
+Erster Bau hatte Wochen-Strip via `ergebnis.tage.slice(1, 8)`. Lokaler Test zeigte: Wochen-Text war `"Mo Daniela:"` statt 7 Tage. Befund: `icalFetcher.parseIcal()` baut `tage`-Array **nur aus Tagen MIT Terminen** (Map-basiert, leere Tage werden nicht hinzugefügt). Bei Marios iCal heute (14.5.) hatte nur Montag (19.5.) einen Termin → `tage.length === 2`, Wochen-Strip zeigte 1 Eintrag.
+
+**Fix:** Wochen-Strip über `Array.from({length: 7})` mit explizitem Datum-Offset · pro Tag in `tageMap = new Map(tage.map(...))` nachschauen · `"frei"` als Default. Heute-Block analog umgestellt (`tageMap.get(heuteIso)` statt `tage[0]`).
+
+Diese defensive Logik ist nicht für die Cover-Card spezifisch wichtig — sie ist generell sauberer wenn der icalFetcher-Vertrag das so handhabt. Falls jemand in Zukunft `icalFetcher` anders interpretiert: Card-Logik bleibt korrekt.
+
+### Mobile-Befund 5.3 (ergänzt 5.2b)
+Auf 375px wrappt der `card-head` nur bei WetterCard (Eyebrow `"WETTER & FOTO · BADEN AG"` ist zu lang). Die in 5.3 neuen Cards:
+- **KalenderCard** `"KALENDER · HEUTE"` + Live-Stempel passt **einzeilig** (kürzere Eyebrow)
+- **MacroCard** hat keinen Live-Stempel (UI-Wahrheits-Prinzip) → kein Wrap-Problem überhaupt
+
+Wrap-Problem ist also nicht systematisch sondern WetterCard-spezifisch. Slice 5.4 ist der Ort für ggf. Anpassung — entweder WetterCard-spezifisch oder zentrales Pattern.
+
+### Production-curl-Schleife (auf Inhalt, nicht Status)
+Statt nur `until curl -sf` (Status-200) wurde dieses Mal eine `grep`-Schleife auf einen erwarteten Inhalt verwendet:
+```bash
+for i in $(seq 1 40); do
+  curl -s "...?cb=$(date +%s%N)" | grep -q "US · Retail Sales April" && break
+  sleep 3
+done
+```
+Klappte sofort in Iteration 1 — diesmal keine Edge-Cache-Verzögerung. Die Schleife selbst ist die robuste Lösung des HANDOVER-§5-Stolpersteins · kein separater Helper-Posten in _pendenzen nötig.
+
+### Verifikation
+- `npm run build` grün (auch nach Logik-Bug-Fix)
+- Dev-Server-Restart (HMR-Falle)
+- Lokal /-Cover:
+  - KryptoCard ✅ live (5.1)
+  - WetterCard ✅ live (5.2) · 6° Regenschauer S 5 km/h · GS 20:11—20:56 · BS 20:56—22:19 · "Heute drinnen — Regen oder Gewitter erwartet."
+  - KalenderCard ✅ live (5.3) · "Heute frei." · Wochen-Strip "Fr Zahnarzt · Sa frei · So frei · Mo Daniela: · Di frei · Mi frei · Do frei"
+  - MacroCard ✅ live (5.3) · 3 Zeilen · Heute 14:30 US Retail Sales / 20. Mai 08:00 UK CPI / 20. Mai 20:00 US FOMC Minutes
+  - NewsCard ✅ live (5.3) · 3 Headlines aus cover_headlines
+  - EventBanner weg
+- Light + Dark sauber · Console clean
+- /wirtschaft + /wetter + /news + /kalender HTTP 200 (Sicherheits-Check)
+- Production via grep-Schleife: alle 5.3-Werte propagiert in Iteration 1
+
+### Cover-Stand nach Slice 5.3
+- KryptoCard ✅ live · WetterCard ✅ live · KalenderCard ✅ live · MacroCard ✅ live · NewsCard ✅ live · EventBanner stillgelegt
+- **Alle 5 Cover-Cards live** — der Phase-5-Hauptzweck ist materiell erreicht. 5.4 ist nur noch Polish + Abschluss-Hygiene.
+
+### Files dieser Session
+- `src/lib/macroEventsResolver.ts` (getNaechsteWichtigeEvents)
+- `src/lib/newsResolver.ts` (Quelle gewechselt)
+- `src/data/news-voll.json` (cover_headlines + Schema-Doku)
+- `src/components/MacroCard.astro` (komplett neu · 3er-Vorausschau)
+- `src/components/KalenderCard.astro` (komplett neu · defensive Wochen-Strip)
+- `src/components/EventBanner.astro` (Header-Kommentar Stilllegung)
+- `src/pages/index.astro` (Promise.all + Banner ausgebunden)
+- 7 Stub-Files gelöscht (kalenderResolver, kalender.json, macroResolver, macro.json, eventResolver, events.json, news.json)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` (§2 Status · §3 Card-Tabelle · §4.3/4.4/4.5/4.6 Realitäts-Boxen · §5 Mario-Entscheidungen erweitert)
+- `_pendenzen.md` (Slice 5.3 ✅, 5.4 als letzter Schritt)
+- `SESSION_LOG.md` (Update 37)
+- `docs/HANDOVER.md` (Stand nach 5.3 · 5.4 als letzter Slice)
+
+---
+
 ## 26-05-14 (Update 36) · Phase 5 · Slice 5.2b · WetterCard Live-Swap · Slice 5.2 abgeschlossen
 
 ### Was gemacht
