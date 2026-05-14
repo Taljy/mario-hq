@@ -6,6 +6,7 @@
 // Sparkline: nur Crypto (anbieter=coingecko) · nur Desktop · nur wenn Daten vorhanden
 
 import type { WatchlistItemEnriched } from '../../lib/watchlistAggregator';
+import { formatPreis } from '../../lib/formatPreis';
 import Sparkline from '../charts/Sparkline.astro';
 
 interface Props {
@@ -16,14 +17,6 @@ const { item } = Astro.props;
 
 // Logo: erster Buchstabe, bereinigt um "/"  (EUR/USD → E · BTC → B)
 const logoLetter = item.symbol.replace('/', '').charAt(0).toUpperCase();
-
-// Preis-Format: adaptiv nach Magnitude · toLocaleString('de-CH') = Schweizer Apostroph
-function formatPreis(p: number): string {
-  if (p >= 10000) return p.toLocaleString('de-CH', { maximumFractionDigits: 0 });
-  if (p >= 100)   return p.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (p >= 1)     return p.toLocaleString('de-CH', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-  return p.toLocaleString('de-CH', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-}
 
 function formatDelta(d: number): string {
   const sign = d >= 0 ? '+' : '';

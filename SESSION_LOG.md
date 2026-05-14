@@ -16,6 +16,11 @@
 - CoinGecko `/coins/markets?sparkline=true`: 7-Tage-Kurve pro Coin im Bulk-Request, kein Extra-Call
 - Collapsible Default "offen" ist legitim für Übersichtsseite · localStorage-Persistierung als optionales Mini-Polish für Slice 4.8 notiert
 
+### Nachtrag · Fix (14.5.2026)
+- `src/lib/formatPreis.ts` (neu): zentraler Preis-Formatter · `$`-Präfix · de-CH Apostroph · adaptiv (≥1'000 → 0 Dez · ≥1 → 2 Dez · <1 → 4 Dez)
+- `WatchlistItem.astro` + `KryptoHero.astro`: inline `formatPreis` entfernt, beide auf zentrale Funktion umgestellt
+- `sources.json`: beide Cowork-Einträge entfernt (Cowork statisch/wirtschaft + Cowork kuratiert/news) — Entscheidung 13.5., Phase 5 entfällt
+
 ### Offene Pendenzen
 - localStorage-Persistierung für Gruppen-Expand-Zustand → Mini-Polish Slice 4.8
 - CoinGecko `getKryptoStand()` + `getKryptoStandFuerIds()` simultan → Merge-Optimierung Slice 4.8

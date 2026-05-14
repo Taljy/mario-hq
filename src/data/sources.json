@@ -8,13 +8,6 @@
       "use": "BTC und Altcoin-Kurse · Live-Anbindung"
     },
     {
-      "modul": "wirtschaft",
-      "name": "Cowork (statisch)",
-      "url": null,
-      "lizenz": "Eigenes Tool",
-      "use": "Aktienindizes · Wirtschafts-News (ab Phase 5 täglich)"
-    },
-    {
       "modul": "wetter",
       "name": "Open-Meteo",
       "url": "https://open-meteo.com",
@@ -41,13 +34,6 @@
       "url": "https://calendar.google.com",
       "lizenz": "Persönlicher Kalender · Read-Only via Geheim-URL",
       "use": "Termine Heute + 7 Tage · Server-side Fetch"
-    },
-    {
-      "modul": "news",
-      "name": "Cowork (kuratiert)",
-      "url": null,
-      "lizenz": "Eigenes Tool",
-      "use": "4 Kategorien Tech · Foto · Architektur · Politik (ab Phase 5)"
     },
     {
       "modul": "wirtschaft",
