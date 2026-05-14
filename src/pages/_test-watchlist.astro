@@ -1,0 +1,91 @@
+---
+export const prerender = false;
+// Temporäre Test-Route · Slice 4.3 · Watchlist Foundation
+// URL: /_test-watchlist · Nach Verifikation löschen
+
+import { getWatchlist } from '../lib/watchlistAggregator';
+
+const watchlist = await getWatchlist();
+---
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>_test-watchlist · Slice 4.3</title>
+  <style>
+    body       { font-family: monospace; padding: 2rem; background: #141414; color: #e8e4dc; margin: 0; }
+    h1         { color: #E34234; font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .meta      { color: #888; margin-bottom: 2rem; font-size: 0.85rem; }
+    .gruppe    { border: 1px solid #333; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+    .g-label   { color: #E34234; font-size: 1rem; font-weight: bold; margin-bottom: 0.75rem; }
+    table      { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+    th         { color: #666; border-bottom: 1px solid #333; padding: 4px 10px; text-align: left; }
+    th.r       { text-align: right; }
+    th.c       { text-align: center; }
+    td         { padding: 5px 10px; border-bottom: 1px solid #222; }
+    td.r       { text-align: right; }
+    td.c       { text-align: center; }
+    .live      { color: #e8e4dc; }
+    .fallback  { color: #555; }
+    .pos       { color: #4caf50; }
+    .neg       { color: #E34234; }
+    .err       { color: #E34234; font-size: 0.78rem; }
+    pre        { background: #0a0a0a; padding: 1.25rem; border-radius: 6px; overflow: auto;
+                 font-size: 0.75rem; margin-top: 2rem; max-height: 400px; }
+  </style>
+</head>
+<body>
+  <h1>Watchlist Test · Slice 4.3</h1>
+  <p class="meta">
+    fetch_zeit: <strong>{watchlist.fetch_zeit}</strong> ·
+    ist_live: <strong>{String(watchlist.ist_live)}</strong> ·
+    Gruppen: <strong>{watchlist.gruppen.length}</strong> ·
+    Items total: <strong>{watchlist.gruppen.reduce((n, g) => n + g.items.length, 0)}</strong>
+  </p>
+
+  {watchlist.gruppen.map((gruppe) => (
+    <div class="gruppe">
+      <div class="g-label">{gruppe.label} <span style="color:#555;font-weight:normal;font-size:0.8rem">({gruppe.id})</span></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Anbieter</th>
+            <th class="r">Preis USD</th>
+            <th class="r">Δ 24h %</th>
+            <th class="c">Live</th>
+            <th>Fehler</th>
+          </tr>
+        </thead>
+        <tbody>
+          {gruppe.items.map((item) => (
+            <tr class={item.ist_live ? 'live' : 'fallback'}>
+              <td><strong>{item.symbol}</strong></td>
+              <td>{item.name}</td>
+              <td style="color:#666">{item.anbieter}{item.td_symbol ? ` (${item.td_symbol})` : ''}</td>
+              <td class="r">
+                {item.preis_usd != null
+                  ? item.preis_usd.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: item.preis_usd < 10 ? 4 : 2 })
+                  : '—'}
+              </td>
+              <td class={`r ${item.delta_24h_prozent != null && item.delta_24h_prozent >= 0 ? 'pos' : 'neg'}`}>
+                {item.delta_24h_prozent != null
+                  ? (item.delta_24h_prozent >= 0 ? '+' : '') + item.delta_24h_prozent.toFixed(2) + '%'
+                  : '—'}
+              </td>
+              <td class="c">{item.ist_live ? '✅' : '❌'}</td>
+              <td class="err">{item.fehler ?? ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ))}
+
+  <details>
+    <summary style="cursor:pointer;color:#666;margin-top:1rem;">JSON-Rohdaten anzeigen</summary>
+    <pre>{JSON.stringify(watchlist, null, 2)}</pre>
+  </details>
+</body>
+</html>

@@ -86,6 +86,46 @@ export async function getKryptoStand(): Promise<KryptoErgebnis> {
   }
 }
 
+// getKryptoStandFuerIds — Flexible Bulk-Abfrage für watchlistAggregator
+// Gibt Map<id, KryptoStand> zurück · Fallback: leere Map (Caller markiert als ist_live: false)
+export async function getKryptoStandFuerIds(ids: string[]): Promise<Map<string, KryptoStand>> {
+  if (ids.length === 0) return new Map();
+
+  try {
+    const url =
+      `https://api.coingecko.com/api/v3/coins/markets` +
+      `?vs_currency=usd&ids=${ids.join(',')}&order=market_cap_desc&sparkline=false`;
+
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const data = (await response.json()) as Array<{
+      id: string;
+      name: string;
+      symbol: string;
+      current_price: number;
+      price_change_percentage_24h: number;
+    }>;
+
+    const map = new Map<string, KryptoStand>();
+    for (const coin of data) {
+      map.set(coin.id, {
+        symbol:            coin.symbol.toUpperCase(),
+        name:              coin.name,
+        preis_usd:         coin.current_price,
+        delta_24h_prozent: coin.price_change_percentage_24h,
+      });
+    }
+    return map;
+  } catch {
+    // Kein throw — Aggregator markiert fehlende IDs als ist_live: false
+    return new Map();
+  }
+}
+
 // getBTCHistory — BTC-Kursverlauf 7 Tage stündlich für Sparkline
 // Endpoint liefert ~168 [timestamp, price]-Paare · nur Preise extrahieren
 // Fallback: leeres Array [] · Sparkline rendert dann nicht
