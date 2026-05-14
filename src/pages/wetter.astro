@@ -6,6 +6,7 @@ export const prerender = false;
 
 import DetailPage from '../layouts/DetailPage.astro';
 import WetterDetail from '../components/wetter/WetterDetail.astro';
+import WetterWochenBars from '../components/wetter/WetterWochenBars.astro';
 import AstronomieSektion from '../components/wetter/AstronomieSektion.astro';
 import FotoSpots from '../components/wetter/FotoSpots.astro';
 import { getWetterErgebnis } from '../lib/openMeteoFetcher';
@@ -26,6 +27,7 @@ const astronomie = getAstronomieHeute();
 >
   <div class="w-stack">
     <WetterDetail ergebnis={wetter} />
+    <WetterWochenBars woche={wetter.woche} />
     <AstronomieSektion highlights={astronomie} />
     <FotoSpots empfehlung={foto} />
   </div>

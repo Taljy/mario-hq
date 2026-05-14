@@ -3,6 +3,7 @@
 // Zeigt: aktiver Meteor-Schauer · Planeten-Event in 7 Tagen · Vollmond in 3 Tagen · Mondphase heute
 
 import type { AstronomieHighlights } from '../../lib/astronomieResolver';
+import MondphaseSvg from './MondphaseSvg.astro';
 
 interface Props {
   highlights: AstronomieHighlights;
@@ -50,9 +51,17 @@ const { highlights } = Astro.props;
       )}
 
       <div class="astro-card mondphase-card">
-        <span class="card-eyebrow">Mondphase heute</span>
-        <h3 class="card-titel">{highlights.mondphase_heute.phase_name}</h3>
-        <p class="card-meta">{highlights.mondphase_heute.beleuchtung_prozent}% beleuchtet</p>
+        <div class="mondphase-head">
+          <MondphaseSvg
+            beleuchtung_prozent={highlights.mondphase_heute.beleuchtung_prozent}
+            ist_zunehmend={highlights.mondphase_heute.ist_zunehmend}
+          />
+          <div class="mondphase-text">
+            <span class="card-eyebrow">Mondphase heute</span>
+            <h3 class="card-titel">{highlights.mondphase_heute.phase_name}</h3>
+            <p class="card-meta">{highlights.mondphase_heute.beleuchtung_prozent}% beleuchtet</p>
+          </div>
+        </div>
         {highlights.mondphase_heute.aufgang && (
           <p class="card-zeiten">
             Aufgang {highlights.mondphase_heute.aufgang}
@@ -147,6 +156,31 @@ const { highlights } = Astro.props;
     font-size: 11px;
     color: var(--fg-subtle);
     margin: 0;
+  }
+
+  .mondphase-head {
+    display:     flex;
+    align-items: center;
+    gap:         var(--s-3);
+    margin-bottom: var(--s-2);
+  }
+
+  .mondphase-text {
+    min-width: 0;
+  }
+
+  .mondphase-text .card-titel,
+  .mondphase-text .card-meta,
+  .mondphase-text .card-eyebrow {
+    margin: 0;
+  }
+
+  .mondphase-text .card-titel {
+    margin-top: 2px;
+  }
+
+  .mondphase-text .card-meta {
+    margin-top: 2px;
   }
 
   @media (max-width: 767px) {

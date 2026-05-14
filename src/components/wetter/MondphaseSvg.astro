@@ -1,0 +1,66 @@
+---
+// MondphaseSvg — Custom-SVG-Mondsichel · sumi-e-Reduktion · ~60×60px
+// Geometrie: beleuchteter Bereich = SVG-Pfad mit zwei Bögen (Aussen-Kreis + Innen-Ellipse)
+// Innen-Ellipse: x-Radius = (1 - 2*f) * R · positiv = Sichel (Ellipse nach innen),
+//                negativ = Gibbous (Ellipse nach aussen über Mittellinie)
+// Sweep-Flag kippt automatisch zwischen Sichel und Gibbous
+// ist_zunehmend = true → RECHTS hell (Nordhalbkugel-waxing), false → LINKS hell
+
+interface Props {
+  beleuchtung_prozent: number;   // 0..100
+  ist_zunehmend:        boolean;
+}
+
+const { beleuchtung_prozent, ist_zunehmend } = Astro.props;
+
+const f       = Math.max(0, Math.min(100, beleuchtung_prozent)) / 100;
+const R       = 24;
+const k       = 1 - 2 * f;                  // Terminator-Faktor
+const rxInner = Math.abs(k) * R;            // x-Radius der Innen-Ellipse
+const sichel  = k >= 0;                     // <50% Beleuchtung
+const aussenSweep = ist_zunehmend ? 1 : 0;  // CW für zunehmend (rechts), CCW für abnehmend (links)
+const innenSweep  = sichel
+  ? (ist_zunehmend ? 0 : 1)                 // Sichel: Innen-Ellipse nach innen
+  : (ist_zunehmend ? 1 : 0);                // Gibbous: Innen-Ellipse nach aussen
+
+// Top (30,6) → Bottom (30,54) → wieder Top, via Aussen- dann Innen-Bogen
+const beleuchtetPfad = beleuchtung_prozent <= 0
+  ? ''
+  : `M 30,6 A ${R},${R} 0 0 ${aussenSweep} 30,54 A ${rxInner},${R} 0 0 ${innenSweep} 30,6 Z`;
+---
+
+<svg
+  class="mond-svg"
+  viewBox="0 0 60 60"
+  width="60"
+  height="60"
+  aria-hidden="true"
+>
+  <!-- Dunkler Mond-Körper -->
+  <circle cx="30" cy="30" r={R} class="mond-schatten" />
+  <!-- Beleuchteter Bereich (Pfad mit zwei Bögen) -->
+  {beleuchtetPfad && <path d={beleuchtetPfad} class="mond-licht" />}
+  <!-- Konturkreis · oben drauf, damit Licht-Kante sauber ist -->
+  <circle cx="30" cy="30" r={R} class="mond-kontur" />
+</svg>
+
+<style>
+  .mond-svg {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .mond-schatten {
+    fill: var(--bg-card);
+  }
+
+  .mond-licht {
+    fill: var(--fg-muted);
+  }
+
+  .mond-kontur {
+    fill: none;
+    stroke: var(--fg);
+    stroke-width: 1.5;
+  }
+</style>

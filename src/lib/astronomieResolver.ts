@@ -33,6 +33,7 @@ export interface Vollmond {
 export interface Mondphase {
   beleuchtung_prozent: number;
   phase_name: string;
+  ist_zunehmend: boolean;       // SunCalc-Phase < 0.5 = waxing (zunehmend, rechte Seite beleuchtet)
   aufgang: string | null;
   untergang: string | null;
 }
@@ -96,6 +97,7 @@ export function getAstronomieHeute(datum: Date = new Date()): AstronomieHighligh
   const mondphaseHeute: Mondphase = {
     beleuchtung_prozent: Math.round(moonIllum.fraction * 100),
     phase_name: getPhaseName(moonIllum.fraction, isWaxing),
+    ist_zunehmend: isWaxing,
     aufgang: formatZeit(moonTimes.rise),
     untergang: formatZeit(moonTimes.set),
   };
