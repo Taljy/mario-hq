@@ -1,7 +1,8 @@
 ---
-// CoinbasePremiumCard — Coinbase vs Binance BTC-Preis-Differenz
+// CoinbasePremiumCard — Coinbase vs Vergleichs-Spot (Bybit) BTC-Preis-Differenz
 // Positiv = US-Demand stark · Negativ = US-Demand schwach
-// Eigenlogik: (Coinbase - Binance) / Binance * 100
+// Eigenlogik: (Coinbase - Bybit) / Bybit * 100
+// Slice 5.1: Binance → Bybit wegen Vercel-IP-Block
 
 import type { CoinbasePremium } from '../../lib/coinbasePremiumFetcher';
 import { interpretierungsText } from '../../lib/coinbasePremiumFetcher';
@@ -35,8 +36,8 @@ function formatPreis(p: number): string {
 
   <div class="preis-vergleich">
     <div class="preis-zeile">
-      <span class="preis-label">Binance</span>
-      <span class="preis-wert">{formatPreis(premium.binance_preis)}</span>
+      <span class="preis-label">Bybit</span>
+      <span class="preis-wert">{formatPreis(premium.vergleichs_preis)}</span>
     </div>
     <div class="preis-zeile">
       <span class="preis-label">Coinbase</span>

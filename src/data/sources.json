@@ -44,10 +44,10 @@
     },
     {
       "modul": "wirtschaft",
-      "name": "Binance Futures",
-      "url": "https://www.binance.com",
+      "name": "Bybit V5 Public",
+      "url": "https://www.bybit.com",
       "lizenz": "Public API · Free",
-      "use": "Funding Rates · Open Interest · Long/Short Ratio"
+      "use": "Funding Rates · Open Interest · Long/Short Ratio · BTC-Spot für Coinbase Premium"
     },
     {
       "modul": "wirtschaft",

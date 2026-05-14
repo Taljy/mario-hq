@@ -3,7 +3,7 @@
 // Layout: 3-Spalten-Grid (Funding · OI · L/S) + 2-Spalten-Grid (CB Premium · Stablecoin)
 // Sitzt zwischen KryptoHero und Indizes-Block auf /wirtschaft
 
-import type { BinanceErgebnis } from '../../lib/binanceFetcher';
+import type { BybitErgebnis } from '../../lib/bybitFetcher';
 import type { CoinbasePremium } from '../../lib/coinbasePremiumFetcher';
 import type { StablecoinSupply } from '../../lib/defiLlamaFetcher';
 
@@ -14,12 +14,12 @@ import CoinbasePremiumCard   from './CoinbasePremiumCard.astro';
 import StablecoinSupplyCard  from './StablecoinSupplyCard.astro';
 
 interface Props {
-  binance:       BinanceErgebnis;
+  bybit:       BybitErgebnis;
   coinbasePrem:  CoinbasePremium;
   stablecoins:   StablecoinSupply;
 }
 
-const { binance, coinbasePrem, stablecoins } = Astro.props;
+const { bybit, coinbasePrem, stablecoins } = Astro.props;
 ---
 
 <section class="trading-sektion">
@@ -30,19 +30,19 @@ const { binance, coinbasePrem, stablecoins } = Astro.props;
   <!-- Reihe 1: Funding · OI · L/S -->
   <div class="grid-3">
     <FundingRatesCard
-      funding={binance.funding}
-      ist_live={binance.ist_live}
-      fetch_zeit={binance.fetch_zeit}
+      funding={bybit.funding}
+      ist_live={bybit.ist_live}
+      fetch_zeit={bybit.fetch_zeit}
     />
     <OpenInterestCard
-      open_interest={binance.open_interest}
-      ist_live={binance.ist_live}
-      fetch_zeit={binance.fetch_zeit}
+      open_interest={bybit.open_interest}
+      ist_live={bybit.ist_live}
+      fetch_zeit={bybit.fetch_zeit}
     />
     <LongShortRatioCard
-      long_short={binance.long_short}
-      ist_live={binance.ist_live}
-      fetch_zeit={binance.fetch_zeit}
+      long_short={bybit.long_short}
+      ist_live={bybit.ist_live}
+      fetch_zeit={bybit.fetch_zeit}
     />
   </div>
 

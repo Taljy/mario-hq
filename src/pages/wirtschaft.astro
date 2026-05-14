@@ -21,7 +21,7 @@ import WirtschaftsNews           from '../components/wirtschaft/WirtschaftsNews.
 import TradeSetupsPlaceholder    from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
 
 import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
-import { getBinanceMetrics }             from '../lib/binanceFetcher';
+import { getBybitMetrics }               from '../lib/bybitFetcher';
 import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
 import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
 import { getKryptoWatchlist }            from '../lib/kryptoAggregator';
@@ -55,10 +55,10 @@ const origin = Astro.url.origin;
 // Parallele Fetches · jeder Fetcher hat eigenen Fallback
 // CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getKryptoWatchlist) feuern simultan
 // zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
-const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td, fearGreed] = await Promise.all([
+const [krypto, btcHistory, bybit, coinbasePrem, stablecoins, watchlist, td, fearGreed] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
-  getBinanceMetrics(),
+  getBybitMetrics(),
   getCoinbasePremium(),
   getStablecoinSupply(),
   getKryptoWatchlist(),
@@ -78,7 +78,7 @@ const { news, trade_setups_placeholder } = getWirtschaft();
   <div class="w-stack">
     <KryptoHero ergebnis={krypto} btcHistory={btcHistory} />
     <TradingIndikatoren
-      binance={binance}
+      bybit={bybit}
       coinbasePrem={coinbasePrem}
       stablecoins={stablecoins}
     />

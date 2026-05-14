@@ -1,8 +1,8 @@
 ---
-// OpenInterestCard — Open Interest BTC/ETH/SOL · Binance Futures
+// OpenInterestCard — Open Interest BTC/ETH/SOL · Bybit V5
 // Anzahl offener Futures-Kontrakte · 24h-Sparkline pro Coin
 
-import type { OpenInterest } from '../../lib/binanceFetcher';
+import type { OpenInterest } from '../../lib/bybitFetcher';
 import Sparkline from '../charts/Sparkline.astro';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 
 const { open_interest, ist_live, fetch_zeit } = Astro.props;
 
-const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · Binance offline';
+const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · Bybit offline';
 
 function formatOI(v: number): string {
   return v.toLocaleString('de-CH', { maximumFractionDigits: 0 });
@@ -22,7 +22,7 @@ function formatOI(v: number): string {
 
 <div class="indikator-card">
   <div class="card-head">
-    <span class="eyebrow">Open Interest · Binance</span>
+    <span class="eyebrow">Open Interest · Bybit</span>
     <span class={`live-stempel ${!ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
   </div>
 

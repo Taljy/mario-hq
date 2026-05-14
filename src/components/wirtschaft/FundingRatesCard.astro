@@ -1,9 +1,9 @@
 ---
-// FundingRatesCard — Funding Rates BTC/ETH/SOL · Binance Futures
+// FundingRatesCard — Funding Rates BTC/ETH/SOL · Bybit V5
 // Kein Sparkline (kein History-Endpoint verfügbar)
 // Extreme-Badge wenn |rate_prozent| > 0.1%
 
-import type { FundingRate } from '../../lib/binanceFetcher';
+import type { FundingRate } from '../../lib/bybitFetcher';
 
 interface Props {
   funding:   FundingRate[];
@@ -13,7 +13,7 @@ interface Props {
 
 const { funding, ist_live, fetch_zeit } = Astro.props;
 
-const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · Binance offline';
+const stempelLabel = ist_live ? `Live · ${fetch_zeit}` : 'Fallback · Bybit offline';
 
 function formatRate(r: number): string {
   const sign = r > 0 ? '+' : '';
@@ -23,7 +23,7 @@ function formatRate(r: number): string {
 
 <div class="indikator-card">
   <div class="card-head">
-    <span class="eyebrow">Funding Rates · Binance</span>
+    <span class="eyebrow">Funding Rates · Bybit</span>
     <span class={`live-stempel ${!ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
   </div>
 
