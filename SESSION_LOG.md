@@ -1,5 +1,80 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 33) · Slice 5.1 · Bybit-Swap · Teil-Slice / eskaliert
+
+### Wette und Befund
+Slice 5.1 war ein bewusster Schnell-Fix-Versuch: Binance Public API ist von Vercel-Lambda-IPs geblockt (entdeckt 13.5.), 4 Trading-Indikator-Cards zeigen Fallback auf Production. Hypothese: Bybit V5 hat lockerere Geo-Restriktionen und liegt im selben Datenmodell-Schema. Risiko #1 im Plan explizit benannt: **"Vercel-IP-Block bei Bybit unbestätigt — Garantie gibt es erst nach Production-Deploy."**
+
+Wette verloren. Risiko #1 ist materialisiert.
+
+**Befund nach Production-Deploy von `91ef169`:**
+- Bybit Funding / Open Interest / Long-Short Ratio · alle 3 Cards Fallback
+- Coinbase Premium (nutzt Bybit-Spot für Vergleich) · Fallback (vergleichs_preis=0, coinbase_preis=0)
+- DeFiLlama Stablecoin Supply · **läuft weiter live**
+- CoinGecko BTC Hero + Krypto-Sektion · **läuft weiter live**
+
+Stablecoin und CoinGecko sind der entscheidende Beleg: **kein generisches Vercel-Netzwerk-Problem**, sondern **anbieter-klassen-spezifischer Block**. Derivate-Börsen (Binance Futures, Bybit V5) blocken US-Datacenter-IP-Ranges; Stablecoin-/Markt-Daten-APIs (DeFiLlama, CoinGecko, Alternative.me, Coinbase Exchange Rates) tun das nicht.
+
+**Routing-Beweis:** Vercel-Header `x-vercel-id: fra1::iad1::...` — `fra1` ist die deploy-Region (Frankfurt-CDN), `iad1` ist die ausführende Lambda-Region (US-AWS, Northern Virginia). Die Bybit/Binance-Blocks zielen auf genau diese US-Datacenter-IP-Ranges wegen US-CFTC/Treasury-Compliance.
+
+Damit ist der vorherige "Wahrscheinlich-Befund" zum **strukturellen Befund** geworden: Anbieter-Swap im selben Anbieter-Klassen-Pool wird nicht funktionieren. OKX wurde bewusst nicht getestet — gleiche Compliance-Klasse, gleiches Risiko.
+
+### Was gebaut wurde (bleibt auf main)
+- `git mv` binanceFetcher.ts → bybitFetcher.ts + komplettes Rewrite (Bybit V5 Public)
+- `BinanceErgebnis` → `BybitErgebnis`, alle Typen + Imports gezogen
+- coinbasePremiumFetcher: `binance_preis` → `vergleichs_preis` (generisch, kein Interface-Rename beim nächsten Anbieter-Wechsel) · Spot-Endpoint auf Bybit
+- L/S-Ratio: `ratio = buyRatio / sellRatio` (Bybit liefert Komponenten getrennt)
+- OI + L/S: `[...list].reverse()` für chronologische Sparkline (Bybit liefert neueste-zuerst)
+- 4 UI-Wahrheits-Korrekturen: Eyebrows "BINANCE" → "BYBIT" in 3 Trading-Cards + Quellen-Label in CoinbasePremiumCard
+- sources.json: Binance Futures → Bybit V5 Public
+
+### Periodizität pro Card · 1:1 zu Binance-Vorläufer
+- Funding: limit=1 Einzelwert (Card hat keine Sparkline)
+- OI: intervalTime=1h, limit=24 → 24h-Fenster
+- L/S: period=5min, limit=24 → 2h-Fenster
+- Coinbase-Premium: Spot-Einzelwert
+
+Alle 1:1 abgeglichen vor dem Swap — verhindert stille Daten-Lüge mit gleichgrosser Sparkline aber anderem Zeitraum.
+
+### Lokale Verifikation (vor Push)
+- Build grün
+- /wirtschaft Light: alle 4 Cards LIVE (Funding -0.0000% BTC · +0.0041% ETH · -0.0074% SOL · OI 51'865 BTC · L/S 0.89 BTC · 2.31 ETH EXTREME · Premium +0.030% Neutral · BYBIT $81'824 / COINBASE $81'848)
+- Dark + Mobile 375px sauber
+- Console clean
+- HMR-Falle vermieden: Dev-Server vorher gestoppt, frisch gestartet
+
+### Strategische Konsequenz: Anbieter-Swap-Pfad erschöpft
+Verbleibender Lösungs-Pfad: **nur noch Architektur · Fetch-und-ablegen.** Externer Job aus einer kontrollierten IP holt die Daten, schreibt in Storage, Page rendert daraus.
+
+**GEPARKT mit neuem Trigger:** "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live." Alter Trigger ("nächster Anbieter blockt auch") ist verbraucht.
+
+**Cheap-Schritt-1 vor jedem Pipeline-Bau:** verifizieren ob ein GitHub-Actions-Runner (Azure-IP) Bybit oder Binance überhaupt erreicht. Wenn nein → Residential-IP-Lösung nötig (eigener Mini-Server, Cloudflare Tunnel, oder bezahlter Proxy). Das ist ein deutlich grösserer Architektur-Schritt — vor dem Bauen klären.
+
+### UI-Stand nach 5.1 (akzeptiert)
+Die 4 Cards zeigen weiterhin Fallback auf Production. Funktional identisch zum Stand vor 5.1. **Aber UI-Wahrheit ist korrekt:** "Fallback · Bybit offline" stimmt mit dem aktuellen Fetcher-Code überein, nicht mehr "Binance offline" wo Bybit gemeint wäre. Beim nächsten Versuch (mit Architektur-Lösung oder anderem Anbieter) ist der Rewrite-Pfad sauber vorbereitet (generic Feldnamen, klar getrennte Typen).
+
+### Kein Revert
+Bewusste Entscheidung: 91ef169 bleibt. Begründungen:
+- Bybit-Code ist korrekt gebaut und läuft lokal
+- "Fallback · Bybit offline" ist ehrlicher als "Fallback · Binance offline" (Quelle stimmt mit Fetcher überein)
+- Beim nächsten Slice (egal welcher Pfad) ist die Vorarbeit weiter nutzbar — keine doppelte Arbeit
+
+### Files dieser Session
+- `src/lib/bybitFetcher.ts` (neu via git mv + rewrite)
+- `src/lib/coinbasePremiumFetcher.ts` (Bybit-Spot + vergleichs_preis)
+- `src/components/wirtschaft/TradingIndikatoren.astro` (Typ + Prop-Rename)
+- `src/components/wirtschaft/FundingRatesCard.astro` (Import + Eyebrow + Stempel)
+- `src/components/wirtschaft/OpenInterestCard.astro` (dito)
+- `src/components/wirtschaft/LongShortRatioCard.astro` (dito)
+- `src/components/wirtschaft/CoinbasePremiumCard.astro` (Import via dependency · Label + Feld)
+- `src/pages/wirtschaft.astro` (Import + Funktionsname)
+- `src/data/sources.json` (Binance → Bybit)
+- `_pendenzen.md` (Production-Issue umgeschrieben zu strukturellem Befund · 5.1 als Teil-Slice/eskaliert)
+- `SESSION_LOG.md` (Update 33)
+- `docs/HANDOVER.md` (Stand nach 5.1 · Architektur-Frage als nächstes strategisches Thema)
+
+---
+
 ## 26-05-14 (Update 32) · Slice 4.8 · Polish + Phase-4-Abschluss
 
 ### Was gemacht

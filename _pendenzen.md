@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.8 · Phase-4-Abschluss)
-aktuelle-phase: 4 ABGESCHLOSSEN
+aktualisiert: 26-05-14 (Slice 5.1 · Teil-Slice / eskaliert)
+aktuelle-phase: 4 ABGESCHLOSSEN · 5.1 eskaliert zu Architektur-Frage
 ---
 
 # Mario's HQ · Pendenzen
@@ -48,7 +48,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 
 **Phase-4-Status (Stand 14.5.2026):**
 - Slice 4.1 ✅ ECharts-Foundation + BTC-Sparkline · lokal + Production
-- Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen Vercel-Binance-Block
+- Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen US-Datacenter-IP-Block (Binance, später auch Bybit · siehe Slice 5.1)
 - Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation · watchlist.json · twelveDataFetcher · watchlistAggregator · coingeckoFetcher erweitert
 - Slice 4.4 ✅ Watchlist-Komponenten · WatchlistItem + WatchlistGruppe + WatchlistSektion · Mini-Sparklines für Crypto · collapsible Gruppen · in /wirtschaft integriert
 - Slice 4.5 ✅ Aktien + Forex/Commodities-Sektion · Endpoint-Architektur (/api/aktien + /api/forex) wegen hartem 8/min-Credits-Limit · Commodities/Indizes Fallback B (weglassen) · IndizesGrid + Footer-Fix
@@ -59,6 +59,9 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.7 ✅ Macro-Timeline (Editorial-Liste) + Fear & Greed Gauge (Halbkreis-Tacho) auf /wirtschaft · 9 echte Macro-Events 14.5.-28.5.2026 · alternative.me-Fetcher mit 1h Cache
 - Slice 4.8 ✅ Polish + Volltest + Phase-4-Abschluss (inkl. §7.7-Realitäts-Notiz + Cover-Stempel)
 
+**Slice 5.1 · Teil-Slice / eskaliert (14.5.2026):**
+Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. Bybit-Fetcher technisch sauber gebaut, lokal alle 4 Cards live, Build grün, deployed (feat `91ef169`). **Production-Verifikation fehlgeschlagen** — Bybit ist von Vercel-US-Lambda-IPs ebenfalls geblockt. DeFiLlama läuft weiter → struktureller Befund: nicht Binance-spezifisch, sondern Derivate-Börsen-Klasse blockt US-Datacenter-IPs (siehe Production-Issues unten). **Schnell-Fix-Pfad ist erschöpft.** Verbleibend nur noch Architektur-Lösung (Fetch-und-ablegen, geparkt mit neuem Trigger). Bybit-Code bleibt auf main · UI-Wahrheit korrekt ("Fallback · Bybit offline"), funktional gleich wie vor 5.1.
+
 ---
 
 ## ⏭️ Nächste konkrete Schritte
@@ -68,7 +71,7 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - [x] **TWELVE_DATA_API_KEY** in .env (lokal) + Vercel Dashboard eingetragen · bereit für Slice 4.3
 - [x] **PHASE-4-SPEC** erstellt · `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md`
 - [ ] **Vercel-Doppel-Projekt bereinigen** · zwei Projekte für dasselbe Repo entdeckt · eines löschen · kanonische URL klären · Vorsicht bei DNS/Custom-Domain
-- [ ] **Vercel-Binance-Block diagnostizieren** · 4 Trading-Indikator-Cards zeigen Fallback auf Production · Bybit/OKX als Alternative evaluieren oder Edge-Function-Proxy
+- [~] **Vercel-Derivate-Börsen-IP-Block** · in 5.1 zu struktureller Anbieter-Klassen-Block bestätigt (Binance + Bybit beide blockiert · DeFiLlama läuft). Anbieter-Swap-Pfad erschöpft. → Verbleibender Fix: **Architektur-Umbau Fetch-und-ablegen, GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1 vor Pipeline-Bau: testen ob GH-Actions-Runner Bybit/Binance erreicht — wenn nein, Residential-IP-Lösung nötig.
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
 - [x] **Cover-Meta-Stempel** · CoverFooter.astro auf "Phase 4" aktualisiert (Slice 4.8)
 
@@ -256,20 +259,26 @@ Datenmodell hängt daran. Muss Mario festlegen, bevor 4.6b geplant werden kann.
 
 ## 🐛 Bekannte Production-Issues
 
-**Vercel blockt Binance-API-Calls** *(entdeckt 13.5.2026)*
+**US-Datacenter-IPs sind von Derivate-Börsen geblockt — struktureller Befund** *(entdeckt 13.5.2026 · bestätigt 14.5.2026 in Slice 5.1)*
 
-Auf `mario-hq-qc6f.vercel.app/wirtschaft` zeigen vier Trading-Indikator-Cards „FALLBACK · BINANCE OFFLINE":
-- Funding Rates
-- Open Interest
-- Long/Short Ratio
-- Coinbase Premium (nutzt Binance für Preis-Vergleich)
+Auf `mario-hq-qc6f.vercel.app/wirtschaft` zeigen vier Trading-Indikator-Cards FALLBACK. Lokal (Schweizer Residential-IP) läuft alles live.
 
-Lokal alles live. Stablecoin Supply (DeFiLlama) funktioniert auf Production korrekt. Wahrscheinlich Geo-/IP-Block von Binance gegen Vercel-Server-IPs oder rechtliche Compliance-Restriktion.
+**Bestätigte Anbieter-Blocks (Slice 5.1):**
+- **Binance Futures Public API** — geblockt (13.5.)
+- **Bybit V5 Public API** — geblockt (14.5., feat `91ef169`)
+- **DeFiLlama** — läuft weiter problemlos → Beweis: anbieter-klassen-spezifisch (Derivate-Börsen mit US-Compliance-Risiko), kein Netzwerk-Problem
+- **CoinGecko**, **Alternative.me**, **Coinbase Exchange Rates**, **Open-Meteo**, **Twelve Data** — alle laufen normal
 
-**Lösungsoptionen (für Mini-Reparatur-Slice):**
-- Edge-Function-Proxy via Vercel · routet Calls über andere IPs
-- Alternative API · Bybit oder OKX statt Binance · selbes Datenmodell · Free Public Endpoints
-- Pragmatisch akzeptieren · /wirtschaft hauptsächlich lokal nutzen
+**Routing-Befund:** Vercel deploy-Region `fra1` (Frankfurt-CDN) routet SSR-Function-Aufrufe zu `iad1` (US-AWS-Lambda). Header-Beweis: `x-vercel-id: fra1::iad1::...`. Die Derivate-Börsen blocken US-Datacenter-IP-Ranges (AWS, GCP, Azure, OCI) wegen US-CFTC/Treasury-Compliance — kein technischer Defekt, sondern strukturelle Anbieter-Policy.
+
+**Schnell-Fix-Pfad (Anbieter-Swap) ist erschöpft.** OKX wurde bewusst nicht getestet — selbes IP-Block-Risiko, selbe Compliance-Klasse.
+
+**Verbleibender Lösungs-Pfad: nur noch Architektur — "Fetch-und-ablegen"**
+- Modell: Externer Job (z.B. GitHub Actions, Vercel Cron, externer Server) holt die Daten aus einer kontrollierten IP, schreibt sie in Storage (Vercel KV, Upstash, JSON-in-Repo, ...). Page rendert nur aus Storage.
+- **GEPARKT mit Trigger:** "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live." Alter Trigger ("nächster Anbieter blockt auch") ist verbraucht.
+- **Schritt 1 vor jedem Pipeline-Bau (Cheap-Test):** verifizieren ob ein GitHub-Actions-Runner (Azure-IP) Bybit oder Binance überhaupt erreicht. Wenn nein → Residential-IP-Lösung nötig (eigener Mini-Server, Cloudflare Tunnel, oder bezahlter Proxy) → grösserer Architektur-Schritt.
+
+**Aktueller UI-Stand (nach 5.1, akzeptiert):** Die 4 Cards zeigen "Fallback · Bybit offline" auf Production — ehrlicher als der vorherige "Binance offline"-Stand (Quellen-Wahrheit stimmt mit dem aktuellen Fetcher-Pfad), aber funktional identisch zu vorher.
 
 **Vercel-Doppel-Projekt** *(entdeckt 13.5.2026)*
 
