@@ -170,6 +170,41 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 
 ---
 
+## Foto-Inspiration · /wetter (Konzept steht, Umsetzung offen)
+
+Mario will die /wetter-Seite zu "Wetter und Foto" ausbauen — als
+Inspirationsquelle, die fotografische Gelegenheiten erkennt.
+
+**Konzept (durchdacht, aber bewusst noch nicht umgesetzt):**
+- foto-spots.json wird KURATIERT (von Mario, ggf. mit Cowork-Recherche-
+  Unterstützung) — KEIN automatischer Feed. Recherche von gestern bestätigt:
+  es gibt keine maschinell abrufbare Foto-Spot-Quelle für die Region.
+  Quellen wie ShotHotspot, SwissPhotoSpots sind Browse-Karten, keine APIs —
+  und Abgreifen wäre rechtlich heikel + qualitativ dünn.
+- Geplanter Slice 4.6b in drei Teilen:
+  1. Spot-Datenmodell — Metadaten-Felder pro Spot (ideales_wetter,
+     beste_tageszeit, saison, Blickrichtung, kurze Beschreibung)
+  2. Matching-Logik — Seite matcht heutige Wetterlage + Tageszeit-Fenster
+     gegen die Spots, zeigt den/die heute passenden, rotiert unter den
+     passenden ("Gelegenheiten erkennen")
+  3. Spezial-Slot für besondere fotografische Ereignisse + Wetter-zu-Foto-
+     Beschreibungssatz aus vorhandenen Wetterdaten
+  Plus: Seiten-Umbenennung "Wetter" → "Wetter und Foto"
+- Inhalt (die eigentlichen Spots) wächst danach organisch via JSON-Pflege,
+  kein weiterer Slice nötig.
+
+**Offener Punkt vor dem Slice — eine kreative Entscheidung von Mario:**
+Welche Metadaten-Felder pro Spot ergeben aus Fotografen-Sicht Sinn? Das
+Datenmodell hängt daran. Muss Mario festlegen, bevor 4.6b geplant werden kann.
+
+**Recherche-Material** (Marios Quellen zum Spots-Finden, NICHT zum Abgreifen):
+- shothotspot.com — strukturierte Karte, 122 Spots für Kanton Aargau
+- swissphotospots.com — kuratierte Karte mit GPS, Parkplatz, Schwierigkeit
+- 1981photographers.com — Community-Fotolocation-Sammlung
+- ifolor / mountainmoments / phototraveler.ch — redaktionelle Listen
+
+---
+
 ## ✅ Erledigt
 
 ### 26-05-12 (Abend · Phase 2.1 abgeschlossen)
