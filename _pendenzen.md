@@ -74,6 +74,7 @@ Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. By
 - [~] **Vercel-Derivate-Börsen-IP-Block** · in 5.1 zu struktureller Anbieter-Klassen-Block bestätigt (Binance + Bybit beide blockiert · DeFiLlama läuft). Anbieter-Swap-Pfad erschöpft. → Verbleibender Fix: **Architektur-Umbau Fetch-und-ablegen, GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1 vor Pipeline-Bau: testen ob GH-Actions-Runner Bybit/Binance erreicht — wenn nein, Residential-IP-Lösung nötig.
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
 - [x] **Cover-Meta-Stempel** · CoverFooter.astro auf "Phase 4" aktualisiert (Slice 4.8)
+- [ ] **Worktree-Reste aufräumen** · zwei verwaiste Claude-Code-Worktrees im Repo: `.claude/worktrees/crazy-roentgen-49029d` (5c4e8a1 · HQ-Pivot 12.5.) und `.claude/worktrees/lucid-noyce-c570f5` (00535aa · Phase 2.2 · weit hinter main). Kein Risiko, nur Müll. Aufräumen via `git worktree remove <pfad>` plus ggf. `git branch -D <branch>`. An jeden künftigen Slice anhängbar — keine eigene Slice-Notwendigkeit.
 
 ---
 
@@ -140,6 +141,16 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [x] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [x] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · §7.7-Realitäts-Notiz · Cover-Stempel · SESSION_LOG Synthese
+
+### Phase 5 · Cover-Sync — Cover auf Live-Stand bringen
+
+Die Cover-Daten-Cards zeigen teils noch Platzhalter, während die Detail-Seiten /wirtschaft + /wetter Live-Daten haben. Cover nachziehen.
+
+**Scope (entschieden):** ALLE Daten-Cards auf dem Cover in einem Rutsch — Wetter+Foto, Krypto, Macro. Kalender + News: prüfen ob bereits live, sonst mitnehmen. Bewusst kein Halb-Zustand.
+
+**Krypto-Card-Quelle (entschieden):** NUR CoinGecko-Preise. KEINE Trading-Indikatoren auf dem Cover — die erben sonst den 5.1-Block (US-Datacenter-IP-Block) auf die Startseite. CoinGecko läuft auf Production sauber (in 5.1 als Gegenbeweis zum Bybit-Block bestätigt).
+
+**Vorbereitung:** Slice-Aufteilung in der Cover-Spec planen (`docs/PHASE-2.2-COVER-SPEC.md` existiert als Pattern-Vorbild · entweder dort erweitern oder eigene Phase-5-Spec anlegen). Geschätzt 2–3 Slices je nach Card-Zahl und Aufwand pro Card.
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)

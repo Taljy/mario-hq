@@ -101,13 +101,21 @@ Konzept in `_pendenzen.md` festgehalten.
 
 ### D · Phase 3 · Content-Pipeline (zurückgestellt)
 
+> *Ergänzung aus Claude-Code-Vorschlag · nicht aus 5.1-Besprechung · belegbar
+> durch bestehende Phase-3-Doku in `_pendenzen.md` Roadmap-Sektion.*
+
 Trigger: Habits/Notizen-Tracking oder Archiv-Wunsch.
 
 ### E · Hygiene-Slices (klein)
 
+> *Ergänzung aus Claude-Code-Vorschlag · nicht aus 5.1-Besprechung ·
+> belegbar durch bestehende Production-Issues + Worktree-Pendenz in
+> `_pendenzen.md`.*
+
 - Vercel-Doppel-Projekt `mario-hq` (ohne Custom Domain) löschen — Marios
   Dashboard-Hausaufgabe
-- Lokale Worktree-Reste (crazy-roentgen, lucid-noyce) aufräumen
+- Lokale Worktree-Reste (crazy-roentgen, lucid-noyce) aufräumen — an
+  jeden künftigen Slice anhängbar
 
 ---
 
