@@ -1,0 +1,162 @@
+---
+// AssetCard — Gemeinsame Karten-Basis für Krypto- und Aktien-Sektionen (Slice 4.5b)
+// Layout: grid-template-areas — Symbol oben links, Delta oben rechts,
+//         Name unten links, Preis unten rechts, "extra"-Zelle als Fuss
+// "extra" ist disjunkt nach Anbieter:
+//   · Krypto (CoinGecko)   → Mini-Sparkline (Desktop-only, gleich wie 4.4)
+//   · Aktien (Twelve Data) → Tageshoch/-tief als Text "H $... · T $..."
+// Wenn nichts gesetzt: extra-Zelle bleibt leer, kein Hairline-Trenner
+// Negative Deltas in Vermillon · positive neutral (var(--fg-muted)) — DRG-Regel
+// ist_live: false → "—" für Preis/Delta · kein Fehlertext pro Item
+
+import { formatPreis } from '../../lib/formatPreis';
+import Sparkline      from '../charts/Sparkline.astro';
+
+interface Props {
+  symbol:              string;
+  name:                string;
+  preis_usd:           number | null;
+  delta_24h_prozent:   number | null;
+  ist_live:            boolean;
+  sparkline_7d?:       number[];
+  tageshoch?:          number;
+  tagestief?:          number;
+}
+
+const {
+  symbol,
+  name,
+  preis_usd,
+  delta_24h_prozent,
+  ist_live,
+  sparkline_7d,
+  tageshoch,
+  tagestief,
+} = Astro.props;
+
+const negativ  = ist_live && delta_24h_prozent != null && delta_24h_prozent < 0;
+const hatRange = tageshoch != null && tagestief != null;
+const hatSpark = (sparkline_7d?.length ?? 0) > 0;
+const zeigeExtra = hatRange || hatSpark;
+
+function formatDelta(d: number): string {
+  const sign = d >= 0 ? '+' : '';
+  return `${sign}${d.toFixed(2)}%`;
+}
+---
+
+<div class={`asset-card ${!ist_live ? 'offline' : ''}`}>
+  <span class="asset-symbol">{symbol}</span>
+  <span class={`asset-delta ${negativ ? 'negativ' : ''} ${!ist_live ? 'leer' : ''}`}>
+    {delta_24h_prozent != null ? formatDelta(delta_24h_prozent) : '—'}
+  </span>
+
+  <span class="asset-name">{name}</span>
+  <span class={`asset-preis ${!ist_live ? 'leer' : ''}`}>
+    {preis_usd != null ? formatPreis(preis_usd) : '—'}
+  </span>
+
+  {zeigeExtra && (
+    <div class={`asset-extra ${hatRange ? 'mit-range' : 'mit-spark'}`}>
+      {hatRange ? (
+        <span class="asset-range">
+          H {formatPreis(tageshoch!)} · T {formatPreis(tagestief!)}
+        </span>
+      ) : (
+        <Sparkline values={sparkline_7d!} height={24} />
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .asset-card {
+    background:    var(--bg-raised);
+    padding:       14px 16px;
+    border-radius: 4px;
+    display:       grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "symbol delta"
+      "name   preis"
+      "extra  extra";
+    gap:           2px 12px;
+    align-items:   baseline;
+  }
+
+  .asset-symbol {
+    grid-area:      symbol;
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    600;
+    letter-spacing: 0.08em;
+    color:          var(--fg);
+  }
+
+  .asset-name {
+    grid-area:     name;
+    font-family:   var(--font-body);
+    font-size:     11px;
+    color:         var(--fg-subtle);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+  }
+
+  .asset-preis {
+    grid-area:   preis;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size:   22px;
+    line-height: 1;
+    font-variation-settings: "opsz" 32;
+    color:       var(--fg);
+    text-align:  right;
+    white-space: nowrap;
+  }
+
+  .asset-delta {
+    grid-area:   delta;
+    font-family: var(--font-mono);
+    font-size:   11px;
+    color:       var(--fg-muted);
+    text-align:  right;
+    white-space: nowrap;
+  }
+
+  .asset-delta.negativ {
+    color: var(--accent);
+  }
+
+  .asset-preis.leer,
+  .asset-delta.leer {
+    color: var(--fg-faint);
+  }
+
+  /* Extra-Zelle — Range (Aktien) oder Sparkline (Krypto) */
+  .asset-extra {
+    grid-area:   extra;
+    margin-top:  6px;
+    padding-top: 6px;
+    border-top:  1px solid var(--hairline);
+  }
+
+  .asset-range {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    letter-spacing: 0.04em;
+    color:          var(--fg-subtle);
+    white-space:    nowrap;
+    overflow:       hidden;
+    text-overflow:  ellipsis;
+    display:        block;
+  }
+
+  /* Sparkline-Variante · Desktop-only · gleiche Linie wie 4.4
+     Auf Mobile ganze extra-Zelle (inkl. Hairline) verbergen, kein "leerer Trenner" */
+  @media (max-width: 640px) {
+    .asset-extra.mit-spark {
+      display: none;
+    }
+  }
+</style>

@@ -1,10 +1,10 @@
 ---
-// WatchlistSektion — Wrapper für die gesamte Multi-Asset-Watchlist
+// KryptoSektion — Wrapper für die Krypto-Watchlist · zwei thematische Blöcke (4.5b)
 // Eyebrow konsistent zu TradingIndikatoren und anderen /wirtschaft-Sektionen
-// Props: WatchlistErgebnis (realer Rückgabetyp aus watchlistAggregator.ts)
+// Props: WatchlistErgebnis (Krypto-only · Typ wird in 4.5c umbenannt)
 
 import type { WatchlistErgebnis } from '../../lib/watchlistAggregator';
-import WatchlistGruppe from './WatchlistGruppe.astro';
+import KryptoGruppe from './KryptoGruppe.astro';
 
 interface Props {
   watchlist: WatchlistErgebnis;
@@ -17,23 +17,23 @@ const stempelLabel = watchlist.ist_live
   : `Fallback · ${watchlist.fetch_zeit}`;
 ---
 
-<section class="watchlist-sektion">
+<section class="krypto-sektion">
 
   <div class="sektion-head">
-    <span class="eyebrow">Watchlist · Märkte</span>
+    <span class="eyebrow">Krypto · Watchlist</span>
     <span class={`live-stempel ${!watchlist.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
   </div>
 
   <div class="gruppen-stack">
     {watchlist.gruppen.map((gruppe) => (
-      <WatchlistGruppe gruppe={gruppe} />
+      <KryptoGruppe gruppe={gruppe} />
     ))}
   </div>
 
 </section>
 
 <style>
-  .watchlist-sektion {
+  .krypto-sektion {
     background:    var(--bg-card);
     padding:       18px;
     border-radius: 4px;
@@ -44,7 +44,7 @@ const stempelLabel = watchlist.ist_live
     display:         flex;
     justify-content: space-between;
     align-items:     baseline;
-    margin-bottom:   4px;
+    margin-bottom:   var(--s-4);
   }
 
   .eyebrow {
@@ -69,9 +69,10 @@ const stempelLabel = watchlist.ist_live
     opacity: 0.7;
   }
 
-  /* Gruppen ohne Zwischenraum — Border-Top pro Gruppe erzeugt Trenner */
+  /* Gruppen-Stack · pro Gruppe ein eigener Block mit Header + Card-Grid */
   .gruppen-stack {
     display:        flex;
     flex-direction: column;
+    gap:            var(--s-4);
   }
 </style>

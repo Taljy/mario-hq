@@ -1,18 +1,18 @@
 ---
 export const prerender = false;
 
-// /wirtschaft — SSR · 6 Live-APIs parallel · 60s Edge-Cache via Vercel
-// Twelve Data ist aus dem Page-Fetch herausgelöst in zwei Endpoints
-// /api/aktien (20min Cache) und /api/forex (22min Cache, TTL-Versatz) — siehe
-// dortige Kommentare. Hier sequenzielle Fetches: zwei separate HTTP-Hits, damit
-// der Vercel-Edge-Cache sie unabhängig versorgen kann
-// Aktien + Forex/Commodities zweigen aus dem getWatchlist()-Result ab — kein zweiter Fetch
+// /wirtschaft — SSR · Live-APIs parallel · 60s Edge-Cache via Vercel
+// Twelve Data: zwei eigene Endpoints /api/aktien (20min Cache) + /api/forex (22min)
+// sequenzielle Fetches wegen 8/min-Credits-Limit (Erkenntnis aus Slice 4.5)
+// 4.5b: Krypto-Sektion auf AssetCard-Grid umgestellt · Aktien nicht mehr doppelt
+//       Aktien + Forex haben jetzt eigene Definitions-Quellen (data/aktien.ts / forex.ts)
+//       watchlist.json enthält nur noch Krypto-Blöcke
 // Statische Inhalte (News · Trade-Setups-Platzhalter) aus wirtschaft.json
 
 import DetailPage from '../layouts/DetailPage.astro';
 import KryptoHero                from '../components/wirtschaft/KryptoHero.astro';
 import TradingIndikatoren        from '../components/wirtschaft/TradingIndikatoren.astro';
-import WatchlistSektion          from '../components/wirtschaft/WatchlistSektion.astro';
+import KryptoSektion             from '../components/wirtschaft/KryptoSektion.astro';
 import AktienSektion             from '../components/wirtschaft/AktienSektion.astro';
 import ForexCommoditiesSektion   from '../components/wirtschaft/ForexCommoditiesSektion.astro';
 import WirtschaftsNews           from '../components/wirtschaft/WirtschaftsNews.astro';
@@ -28,44 +28,39 @@ import type { TwelveDataStand }          from '../lib/twelveDataFetcher';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
-// Twelve-Data-Endpoints sequenziell holen · jeder mit eigenem Edge-Cache (siehe
+// Twelve-Data-Endpoints sequenziell · jeder mit eigenem Edge-Cache (siehe
 // /api/aktien + /api/forex). Sequenziell statt parallel, damit beide Cold-Start-
 // Calls nicht in dieselbe Millisekunde feuern und das 8/min-Limit triggern.
-// Defensive: bei jedem Fehler leere Liste · getWatchlist behandelt fehlende IDs
-async function holeTwelveDataStand(origin: string): Promise<Map<string, TwelveDataStand>> {
-  const map = new Map<string, TwelveDataStand>();
+// Defensive: bei jedem Fehler leere Liste · Sektionen rendern dann offline-Stub
+async function holeAktienUndForex(origin: string): Promise<{ aktien: TwelveDataStand[]; forex: TwelveDataStand[] }> {
+  let aktien: TwelveDataStand[] = [];
+  let forex:  TwelveDataStand[] = [];
   try {
-    const aktienRes = await fetch(`${origin}/api/aktien`);
-    if (aktienRes.ok) {
-      const aktienArr = (await aktienRes.json()) as TwelveDataStand[];
-      for (const s of aktienArr) map.set(s.id, s);
-    }
-  } catch { /* still bleibt leer · UI rendert offline */ }
+    const res = await fetch(`${origin}/api/aktien`);
+    if (res.ok) aktien = (await res.json()) as TwelveDataStand[];
+  } catch { /* aktien bleibt leer */ }
   try {
-    const forexRes = await fetch(`${origin}/api/forex`);
-    if (forexRes.ok) {
-      const forexArr = (await forexRes.json()) as TwelveDataStand[];
-      for (const s of forexArr) map.set(s.id, s);
-    }
-  } catch { /* still bleibt leer · UI rendert offline */ }
-  return map;
+    const res = await fetch(`${origin}/api/forex`);
+    if (res.ok) forex = (await res.json()) as TwelveDataStand[];
+  } catch { /* forex bleibt leer */ }
+  return { aktien, forex };
 }
 
 const origin = Astro.url.origin;
 
-// 6 async Fetches parallel · jeder Fetcher hat eigenen Fallback
+// Parallele Fetches · jeder Fetcher hat eigenen Fallback
 // CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getWatchlist) feuern simultan
 // zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
-const [krypto, btcHistory, binance, coinbasePrem, stablecoins, tdMap] = await Promise.all([
+const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
   getBinanceMetrics(),
   getCoinbasePremium(),
   getStablecoinSupply(),
-  holeTwelveDataStand(origin),
+  getWatchlist(),
+  holeAktienUndForex(origin),
 ]);
 
-const watchlist = await getWatchlist(tdMap);
 const { news, trade_setups_placeholder } = getWirtschaft();
 ---
 
@@ -81,9 +76,9 @@ const { news, trade_setups_placeholder } = getWirtschaft();
       coinbasePrem={coinbasePrem}
       stablecoins={stablecoins}
     />
-    <WatchlistSektion watchlist={watchlist} />
-    <AktienSektion watchlist={watchlist} />
-    <ForexCommoditiesSektion watchlist={watchlist} />
+    <KryptoSektion watchlist={watchlist} />
+    <AktienSektion stand={td.aktien} fetch_zeit={watchlist.fetch_zeit} />
+    <ForexCommoditiesSektion stand={td.forex} fetch_zeit={watchlist.fetch_zeit} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />
   </div>

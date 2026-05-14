@@ -1,57 +1,27 @@
 {
   "gruppen": [
     {
-      "id": "krypto-large",
-      "label": "Krypto · Large Cap",
+      "id": "krypto-block-1",
+      "label": "Krypto · Block 1",
       "items": [
-        { "id": "bitcoin",      "symbol": "BTC",  "name": "Bitcoin",          "anbieter": "coingecko" },
-        { "id": "ethereum",     "symbol": "ETH",  "name": "Ethereum",         "anbieter": "coingecko" },
-        { "id": "binancecoin",  "symbol": "BNB",  "name": "BNB",              "anbieter": "coingecko" },
-        { "id": "solana",       "symbol": "SOL",  "name": "Solana",           "anbieter": "coingecko" },
-        { "id": "ripple",       "symbol": "XRP",  "name": "XRP",              "anbieter": "coingecko" }
+        { "id": "bitcoin",          "symbol": "BTC",  "name": "Bitcoin",  "anbieter": "coingecko" },
+        { "id": "ethereum",         "symbol": "ETH",  "name": "Ethereum", "anbieter": "coingecko" },
+        { "id": "solana",           "symbol": "SOL",  "name": "Solana",   "anbieter": "coingecko" },
+        { "id": "ripple",           "symbol": "XRP",  "name": "XRP",      "anbieter": "coingecko" },
+        { "id": "sui",              "symbol": "SUI",  "name": "Sui",      "anbieter": "coingecko" },
+        { "id": "tron",             "symbol": "TRX",  "name": "TRON",     "anbieter": "coingecko" }
       ]
     },
     {
-      "id": "krypto-mid",
-      "label": "Krypto · Mid Cap",
+      "id": "krypto-block-2",
+      "label": "Krypto · Block 2",
       "items": [
-        { "id": "cardano",      "symbol": "ADA",  "name": "Cardano",          "anbieter": "coingecko" },
-        { "id": "avalanche-2",  "symbol": "AVAX", "name": "Avalanche",        "anbieter": "coingecko" },
-        { "id": "polkadot",     "symbol": "DOT",  "name": "Polkadot",         "anbieter": "coingecko" },
-        { "id": "chainlink",    "symbol": "LINK", "name": "Chainlink",        "anbieter": "coingecko" },
-        { "id": "sui",          "symbol": "SUI",  "name": "Sui",              "anbieter": "coingecko" }
-      ]
-    },
-    {
-      "id": "aktien-us",
-      "label": "Aktien · US Tech",
-      "items": [
-        { "id": "aapl",  "symbol": "AAPL",  "name": "Apple",     "anbieter": "twelvedata", "td_symbol": "AAPL"  },
-        { "id": "nvda",  "symbol": "NVDA",  "name": "NVIDIA",    "anbieter": "twelvedata", "td_symbol": "NVDA"  },
-        { "id": "tsla",  "symbol": "TSLA",  "name": "Tesla",     "anbieter": "twelvedata", "td_symbol": "TSLA"  },
-        { "id": "msft",  "symbol": "MSFT",  "name": "Microsoft", "anbieter": "twelvedata", "td_symbol": "MSFT"  },
-        { "id": "amzn",  "symbol": "AMZN",  "name": "Amazon",    "anbieter": "twelvedata", "td_symbol": "AMZN"  },
-        { "id": "meta",  "symbol": "META",  "name": "Meta",      "anbieter": "twelvedata", "td_symbol": "META"  }
-      ]
-    },
-    {
-      "id": "indizes",
-      "label": "Indizes",
-      "items": [
-        { "id": "spx", "symbol": "SPX", "name": "S&P 500",    "anbieter": "twelvedata" },
-        { "id": "ndx", "symbol": "NDX", "name": "NASDAQ 100", "anbieter": "twelvedata" },
-        { "id": "dax", "symbol": "DAX", "name": "DAX",        "anbieter": "twelvedata" },
-        { "id": "smi", "symbol": "SMI", "name": "SMI",        "anbieter": "twelvedata" }
-      ]
-    },
-    {
-      "id": "forex",
-      "label": "Forex",
-      "items": [
-        { "id": "eur-usd", "symbol": "EUR/USD", "name": "Euro",            "anbieter": "twelvedata", "td_symbol": "EUR/USD" },
-        { "id": "chf-usd", "symbol": "CHF/USD", "name": "Franken",         "anbieter": "twelvedata", "td_symbol": "CHF/USD" },
-        { "id": "eur-chf", "symbol": "EUR/CHF", "name": "Euro / Franken",  "anbieter": "twelvedata", "td_symbol": "EUR/CHF" },
-        { "id": "gbp-usd", "symbol": "GBP/USD", "name": "Pfund Sterling",  "anbieter": "twelvedata", "td_symbol": "GBP/USD" }
+        { "id": "cardano",                  "symbol": "ADA",  "name": "Cardano",   "anbieter": "coingecko" },
+        { "id": "avalanche-2",              "symbol": "AVAX", "name": "Avalanche", "anbieter": "coingecko" },
+        { "id": "hedera-hashgraph",         "symbol": "HBAR", "name": "Hedera",    "anbieter": "coingecko" },
+        { "id": "jupiter-exchange-solana",  "symbol": "JUP",  "name": "Jupiter",   "anbieter": "coingecko" },
+        { "id": "green-satoshi-token",      "symbol": "GST",  "name": "STEPN GST", "anbieter": "coingecko" },
+        { "id": "polkadot",                 "symbol": "DOT",  "name": "Polkadot",  "anbieter": "coingecko" }
       ]
     }
   ]

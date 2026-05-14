@@ -1,33 +1,40 @@
 ---
-// AktienSektion — 6 US-Tech-Aktien als Cards · Twelve Data Free Tier
-// Daten aus existierendem getWatchlist()-Aufruf · Filter auf Gruppe "aktien-us"
-// Negative Deltas in Vermillon · positive neutral (var(--fg-muted)) · gleiche Regel wie 4.4
-// ist_live: false → "—" für Preis/Delta · Subtext mit H/T nur wenn beide Felder da
+// AktienSektion — 6 US-Tech-Aktien als Cards (4.5 · in 4.5b auf AssetCard umgestellt)
+// Daten: AKTIEN_DEFINITION (src/data/aktien.ts) + stand-Array vom /api/aktien-Endpoint
+// Mergt sich selbst per id zu Anzeige-Items · keine Mini-Sparklines (Twelve Data
+// Free Tier liefert keine brauchbare History) · dafür Tageshoch/-tief im AssetCard-extra
 
-import type { WatchlistErgebnis, WatchlistGruppeEnriched } from '../../lib/watchlistAggregator';
-import { formatPreis } from '../../lib/formatPreis';
+import type { TwelveDataStand } from '../../lib/twelveDataFetcher';
+import { AKTIEN_DEFINITION } from '../../data/aktien';
+import AssetCard from './AssetCard.astro';
 
 interface Props {
-  watchlist: WatchlistErgebnis;
+  stand:      TwelveDataStand[];
+  fetch_zeit: string;
 }
 
-const { watchlist } = Astro.props;
+const { stand, fetch_zeit } = Astro.props;
 
-const gruppe: WatchlistGruppeEnriched | undefined = watchlist.gruppen.find(
-  (g) => g.id === 'aktien-us',
-);
+const standMap = new Map(stand.map((s) => [s.id, s]));
 
-const items = gruppe?.items ?? [];
+const items = AKTIEN_DEFINITION.map((def) => {
+  const s = standMap.get(def.id);
+  return {
+    id:                def.id,
+    symbol:            def.symbol,
+    name:              def.name,
+    preis_usd:         s?.ist_live ? s.preis_usd         : null,
+    delta_24h_prozent: s?.ist_live ? s.delta_24h_prozent : null,
+    ist_live:          s?.ist_live ?? false,
+    tageshoch:         s?.tageshoch,
+    tagestief:         s?.tagestief,
+  };
+});
 
 const anyLive = items.some((i) => i.ist_live);
 const stempelLabel = anyLive
-  ? `Live · ${watchlist.fetch_zeit}`
+  ? `Live · ${fetch_zeit}`
   : 'Twelve Data offline';
-
-function formatDelta(d: number): string {
-  const sign = d >= 0 ? '+' : '';
-  return `${sign}${d.toFixed(2)}%`;
-}
 ---
 
 <section class="aktien-sektion">
@@ -37,33 +44,19 @@ function formatDelta(d: number): string {
     <span class={`live-stempel ${!anyLive ? 'offline' : ''}`}>{stempelLabel}</span>
   </div>
 
-  {items.length === 0 ? (
-    <p class="leer-hinweis">Keine Aktien in der Watchlist konfiguriert.</p>
-  ) : (
-    <div class="aktien-grid">
-      {items.map((item) => {
-        const negativ = item.ist_live && item.delta_24h_prozent != null && item.delta_24h_prozent < 0;
-        const hatRange = item.tageshoch != null && item.tagestief != null;
-        return (
-          <div class={`aktie-card ${!item.ist_live ? 'offline' : ''}`}>
-            <span class="aktie-symbol">{item.symbol}</span>
-            <span class="aktie-name">{item.name}</span>
-            <span class={`aktie-preis ${!item.ist_live ? 'leer' : ''}`}>
-              {item.preis_usd != null ? formatPreis(item.preis_usd) : '—'}
-            </span>
-            <span class={`aktie-delta ${negativ ? 'negativ' : ''} ${!item.ist_live ? 'leer' : ''}`}>
-              {item.delta_24h_prozent != null ? formatDelta(item.delta_24h_prozent) : '—'}
-            </span>
-            {item.ist_live && hatRange && (
-              <span class="aktie-range">
-                H {formatPreis(item.tageshoch!)} · T {formatPreis(item.tagestief!)}
-              </span>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  )}
+  <div class="aktien-grid">
+    {items.map((item) => (
+      <AssetCard
+        symbol={item.symbol}
+        name={item.name}
+        preis_usd={item.preis_usd}
+        delta_24h_prozent={item.delta_24h_prozent}
+        ist_live={item.ist_live}
+        tageshoch={item.tageshoch}
+        tagestief={item.tagestief}
+      />
+    ))}
+  </div>
 
 </section>
 
@@ -103,14 +96,7 @@ function formatDelta(d: number): string {
     opacity: 0.7;
   }
 
-  .leer-hinweis {
-    font-family: var(--font-mono);
-    font-size:   11px;
-    color:       var(--fg-subtle);
-    margin:      0;
-  }
-
-  /* Grid: Desktop 3 Spalten · Tablet 2 Spalten · Mobile 1 Spalte */
+  /* Grid: Desktop 3 Spalten · Tablet 2 · Mobile 1 — gleich wie KryptoGruppe-Grid */
   .aktien-grid {
     display:               grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -127,83 +113,5 @@ function formatDelta(d: number): string {
     .aktien-grid {
       grid-template-columns: 1fr;
     }
-  }
-
-  /* Card */
-  .aktie-card {
-    background:    var(--bg-raised);
-    padding:       14px 16px;
-    border-radius: 4px;
-    display:       grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "symbol delta"
-      "name   preis"
-      "range  range";
-    gap:           2px 12px;
-    align-items:   baseline;
-  }
-
-  .aktie-symbol {
-    grid-area:      symbol;
-    font-family:    var(--font-mono);
-    font-size:      11px;
-    font-weight:    600;
-    letter-spacing: 0.08em;
-    color:          var(--fg);
-  }
-
-  .aktie-name {
-    grid-area:     name;
-    font-family:   var(--font-body);
-    font-size:     11px;
-    color:         var(--fg-subtle);
-    white-space:   nowrap;
-    overflow:      hidden;
-    text-overflow: ellipsis;
-  }
-
-  .aktie-preis {
-    grid-area:   preis;
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size:   22px;
-    line-height: 1;
-    font-variation-settings: "opsz" 32;
-    color:       var(--fg);
-    text-align:  right;
-    white-space: nowrap;
-  }
-
-  .aktie-delta {
-    grid-area:   delta;
-    font-family: var(--font-mono);
-    font-size:   11px;
-    color:       var(--fg-muted);
-    text-align:  right;
-    white-space: nowrap;
-  }
-
-  .aktie-delta.negativ {
-    color: var(--accent);
-  }
-
-  .aktie-preis.leer,
-  .aktie-delta.leer {
-    color: var(--fg-faint);
-  }
-
-  .aktie-range {
-    grid-area:      range;
-    font-family:    var(--font-mono);
-    font-size:      10px;
-    letter-spacing: 0.04em;
-    color:          var(--fg-subtle);
-    margin-top:     6px;
-    padding-top:    6px;
-    border-top:     1px solid var(--hairline);
-    white-space:    nowrap;
-    overflow:       hidden;
-    text-overflow:  ellipsis;
   }
 </style>

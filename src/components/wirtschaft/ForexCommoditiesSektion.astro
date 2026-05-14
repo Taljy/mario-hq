@@ -1,33 +1,39 @@
 ---
-// ForexCommoditiesSektion — Forex-Tabelle + Commodities-Tabelle (kompakt, keine Cards)
-// Daten aus existierendem getWatchlist()-Aufruf · Filter nach Gruppen-ID
-// Commodities: aktuell keine Items in watchlist.json (Free Tier liefert keine Spots)
-// → Leer-Zustand "im aktuellen Datentier nicht verfügbar" · strukturell vorbereitet
-//   für späteren Plan / andere Quelle ohne Komponenten-Änderung
-// Negative Deltas Vermillon · positive neutral · gleiche Regel wie 4.4
+// ForexCommoditiesSektion — Forex-Tabelle + Commodities-Leer-Hinweis
+// Daten: FOREX_DEFINITION (src/data/forex.ts) + stand-Array vom /api/forex-Endpoint
+// Mergt selbst per id · Tabellen-Layout bleibt (Mario will keine Cards hier)
+// Commodities: aktuell keine Items (Free Tier liefert keine Spots) →
+//   ehrlicher Leer-Zustand · strukturell vorbereitet für späteren Plan / andere Quelle
+// Negative Deltas Vermillon · positive neutral · gleiche Regel wie 4.4/4.5
 
-import type { WatchlistErgebnis, WatchlistGruppeEnriched } from '../../lib/watchlistAggregator';
+import type { TwelveDataStand } from '../../lib/twelveDataFetcher';
+import { FOREX_DEFINITION } from '../../data/forex';
 import { formatPreis } from '../../lib/formatPreis';
 
 interface Props {
-  watchlist: WatchlistErgebnis;
+  stand:      TwelveDataStand[];
+  fetch_zeit: string;
 }
 
-const { watchlist } = Astro.props;
+const { stand, fetch_zeit } = Astro.props;
 
-const forexGruppe: WatchlistGruppeEnriched | undefined = watchlist.gruppen.find(
-  (g) => g.id === 'forex',
-);
-const commoditiesGruppe: WatchlistGruppeEnriched | undefined = watchlist.gruppen.find(
-  (g) => g.id === 'rohstoffe',
-);
+const standMap = new Map(stand.map((s) => [s.id, s]));
 
-const forexItems       = forexGruppe?.items ?? [];
-const commoditiesItems = commoditiesGruppe?.items ?? [];
+const forexItems = FOREX_DEFINITION.map((def) => {
+  const s = standMap.get(def.id);
+  return {
+    id:                def.id,
+    symbol:            def.symbol,
+    name:              def.name,
+    preis_usd:         s?.ist_live ? s.preis_usd         : null,
+    delta_24h_prozent: s?.ist_live ? s.delta_24h_prozent : null,
+    ist_live:          s?.ist_live ?? false,
+  };
+});
 
 const anyForexLive = forexItems.some((i) => i.ist_live);
 const stempelLabel = anyForexLive
-  ? `Live · ${watchlist.fetch_zeit}`
+  ? `Live · ${fetch_zeit}`
   : 'Twelve Data offline';
 
 function formatDelta(d: number): string {
@@ -49,7 +55,7 @@ function formatDelta(d: number): string {
     <div class="tabelle-block">
       <h3 class="tabelle-titel">Forex</h3>
       {forexItems.length === 0 ? (
-        <p class="leer-hinweis">Keine Forex-Paare in der Watchlist konfiguriert.</p>
+        <p class="leer-hinweis">Keine Forex-Paare konfiguriert.</p>
       ) : (
         <table class="fx-tabelle">
           <tbody>
@@ -76,29 +82,7 @@ function formatDelta(d: number): string {
     <!-- Commodities -->
     <div class="tabelle-block">
       <h3 class="tabelle-titel">Commodities</h3>
-      {commoditiesItems.length === 0 ? (
-        <p class="leer-hinweis">Im aktuellen Datentier nicht verfügbar.</p>
-      ) : (
-        <table class="fx-tabelle">
-          <tbody>
-            {commoditiesItems.map((item) => {
-              const negativ = item.ist_live && item.delta_24h_prozent != null && item.delta_24h_prozent < 0;
-              return (
-                <tr class={!item.ist_live ? 'offline' : ''}>
-                  <th scope="row" class="zelle-symbol">{item.symbol}</th>
-                  <td class="zelle-name">{item.name}</td>
-                  <td class={`zelle-preis ${!item.ist_live ? 'leer' : ''}`}>
-                    {item.preis_usd != null ? formatPreis(item.preis_usd) : '—'}
-                  </td>
-                  <td class={`zelle-delta ${negativ ? 'negativ' : ''} ${!item.ist_live ? 'leer' : ''}`}>
-                    {item.delta_24h_prozent != null ? formatDelta(item.delta_24h_prozent) : '—'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
+      <p class="leer-hinweis">Im aktuellen Datentier nicht verfügbar.</p>
     </div>
 
   </div>

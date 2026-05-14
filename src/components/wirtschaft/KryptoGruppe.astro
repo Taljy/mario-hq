@@ -1,11 +1,12 @@
 ---
-// WatchlistGruppe — Collapsible Gruppen-Block mit Header + Items
+// KryptoGruppe — Collapsible Block mit Header + Card-Grid (4.5b)
 // Toggle: Button + aria-expanded · KEIN <details> (Phase-2.1-Stolperstein)
-// State: DOM-only · Reload setzt alle Gruppen auf "offen" · kein localStorage (Slice 4.4)
-// Alle Items offline → Gruppen-Header trägt "· nicht verfügbar" in var(--fg-subtle)
+// State: DOM-only · Reload setzt alle Gruppen auf "offen" · kein localStorage
+// Alle Items offline → Gruppen-Header trägt "· nicht verfügbar"
+// Inhalt: AssetCard-Grid (vorher Zeilen-Liste via WatchlistItem · 4.5b refactor)
 
 import type { WatchlistGruppeEnriched } from '../../lib/watchlistAggregator';
-import WatchlistItem from './WatchlistItem.astro';
+import AssetCard from './AssetCard.astro';
 
 interface Props {
   gruppe: WatchlistGruppeEnriched;
@@ -16,9 +17,9 @@ const { gruppe } = Astro.props;
 const alleOffline = gruppe.items.every((i) => !i.ist_live);
 ---
 
-<section class="wl-gruppe" data-gruppe data-expanded="true">
+<section class="krypto-gruppe" data-gruppe data-expanded="true">
 
-  <button class="wl-gruppe-header" data-gruppe-toggle aria-expanded="true">
+  <button class="krypto-gruppe-header" data-gruppe-toggle aria-expanded="true">
     <span class="gruppe-label">{gruppe.label}</span>
     {alleOffline && (
       <span class="gruppe-offline">· nicht verfügbar</span>
@@ -27,13 +28,18 @@ const alleOffline = gruppe.items.every((i) => !i.ist_live);
     <span class="gruppe-chevron" aria-hidden="true">▾</span>
   </button>
 
-  <ul class="wl-gruppe-items" role="list">
+  <div class="krypto-gruppe-grid">
     {gruppe.items.map((item) => (
-      <li class="wl-item-wrapper">
-        <WatchlistItem item={item} />
-      </li>
+      <AssetCard
+        symbol={item.symbol}
+        name={item.name}
+        preis_usd={item.preis_usd}
+        delta_24h_prozent={item.delta_24h_prozent}
+        ist_live={item.ist_live}
+        sparkline_7d={item.sparkline_7d}
+      />
     ))}
-  </ul>
+  </div>
 
 </section>
 
@@ -52,30 +58,30 @@ const alleOffline = gruppe.items.every((i) => !i.ist_live);
 </script>
 
 <style>
-  .wl-gruppe {
-    border-top: 1px solid var(--hairline);
+  .krypto-gruppe {
+    /* kein border-top mehr — KryptoSektion staked Gruppen mit gap */
   }
 
   /* Inhalt ausblenden wenn zugeklappt */
-  [data-gruppe][data-expanded="false"] .wl-gruppe-items {
+  [data-gruppe][data-expanded="false"] .krypto-gruppe-grid {
     display: none;
   }
 
   /* Header-Button */
-  .wl-gruppe-header {
+  .krypto-gruppe-header {
     display:         flex;
     align-items:     center;
     gap:             8px;
     width:           100%;
     background:      none;
     border:          none;
-    padding:         10px 0;
+    padding:         0 0 var(--s-3) 0;
     cursor:          pointer;
     text-align:      left;
     color:           inherit;
   }
 
-  .wl-gruppe-header:hover .gruppe-label {
+  .krypto-gruppe-header:hover .gruppe-label {
     color: var(--fg);
   }
 
@@ -117,18 +123,22 @@ const alleOffline = gruppe.items.every((i) => !i.ist_live);
     transform: rotate(-90deg);
   }
 
-  /* Items-Liste */
-  .wl-gruppe-items {
-    list-style: none;
-    margin:     0;
-    padding:    0;
+  /* Card-Grid · Desktop 3 Spalten · Tablet 2 · Mobile 1 — gleiches Pattern wie AktienSektion */
+  .krypto-gruppe-grid {
+    display:               grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:                   12px;
   }
 
-  .wl-item-wrapper {
-    /* letztes Item: kein border-bottom (WatchlistItem setzt es, letzte li überschreibt) */
+  @media (max-width: 1023px) {
+    .krypto-gruppe-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
-  .wl-item-wrapper:last-child > :global(.wl-item) {
-    border-bottom: none;
+  @media (max-width: 640px) {
+    .krypto-gruppe-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
