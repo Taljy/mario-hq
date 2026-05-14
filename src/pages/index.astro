@@ -1,4 +1,11 @@
 ---
+export const prerender = false;
+
+// Cover-Page · SSR · Live-Fetches zum Page-Load
+// Slice 5.1: KryptoCard zieht echte CoinGecko-Preise + Fear & Greed.
+// Wetter/Kalender/Macro/News/EventBanner: noch Stub, kommt in 5.2 + 5.3.
+// Cache-Header analog /wirtschaft: 60s frisch, 300s SWR.
+
 import Magazine from '../layouts/Magazine.astro';
 import HeroImage from '../components/HeroImage.astro';
 import CoverHeader from '../components/CoverHeader.astro';
@@ -11,6 +18,17 @@ import KryptoCard from '../components/KryptoCard.astro';
 import MacroCard from '../components/MacroCard.astro';
 import NewsCard from '../components/NewsCard.astro';
 import CoverFooter from '../components/CoverFooter.astro';
+
+import { getKryptoStand }  from '../lib/coingeckoFetcher';
+import { getFearGreed }    from '../lib/fearGreedFetcher';
+
+Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+
+// Parallele Fetches · jeder mit eigenem Fallback (siehe Fetcher-Implementierungen)
+const [krypto, fearGreed] = await Promise.all([
+  getKryptoStand(),
+  getFearGreed(),
+]);
 ---
 
 <Magazine title="Cover · Mario's HQ">
@@ -26,7 +44,7 @@ import CoverFooter from '../components/CoverFooter.astro';
         <KalenderCard />
       </div>
       <div class="supporting">
-        <KryptoCard />
+        <KryptoCard krypto={krypto} fearGreed={fearGreed} />
         <MacroCard />
         <NewsCard />
       </div>

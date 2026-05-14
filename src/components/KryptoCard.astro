@@ -1,32 +1,58 @@
 ---
-// KryptoCard — Supporting-Grid links (1fr) · statischer BTC-Stub
+// KryptoCard — Supporting-Grid links (1fr) · LIVE (Slice 5.1)
+// Quelle: getKryptoStand() (CoinGecko) für BTC-Preis + Delta · getFearGreed() (alternative.me)
+// KEINE Trading-Indikatoren auf dem Cover (würde IP-Block vererben · siehe Phase-4-Nachläufer)
 // Schweizer Apostroph-Tausenderpunkt via toLocaleString('de-CH')
 // Delta in Vermillon bei Minus · var(--fg-muted) bei Plus/Null
-// Live-CoinGecko-Anbindung kommt späterer Slice
 
-import { getBTCHeute } from '../lib/kryptoResolver';
+import type { KryptoErgebnis } from '../lib/coingeckoFetcher';
+import type { FearGreedStand } from '../lib/fearGreedFetcher';
 
-const btc = getBTCHeute();
+interface Props {
+  krypto:    KryptoErgebnis;
+  fearGreed: FearGreedStand;
+}
 
-// Delta-Format: "+1.2%" oder "-1.8%"
-const deltaFormatiert = `${btc.delta_24h_prozent > 0 ? '+' : ''}${btc.delta_24h_prozent.toFixed(1)}%`;
-const deltaIstNegativ = btc.delta_24h_prozent < 0;
+const { krypto, fearGreed } = Astro.props;
+
+// BTC via .find() · defensiv gegen Reihenfolge-Änderungen in coins[]
+const btc = krypto.coins.find((c) => c.symbol === 'BTC');
+
+// Live-Stempel · Krypto-Card hat einen ist_live-Status (Krypto-Quelle)
+const stempelLabel = krypto.ist_live
+  ? `Live · ${krypto.fetch_zeit}`
+  : 'Fallback · CoinGecko offline';
+
+// Delta-Format: "+1.2%" oder "-1.8%" · "—" falls BTC fehlt
+const deltaFormatiert = btc
+  ? `${btc.delta_24h_prozent > 0 ? '+' : ''}${btc.delta_24h_prozent.toFixed(1)}%`
+  : '—';
+const deltaIstNegativ = btc !== undefined && btc.delta_24h_prozent < 0;
+
+const preisFormatiert = btc
+  ? `$${btc.preis_usd.toLocaleString('de-CH')}`
+  : '$—';
+
+// F&G-Zeile · zeigt "—" wenn Fetcher offline (Wert 0/Label '—' aus Fallback)
+const fearGreedZeile = fearGreed.ist_live
+  ? `${fearGreed.label} · F&G ${fearGreed.wert}`
+  : '— · F&G —';
 ---
 
 <div class="krypto-card">
   <!-- Header-Row: Eyebrow links · Live-Stempel rechts -->
   <div class="card-head">
     <span class="eyebrow">Krypto</span>
-    <span class="live-stempel">Live · {btc.stand}</span>
+    <span class={`live-stempel ${!krypto.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
   </div>
 
   <!-- Preis-Block -->
   <div class="preis-block">
-    <span class="preis">${btc.preis_usd.toLocaleString('de-CH')}</span>
+    <span class="preis">{preisFormatiert}</span>
     <span class="delta-zeile">
       BTC · 24h <span class={`delta ${deltaIstNegativ ? 'negativ' : ''}`}>{deltaFormatiert}</span>
     </span>
-    <span class="fear-greed">{btc.fear_greed_label} · F&amp;G {btc.fear_greed}</span>
+    <span class="fear-greed">{fearGreedZeile}</span>
   </div>
 </div>
 
@@ -60,6 +86,11 @@ const deltaIstNegativ = btc.delta_24h_prozent < 0;
     letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
   }
 
   /* Preis-Block */
