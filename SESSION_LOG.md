@@ -31,6 +31,10 @@
 - `_pendenzen.md` (Slice 4.3 ✅ · Phase-4-Status aktualisiert)
 - `SESSION_LOG.md` (Update 24)
 
+### Nachtrag · Cleanup (14.5.2026)
+- `_test-watchlist.astro` entfernt · war versehentlich committet, als temporäre Verifikations-Route geplant
+- `PHASE-4-SPEC §4.1` mit Vermerk versehen · `watchlist.json` ist im MVP bewusst generisch, echte TradingView-Liste kommt beim /wirtschaft-Rework
+
 ---
 
 ## 26-05-13 (Update 23) · Tages-Abschluss · ENV-Setup + Vercel-Issues + Glassnode

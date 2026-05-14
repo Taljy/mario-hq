@@ -85,6 +85,8 @@ Phase 4 setzt das **Hybrid-Modell mit Live-Inseln** aus Phase 2.3 fort, aber **e
 
 ### 4.1 src/data/watchlist.json
 
+> **Hinweis (14.5.2026):** Die in diesem Schema gelistete Watchlist spiegelt Marios TradingView-Setup. Im aktuellen MVP-Stand (Slice 4.3) ist in `watchlist.json` bewusst eine generische Platzhalter-Liste hinterlegt. Die echte Watchlist wird beim geplanten /wirtschaft-Rework eingepflegt, sobald Mario Praxiserfahrung mit der Seite gesammelt hat.
+
 Hauptdaten-File für die Multi-Asset-Watchlist. Schema spiegelt Marios TradingView-Setup mit Gruppierung.
 
 ```json
