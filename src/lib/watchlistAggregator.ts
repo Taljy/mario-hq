@@ -5,7 +5,7 @@
 
 import watchlistData from '../data/watchlist.json';
 import { getKryptoStandFuerIds } from './coingeckoFetcher';
-import { getTwelveDataStand } from './twelveDataFetcher';
+import { getTwelveDataStand, type TwelveDataStand } from './twelveDataFetcher';
 
 // ─── Typen ────────────────────────────────────────────────────────────────────
 
@@ -28,6 +28,8 @@ export interface WatchlistItemEnriched extends WatchlistItem {
   delta_24h_prozent: number | null;
   ist_live: boolean;
   sparkline_7d?: number[];  // nur Crypto · nur wenn coingecko live
+  tageshoch?: number;       // nur Twelve Data · für Aktien-Cards
+  tagestief?: number;       // nur Twelve Data · für Aktien-Cards
   fehler?: string;
 }
 
@@ -57,11 +59,16 @@ function fetchZeitJetzt(): string {
 
 // ─── Aggregator ───────────────────────────────────────────────────────────────
 
-export async function getWatchlist(): Promise<WatchlistErgebnis> {
+export async function getWatchlist(
+  tdMapVorgegeben?: Map<string, TwelveDataStand>,
+): Promise<WatchlistErgebnis> {
   const fetch_zeit = fetchZeitJetzt();
   const gruppen = watchlistData.gruppen as WatchlistGruppe[];
 
   // Items nach Anbieter aufteilen
+  // Konvention: anbieter "twelvedata" OHNE td_symbol = absichtlich nicht abrufen
+  // (z.B. Indizes · Free Tier liefert sie nicht · Credits sollen nicht verbrannt werden)
+  // → Aggregator markiert sie automatisch als ist_live: false in der Default-Branch
   const allItems = gruppen.flatMap((g) => g.items);
   const cgIds    = allItems.filter((i) => i.anbieter === 'coingecko').map((i) => i.id);
   const tdItems  = allItems
@@ -70,11 +77,15 @@ export async function getWatchlist(): Promise<WatchlistErgebnis> {
     )
     .map((i) => ({ id: i.id, td_symbol: i.td_symbol }));
 
-  // Beide Provider parallel · allSettled = kein Provider blockiert den anderen
-  const [cgResult, tdResult] = await Promise.allSettled([
-    getKryptoStandFuerIds(cgIds),
-    getTwelveDataStand(tdItems),
-  ]);
+  // Crypto immer direkt holen · Twelve Data: vorgegebene Map nutzen wenn da,
+  // sonst Direct-Call (Default-Pfad für Caller ohne Endpoint-Architektur)
+  // wirtschaft.astro übergibt die Map aus den gecachten Endpoints /api/aktien + /api/forex
+  const cgPromise = getKryptoStandFuerIds(cgIds);
+  const tdPromise = tdMapVorgegeben
+    ? Promise.resolve(tdMapVorgegeben)
+    : getTwelveDataStand(tdItems);
+
+  const [cgResult, tdResult] = await Promise.allSettled([cgPromise, tdPromise]);
 
   const cgMap = cgResult.status === 'fulfilled' ? cgResult.value : new Map();
   const tdMap = tdResult.status === 'fulfilled' ? tdResult.value : new Map();
@@ -119,6 +130,8 @@ export async function getWatchlist(): Promise<WatchlistErgebnis> {
           preis_usd:         stand.ist_live ? stand.preis_usd         : null,
           delta_24h_prozent: stand.ist_live ? stand.delta_24h_prozent : null,
           ist_live:          stand.ist_live,
+          ...(stand.tageshoch !== undefined ? { tageshoch: stand.tageshoch } : {}),
+          ...(stand.tagestief !== undefined ? { tagestief: stand.tagestief } : {}),
           fehler:            stand.fehler,
         };
       }

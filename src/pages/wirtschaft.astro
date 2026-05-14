@@ -1,16 +1,22 @@
 ---
 export const prerender = false;
 
-// /wirtschaft — SSR · 5 Live-APIs parallel · 60s Edge-Cache via Vercel
-// Statische Inhalte (Indizes · News) aus wirtschaft.json
+// /wirtschaft — SSR · 6 Live-APIs parallel · 60s Edge-Cache via Vercel
+// Twelve Data ist aus dem Page-Fetch herausgelöst in zwei Endpoints
+// /api/aktien (20min Cache) und /api/forex (22min Cache, TTL-Versatz) — siehe
+// dortige Kommentare. Hier sequenzielle Fetches: zwei separate HTTP-Hits, damit
+// der Vercel-Edge-Cache sie unabhängig versorgen kann
+// Aktien + Forex/Commodities zweigen aus dem getWatchlist()-Result ab — kein zweiter Fetch
+// Statische Inhalte (News · Trade-Setups-Platzhalter) aus wirtschaft.json
 
 import DetailPage from '../layouts/DetailPage.astro';
-import KryptoHero            from '../components/wirtschaft/KryptoHero.astro';
-import TradingIndikatoren    from '../components/wirtschaft/TradingIndikatoren.astro';
-import WatchlistSektion      from '../components/wirtschaft/WatchlistSektion.astro';
-import IndizesGrid           from '../components/wirtschaft/IndizesGrid.astro';
-import WirtschaftsNews       from '../components/wirtschaft/WirtschaftsNews.astro';
-import TradeSetupsPlaceholder from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
+import KryptoHero                from '../components/wirtschaft/KryptoHero.astro';
+import TradingIndikatoren        from '../components/wirtschaft/TradingIndikatoren.astro';
+import WatchlistSektion          from '../components/wirtschaft/WatchlistSektion.astro';
+import AktienSektion             from '../components/wirtschaft/AktienSektion.astro';
+import ForexCommoditiesSektion   from '../components/wirtschaft/ForexCommoditiesSektion.astro';
+import WirtschaftsNews           from '../components/wirtschaft/WirtschaftsNews.astro';
+import TradeSetupsPlaceholder    from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
 
 import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
 import { getBinanceMetrics }             from '../lib/binanceFetcher';
@@ -18,26 +24,54 @@ import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
 import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
 import { getWatchlist }                  from '../lib/watchlistAggregator';
 import { getWirtschaft }                 from '../lib/wirtschaftResolver';
+import type { TwelveDataStand }          from '../lib/twelveDataFetcher';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+
+// Twelve-Data-Endpoints sequenziell holen · jeder mit eigenem Edge-Cache (siehe
+// /api/aktien + /api/forex). Sequenziell statt parallel, damit beide Cold-Start-
+// Calls nicht in dieselbe Millisekunde feuern und das 8/min-Limit triggern.
+// Defensive: bei jedem Fehler leere Liste · getWatchlist behandelt fehlende IDs
+async function holeTwelveDataStand(origin: string): Promise<Map<string, TwelveDataStand>> {
+  const map = new Map<string, TwelveDataStand>();
+  try {
+    const aktienRes = await fetch(`${origin}/api/aktien`);
+    if (aktienRes.ok) {
+      const aktienArr = (await aktienRes.json()) as TwelveDataStand[];
+      for (const s of aktienArr) map.set(s.id, s);
+    }
+  } catch { /* still bleibt leer · UI rendert offline */ }
+  try {
+    const forexRes = await fetch(`${origin}/api/forex`);
+    if (forexRes.ok) {
+      const forexArr = (await forexRes.json()) as TwelveDataStand[];
+      for (const s of forexArr) map.set(s.id, s);
+    }
+  } catch { /* still bleibt leer · UI rendert offline */ }
+  return map;
+}
+
+const origin = Astro.url.origin;
 
 // 6 async Fetches parallel · jeder Fetcher hat eigenen Fallback
 // CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getWatchlist) feuern simultan
 // zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
-const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist] = await Promise.all([
+const [krypto, btcHistory, binance, coinbasePrem, stablecoins, tdMap] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
   getBinanceMetrics(),
   getCoinbasePremium(),
   getStablecoinSupply(),
-  getWatchlist(),
+  holeTwelveDataStand(origin),
 ]);
-const { indizes, news, trade_setups_placeholder } = getWirtschaft();
+
+const watchlist = await getWatchlist(tdMap);
+const { news, trade_setups_placeholder } = getWirtschaft();
 ---
 
 <DetailPage
   title="Wirtschaft"
-  eyebrow="Krypto · Indizes · News"
+  eyebrow="Krypto · Aktien · News"
   modul="wirtschaft"
 >
   <div class="w-stack">
@@ -48,7 +82,8 @@ const { indizes, news, trade_setups_placeholder } = getWirtschaft();
       stablecoins={stablecoins}
     />
     <WatchlistSektion watchlist={watchlist} />
-    <IndizesGrid indizes={indizes} />
+    <AktienSektion watchlist={watchlist} />
+    <ForexCommoditiesSektion watchlist={watchlist} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />
   </div>

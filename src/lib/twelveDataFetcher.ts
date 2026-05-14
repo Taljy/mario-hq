@@ -14,6 +14,8 @@ export interface TwelveDataStand {
   preis_usd: number;
   delta_24h_prozent: number;
   ist_live: boolean;
+  tageshoch?: number;
+  tagestief?: number;
   fehler?: string;
 }
 
@@ -21,6 +23,8 @@ interface TwelveDataQuote {
   symbol?: string;
   close?: string;
   percent_change?: string;
+  high?: string;
+  low?: string;
   status?: string;
   message?: string;
   code?: number;
@@ -82,11 +86,15 @@ export async function getTwelveDataStand(
           fehler:            q?.message ?? 'Keine Daten (Free Tier?)',
         });
       } else {
+        const hoch = q.high ? parseFloat(q.high) : undefined;
+        const tief = q.low  ? parseFloat(q.low)  : undefined;
         result.set(item.id, {
           id:                item.id,
           preis_usd:         parseFloat(q.close),
           delta_24h_prozent: parseFloat(q.percent_change ?? '0'),
           ist_live:          true,
+          ...(hoch !== undefined && Number.isFinite(hoch) ? { tageshoch: hoch } : {}),
+          ...(tief !== undefined && Number.isFinite(tief) ? { tagestief: tief } : {}),
         });
       }
     }

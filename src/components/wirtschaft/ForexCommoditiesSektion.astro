@@ -1,0 +1,252 @@
+---
+// ForexCommoditiesSektion — Forex-Tabelle + Commodities-Tabelle (kompakt, keine Cards)
+// Daten aus existierendem getWatchlist()-Aufruf · Filter nach Gruppen-ID
+// Commodities: aktuell keine Items in watchlist.json (Free Tier liefert keine Spots)
+// → Leer-Zustand "im aktuellen Datentier nicht verfügbar" · strukturell vorbereitet
+//   für späteren Plan / andere Quelle ohne Komponenten-Änderung
+// Negative Deltas Vermillon · positive neutral · gleiche Regel wie 4.4
+
+import type { WatchlistErgebnis, WatchlistGruppeEnriched } from '../../lib/watchlistAggregator';
+import { formatPreis } from '../../lib/formatPreis';
+
+interface Props {
+  watchlist: WatchlistErgebnis;
+}
+
+const { watchlist } = Astro.props;
+
+const forexGruppe: WatchlistGruppeEnriched | undefined = watchlist.gruppen.find(
+  (g) => g.id === 'forex',
+);
+const commoditiesGruppe: WatchlistGruppeEnriched | undefined = watchlist.gruppen.find(
+  (g) => g.id === 'rohstoffe',
+);
+
+const forexItems       = forexGruppe?.items ?? [];
+const commoditiesItems = commoditiesGruppe?.items ?? [];
+
+const anyForexLive = forexItems.some((i) => i.ist_live);
+const stempelLabel = anyForexLive
+  ? `Live · ${watchlist.fetch_zeit}`
+  : 'Twelve Data offline';
+
+function formatDelta(d: number): string {
+  const sign = d >= 0 ? '+' : '';
+  return `${sign}${d.toFixed(2)}%`;
+}
+---
+
+<section class="fx-sektion">
+
+  <div class="sektion-head">
+    <span class="eyebrow">Forex · Commodities</span>
+    <span class={`live-stempel ${!anyForexLive ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="tabellen-stack">
+
+    <!-- Forex -->
+    <div class="tabelle-block">
+      <h3 class="tabelle-titel">Forex</h3>
+      {forexItems.length === 0 ? (
+        <p class="leer-hinweis">Keine Forex-Paare in der Watchlist konfiguriert.</p>
+      ) : (
+        <table class="fx-tabelle">
+          <tbody>
+            {forexItems.map((item) => {
+              const negativ = item.ist_live && item.delta_24h_prozent != null && item.delta_24h_prozent < 0;
+              return (
+                <tr class={!item.ist_live ? 'offline' : ''}>
+                  <th scope="row" class="zelle-symbol">{item.symbol}</th>
+                  <td class="zelle-name">{item.name}</td>
+                  <td class={`zelle-preis ${!item.ist_live ? 'leer' : ''}`}>
+                    {item.preis_usd != null ? formatPreis(item.preis_usd) : '—'}
+                  </td>
+                  <td class={`zelle-delta ${negativ ? 'negativ' : ''} ${!item.ist_live ? 'leer' : ''}`}>
+                    {item.delta_24h_prozent != null ? formatDelta(item.delta_24h_prozent) : '—'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+
+    <!-- Commodities -->
+    <div class="tabelle-block">
+      <h3 class="tabelle-titel">Commodities</h3>
+      {commoditiesItems.length === 0 ? (
+        <p class="leer-hinweis">Im aktuellen Datentier nicht verfügbar.</p>
+      ) : (
+        <table class="fx-tabelle">
+          <tbody>
+            {commoditiesItems.map((item) => {
+              const negativ = item.ist_live && item.delta_24h_prozent != null && item.delta_24h_prozent < 0;
+              return (
+                <tr class={!item.ist_live ? 'offline' : ''}>
+                  <th scope="row" class="zelle-symbol">{item.symbol}</th>
+                  <td class="zelle-name">{item.name}</td>
+                  <td class={`zelle-preis ${!item.ist_live ? 'leer' : ''}`}>
+                    {item.preis_usd != null ? formatPreis(item.preis_usd) : '—'}
+                  </td>
+                  <td class={`zelle-delta ${negativ ? 'negativ' : ''} ${!item.ist_live ? 'leer' : ''}`}>
+                    {item.delta_24h_prozent != null ? formatDelta(item.delta_24h_prozent) : '—'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+
+  </div>
+
+</section>
+
+<style>
+  .fx-sektion {
+    background:    var(--bg-card);
+    padding:       18px;
+    border-radius: 4px;
+  }
+
+  .sektion-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   var(--s-4);
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  /* Zwei Tabellen nebeneinander auf Desktop · gestapelt auf Mobile */
+  .tabellen-stack {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   var(--s-5);
+  }
+
+  @media (max-width: 768px) {
+    .tabellen-stack {
+      grid-template-columns: 1fr;
+      gap:                   var(--s-4);
+    }
+  }
+
+  .tabelle-titel {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    font-weight:    600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+    margin:         0 0 8px 0;
+    padding-bottom: 6px;
+    border-bottom:  1px solid var(--hairline);
+  }
+
+  .leer-hinweis {
+    font-family: var(--font-mono);
+    font-size:   11px;
+    color:       var(--fg-subtle);
+    margin:      0;
+    padding:     8px 0;
+  }
+
+  /* Tabelle */
+  .fx-tabelle {
+    width:           100%;
+    border-collapse: collapse;
+    table-layout:    auto;
+  }
+
+  .fx-tabelle tr {
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .fx-tabelle tr:last-child {
+    border-bottom: none;
+  }
+
+  .fx-tabelle td,
+  .fx-tabelle th {
+    padding:     8px 0;
+    vertical-align: baseline;
+    text-align:  left;
+    font-weight: 400;
+  }
+
+  .zelle-symbol {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    600;
+    letter-spacing: 0.04em;
+    color:          var(--fg);
+    white-space:    nowrap;
+    width:          1%;
+    padding-right:  10px !important;
+  }
+
+  .zelle-name {
+    font-family:   var(--font-body);
+    font-size:     11px;
+    color:         var(--fg-subtle);
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px !important;
+  }
+
+  .zelle-preis {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size:   15px;
+    line-height: 1;
+    font-variation-settings: "opsz" 18;
+    color:       var(--fg);
+    text-align:  right !important;
+    white-space: nowrap;
+    width:       1%;
+    padding-right: 10px !important;
+  }
+
+  .zelle-delta {
+    font-family: var(--font-mono);
+    font-size:   11px;
+    color:       var(--fg-muted);
+    text-align:  right !important;
+    white-space: nowrap;
+    width:       1%;
+  }
+
+  .zelle-delta.negativ {
+    color: var(--accent);
+  }
+
+  .zelle-preis.leer,
+  .zelle-delta.leer {
+    color: var(--fg-faint);
+  }
+</style>
