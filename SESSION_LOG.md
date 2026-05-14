@@ -1,5 +1,51 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 29) · Spec-Sync nach 4.5c · Phase-4-Spec auf realen Stand + Eyebrow
+
+### Was gemacht
+Reiner Doku-Slice plus ein winziger UI-Edit. Phase-4-Spec war an mehreren Stellen durch die Realität nach Slice 4.5/4.5b/4.5c überholt.
+
+**UI-Edit (separater feat-Commit):**
+- `KryptoSektion.astro`: Eyebrow "Krypto · Watchlist" → "Krypto · Märkte"
+  Begründung: Nach IA-Umbau sind es kuratierte Krypto-Blöcke, kein "Watchlist"-Konzept mehr. "Märkte" reiht sich konsistent neben AKTIEN · US TECH, FOREX · COMMODITIES, NEWS · WIRTSCHAFT ein (KEY · QUALIFIER-Struktur).
+
+**Spec-Sync (separater docs-Commit):**
+
+Sync-Strategie wie von Mario vorgegeben: faktische Fehler korrigieren, Entscheidungs-Historie erhalten. §4.1-Schema und §5-Tabelle direkt aktualisiert (Referenzen, kein Diskurs). §7.3/§7.4/§7.5 bekamen Realitäts-Boxen am Anfang, der ursprüngliche Spec-Text bleibt darunter als Kontext stehen.
+
+- **§2 Architektur**: Twelve Data aus "Live-APIs Page-SSR" raus, in "eigene API-Routes mit Edge-Cache + SWR seit 4.5" verschoben. Cache-Beschreibung präzisiert (60s Page + 20-22min TD-Endpoints + 30min Wetter).
+- **§3 Modul-Tabelle**: Indices/Commodities als ENTFÄLLT markiert (statt gelöscht — Mario-Strategie). Aktien-Liste korrigiert (AAPL/NVDA/TSLA/MSFT/AMZN/META statt GOOGL/COIN). Neue Sektion "Asset-Sektionen" statt "Watchlist Multi-Asset". Indices-Klärung als beantwortet vermerkt.
+- **§4.1 watchlist.json-Schema**: Komplettes JSON-Beispiel ersetzt — vom alten 6-Gruppen-TradingView-Schema mit `api_id`/`typ`/`anbieter:twelve_data` auf das reale 2-Krypto-Block-Schema (`id`/`symbol`/`name`/`anbieter:coingecko`). Mario-TODO ("Coin-IDs verifizieren") entfernt — in 4.5b erledigt.
+- **§5 Komponenten-Liste**: Aggregator-Rename, drei Komponenten-Renames (Watchlist→Krypto), WatchlistItem-Löschung, AssetCard-Add, neue Daten-Module (aktien.ts/forex.ts), neue API-Routes alle ergänzt mit Slice-Verweis.
+- **§6 Slice-Tabelle**: 4.5b/c-Zeile von "4.5b ✅ · 4.5c offen" auf beide ✅, plus Detail-Hinweis zum Eyebrow-Fix.
+- **§7.3 Slice 4.3**: Realitäts-Box am Anfang (kryptoAggregator-Rename, Endpoint-Architektur-Erzwingung, Bulk-Credit-Annahme war falsch).
+- **§7.4 Slice 4.4**: Realitäts-Box am Anfang (Komponenten-Renames, AssetCard-Konsolidierung, Card-Grid statt Zeilenliste, Logo-Kreis weg, Eyebrow neu).
+- **§7.5 Slice 4.5**: Bestehende Realitäts-Box um 4.5b-Konsolidierung erweitert (AktienSektion via AssetCard, 3×2 statt 2×2, kein 4er-Strip).
+- **§7.8 Slice 4.8**: Reihenfolge-Beschreibung "WatchlistSektion (4.4)" → "KryptoSektion (4.4 + 4.5b)".
+- **§9 Offene Fragen**: Fragen 1-4 als BEANTWORTET markiert mit Slice-Verweis. Frage 5 (Macro-Events-Workflow) bleibt offen für Slice 4.7.
+- **§11 Stolpersteine**: Punkt 14 (Symbol-Format) auf real `td_symbol`-Feld korrigiert, Commodities-Hinweis aktualisiert. Punkte 17-21 NEU (8/min-Limit hart, Vite-HMR nach git mv, Edge-Cache nicht in npm-dev, Refactor-Verifikation, Defensive-Vertrag-Prüfung).
+- **Header**: `aktualisiert: 26-05-13` → `26-05-14 (Spec-Sync nach Slice 4.5c)`, `status:` aktualisiert auf realen Stand.
+
+### Verifikation
+- Build ✅ lokal · keine TypeScript-Fehler (auch wegen dem einen Eyebrow-Edit Pflicht)
+- /wirtschaft lokal: Eyebrow zeigt "KRYPTO · MÄRKTE", sonst alles identisch · 18 Cards
+- Console clean
+- Vercel-Eyebrow-Verifikation steht aus (mit docs-Commit-Push)
+
+### Was bewusst NICHT angefasst
+- watchlist.json-Filename (Entscheidung 4.5b)
+- Phase-2.2/2.3-Specs (abgeschlossen, korrekt)
+- Wortform "Watchlist" in den Daten-Modul-Kommentaren (legitimer Konzept-Begriff)
+
+### Files dieser Session
+- `src/components/wirtschaft/KryptoSektion.astro` (Eyebrow · feat-Commit)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` (Spec-Sync · docs-Commit)
+- `_pendenzen.md` (Spec-Sync ✅)
+- `SESSION_LOG.md` (Update 29)
+- `docs/HANDOVER.md` (Stand nach Spec-Sync · nächster Schritt = Slice 4.6)
+
+---
+
 ## 26-05-14 (Update 28) · Slice 4.5c · Daten-Architektur-Cleanup
 
 ### Was gemacht

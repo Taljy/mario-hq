@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.5c)
+aktualisiert: 26-05-14 (Spec-Sync nach 4.5c)
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -54,8 +54,8 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.5 ✅ Aktien + Forex/Commodities-Sektion · Endpoint-Architektur (/api/aktien + /api/forex) wegen hartem 8/min-Credits-Limit · Commodities/Indizes Fallback B (weglassen) · IndizesGrid + Footer-Fix
 - Slice 4.5b ✅ Krypto-Card-Rebuild · gemeinsame AssetCard · KryptoSektion (Rename) · zwei neue Krypto-Blöcke (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT) · Aktien-Doppelung weg · watchlist.json nur noch Krypto · aktien.ts + forex.ts NEU als typesafe Konstanten
 - Slice 4.5c ✅ Daten-Architektur-Cleanup · watchlistAggregator → kryptoAggregator · Typ-Renames · tdMap-Parameter + tote twelvedata-Logik raus · Datei -30% kleiner
-- Spec-Sync §7.4 + §7.5 als nächstes · Phase-4-Spec an die /wirtschaft-Realität nach 4.5b/c angleichen
-- Slice 4.6 danach · Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
+- Spec-Sync ✅ Phase-4-Spec an Realität nach 4.5b/c angeglichen · §2/§3/§4.1/§5/§6/§7.3/§7.4/§7.5/§7.8/§9/§11 aktualisiert · Eyebrow "WATCHLIST" → "MÄRKTE"
+- Slice 4.6 als nächstes · Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 
 ---
 
@@ -131,7 +131,7 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur
 - [x] **Slice 4.5b** Krypto-Card-Rebuild · gemeinsame AssetCard · IA-Umbau
 - [x] **Slice 4.5c** Interner Daten-Architektur-Cleanup (kryptoAggregator)
-- [ ] **Spec-Sync §7.4/§7.5** Phase-4-Spec an Realität nach 4.5b/c angleichen
+- [x] **Spec-Sync** Phase-4-Spec an Realität nach 4.5b/c angeglichen · Eyebrow-Fix
 - [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss

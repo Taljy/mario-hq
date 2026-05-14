@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 4
 erstellt: 26-05-13
-aktualisiert: 26-05-13
-status: Spezifikation steht · Implementierung in 8 Slices
+aktualisiert: 26-05-14 (Spec-Sync nach Slice 4.5c)
+status: 4.1–4.5 abgeschlossen · 4.5b/c (IA-Umbau ausserhalb Spec) abgeschlossen · 4.6/4.7/4.8 offen
 referenz: Strategie-Chat 13.5.2026 (claude.ai Web)
 ersetzt: ursprüngliche Phase-4-Roadmap aus _pendenzen.md (5-Punkt-Liste)
 ---
@@ -31,11 +31,12 @@ ersetzt: ursprüngliche Phase-4-Roadmap aus _pendenzen.md (5-Punkt-Liste)
 
 Phase 4 setzt das **Hybrid-Modell mit Live-Inseln** aus Phase 2.3 fort, aber **erweitert es auf Multi-Asset**:
 
-- **Live-APIs (server-side via SSR):** CoinGecko · Binance Public · Coinbase Public · DeFiLlama · Twelve Data · Open-Meteo (bereits)
-- **Statische JSON-Stubs:** Watchlist-Definition · Trading-Indikator-Konfiguration · Macro-Events
+- **Live-APIs (Page-SSR):** CoinGecko · Binance Public · Coinbase Public · DeFiLlama · Open-Meteo (bereits)
+- **Live-APIs (eigene API-Routes mit Edge-Cache + SWR seit 4.5):** Twelve Data via `/api/aktien` (s-maxage=1200) + `/api/forex` (s-maxage=1320) — Page-Fetch wäre wegen 8/min-Credits-Limit unmöglich gewesen
+- **Statische JSON-Stubs:** Krypto-Watchlist-Definition (`watchlist.json` · nur Krypto seit 4.5b) · Aktien-Definition (`src/data/aktien.ts`) · Forex-Definition (`src/data/forex.ts`) · Trading-Indikator-Konfiguration · Macro-Events
 - **Custom-SVG-Charts** (kein ECharts): Mondphase, vielleicht Wetter-Wochen-Bars
 - **ECharts-Charts** (mit DRG-Theme-Customization): Sparklines, Gauge, Timeline
-- **Caching pro API**: 60s Krypto · 30min Wetter · 5min Aktien (innerhalb Marktzeiten)
+- **Caching:** 60s Page-Cache auf /wirtschaft (für CoinGecko-Liveness) · 20–22min Edge-Cache auf den Twelve-Data-Endpoints (siehe oben) · 30min Wetter (Open-Meteo)
 
 **Bewusst NICHT in Phase 4:**
 - Keine Cowork-Anbindung (entfällt komplett)
@@ -56,7 +57,7 @@ Phase 4 setzt das **Hybrid-Modell mit Live-Inseln** aus Phase 2.3 fort, aber **e
 | **Editorial-Charts** | | | |
 | BTC-Sparkline (7-Tage) | CoinGecko | nein | 4.1 |
 | Altcoin-Sparklines | CoinGecko | nein | 4.4 |
-| Indizes-Sparklines | Twelve Data oder Fallback | ja (TD) | 4.5 |
+| ~~Indizes-Sparklines~~ ENTFÄLLT | (Twelve Data Free Tier liefert keine Indices · Fallback B in 4.5 gewählt) | — | — |
 | Fear & Greed Gauge | Alternative.me | nein | 4.7 |
 | Macro-Timeline | manuelle JSON-Stubs | nein | 4.7 |
 | Wetter-Wochen-Bars | Open-Meteo (schon im Einsatz) | nein | 4.6 |
@@ -67,17 +68,14 @@ Phase 4 setzt das **Hybrid-Modell mit Live-Inseln** aus Phase 2.3 fort, aber **e
 | Long/Short Ratio | Binance Public | nein | 4.2 |
 | Coinbase Premium | Coinbase Public + Binance Public + Eigenlogik | nein | 4.2 |
 | Stablecoin Supply | DeFiLlama | nein | 4.2 |
-| **Watchlist Multi-Asset** | | | |
-| Crypto-Items | CoinGecko · Markets-Endpoint | nein | 4.4 |
-| Aktien (TSLA · NVDA · GOOGL · MSFT · META · COIN) | Twelve Data | ja | 4.5 |
-| Indices (SPX · NAS100 · DAX · SMI) | Twelve Data (Free-Tier-Check!) oder Fallback | ja | 4.5 |
-| Forex (EURUSD · CHFUSD) | Twelve Data | ja | 4.5 |
-| Commodities (USOIL · UKOIL) | Twelve Data | ja | 4.5 |
+| **Asset-Sektionen** (4.5b: Krypto/Aktien getrennte Card-Sektionen statt Multi-Asset-Watchlist) | | | |
+| Krypto-Watchlist (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT, zwei Blöcke) | CoinGecko · Markets-Endpoint | nein | 4.4 + 4.5b |
+| Aktien-Sektion (AAPL · NVDA · TSLA · MSFT · AMZN · META) | Twelve Data via `/api/aktien` | ja | 4.5 |
+| Forex (EUR/USD · CHF/USD · EUR/CHF · GBP/USD) | Twelve Data via `/api/forex` | ja | 4.5 |
+| ~~Indices (SPX · NAS100 · DAX · SMI)~~ ENTFÄLLT | (Twelve Data Free Tier: 403 · Fallback B in 4.5 gewählt) | — | — |
+| ~~Commodities (USOIL · UKOIL)~~ ENTFÄLLT | (Twelve Data Free Tier: WTI/GOLD matchen falsche NYSE-Aktien · SILVER/BRENT 403 · in 4.5 alle vier aus watchlist.json entfernt) | — | — |
 
-**Wichtige Klärung Slice 4.5:** Twelve-Data-Free-Tier hatte historisch Probleme mit Indices-Daten (Reviews 2026 erwähnen *„Indices expected to be released later this year"*). **Test in Slice 4.5 zwingend.** Falls Free Tier keine Indices liefert · Fallback-API für Indizes klären:
-- **Alpha Vantage** Free Tier 25 Calls/Tag (knapp aber für 4 Indizes täglich genug)
-- **Yahoo Finance** über inoffizielle Wrapper (instabil aber gratis)
-- **Indizes weglassen** wenn beides nicht funktioniert · nur Einzelaktien tracken
+**Indices-Klärung (war Slice 4.5):** Test in 4.5 hat bestätigt, dass Indices, Commodities (Spots), SILVER und BRENT im Twelve Data Free Tier nicht verfügbar sind. **Fallback B (weglassen)** wurde gewählt — Mario nimmt keinen bezahlten Plan, Alpha Vantage als zweite API wurde verworfen. Indizes-Items bleiben als Offline-Stub in der historischen Watchlist-Gruppe nicht mehr nötig (in 4.5b komplett aus watchlist.json entfernt).
 
 ---
 
@@ -85,90 +83,44 @@ Phase 4 setzt das **Hybrid-Modell mit Live-Inseln** aus Phase 2.3 fort, aber **e
 
 ### 4.1 src/data/watchlist.json
 
-> **Hinweis (14.5.2026):** Die in diesem Schema gelistete Watchlist spiegelt Marios TradingView-Setup. Im aktuellen MVP-Stand (Slice 4.3) ist in `watchlist.json` bewusst eine generische Platzhalter-Liste hinterlegt. Die echte Watchlist wird beim geplanten /wirtschaft-Rework eingepflegt, sobald Mario Praxiserfahrung mit der Seite gesammelt hat.
+> **Stand nach 4.5b:** Die ursprüngliche Multi-Asset-Watchlist mit TradingView-Schema (Index/BTC/Move2Earn/Aktien/Forex/Commodities) wurde in 4.5b zugunsten einer **zwei-blockigen Krypto-Watchlist** aufgegeben. Aktien und Forex haben jetzt eigene typesafe-Konstanten-Module (`src/data/aktien.ts` + `src/data/forex.ts`), Commodities/Indizes sind entfallen (Free-Tier-Erkenntnisse aus 4.5). `watchlist.json` enthält **ausschliesslich Krypto** und ist mit `anbieter: "coingecko"` strikt typisiert.
 
-Hauptdaten-File für die Multi-Asset-Watchlist. Schema spiegelt Marios TradingView-Setup mit Gruppierung.
+Aktuelles Schema:
 
 ```json
 {
   "gruppen": [
     {
-      "id": "index",
-      "name": "Index",
+      "id": "krypto-block-1",
+      "label": "Krypto · Block 1",
       "items": [
-        { "symbol": "NAS100", "api_id": "NDX", "typ": "index", "anbieter": "twelve_data" },
-        { "symbol": "SPX", "api_id": "SPX", "typ": "index", "anbieter": "twelve_data" },
-        { "symbol": "DAX", "api_id": "DAX", "typ": "index", "anbieter": "twelve_data" },
-        { "symbol": "SMI", "api_id": "SMI", "typ": "index", "anbieter": "twelve_data" }
+        { "id": "bitcoin",  "symbol": "BTC", "name": "Bitcoin",  "anbieter": "coingecko" },
+        { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "anbieter": "coingecko" },
+        { "id": "solana",   "symbol": "SOL", "name": "Solana",   "anbieter": "coingecko" },
+        { "id": "ripple",   "symbol": "XRP", "name": "XRP",      "anbieter": "coingecko" },
+        { "id": "sui",      "symbol": "SUI", "name": "Sui",      "anbieter": "coingecko" },
+        { "id": "tron",     "symbol": "TRX", "name": "TRON",     "anbieter": "coingecko" }
       ]
     },
     {
-      "id": "btc",
-      "name": "BTC",
+      "id": "krypto-block-2",
+      "label": "Krypto · Block 2",
       "items": [
-        { "symbol": "BTCUSD", "api_id": "bitcoin", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "ETHUSD", "api_id": "ethereum", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "XRPUSDT", "api_id": "ripple", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "SOLUSDT", "api_id": "solana", "typ": "crypto", "anbieter": "coingecko" }
-      ]
-    },
-    {
-      "id": "move2earn",
-      "name": "Move2Earn",
-      "items": [
-        { "symbol": "GSTUSD", "api_id": "green-satoshi-token", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "GMTUSDT", "api_id": "stepn", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "SUIUSD", "api_id": "sui", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "JUPUSDT", "api_id": "jupiter-exchange-solana", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "HBARUSD", "api_id": "hedera-hashgraph", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "LTCUSD", "api_id": "litecoin", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "ADAUSD", "api_id": "cardano", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "LINKUSD", "api_id": "chainlink", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "AVAXUSD", "api_id": "avalanche-2", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "APTUSD", "api_id": "aptos", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "DOTUSD", "api_id": "polkadot", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "NEARUSDT", "api_id": "near", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "TONUSDT", "api_id": "the-open-network", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "RNDRUSD", "api_id": "render-token", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "APEUSDT", "api_id": "apecoin", "typ": "crypto", "anbieter": "coingecko" },
-        { "symbol": "DOGEUSDT", "api_id": "dogecoin", "typ": "crypto", "anbieter": "coingecko" }
-      ]
-    },
-    {
-      "id": "aktien",
-      "name": "Aktien",
-      "items": [
-        { "symbol": "TSLA", "api_id": "TSLA", "typ": "stock", "anbieter": "twelve_data" },
-        { "symbol": "NVDA", "api_id": "NVDA", "typ": "stock", "anbieter": "twelve_data" },
-        { "symbol": "GOOGL", "api_id": "GOOGL", "typ": "stock", "anbieter": "twelve_data" },
-        { "symbol": "MSFT", "api_id": "MSFT", "typ": "stock", "anbieter": "twelve_data" },
-        { "symbol": "META", "api_id": "META", "typ": "stock", "anbieter": "twelve_data" },
-        { "symbol": "COIN", "api_id": "COIN", "typ": "stock", "anbieter": "twelve_data" }
-      ]
-    },
-    {
-      "id": "forex",
-      "name": "Forex",
-      "items": [
-        { "symbol": "EURUSD", "api_id": "EUR/USD", "typ": "forex", "anbieter": "twelve_data" },
-        { "symbol": "CHFUSD", "api_id": "CHF/USD", "typ": "forex", "anbieter": "twelve_data" }
-      ]
-    },
-    {
-      "id": "commodities",
-      "name": "Commodities",
-      "items": [
-        { "symbol": "USOIL", "api_id": "WTI", "typ": "commodity", "anbieter": "twelve_data" },
-        { "symbol": "UKOIL", "api_id": "BRENT", "typ": "commodity", "anbieter": "twelve_data" }
+        { "id": "cardano",                 "symbol": "ADA",  "name": "Cardano",   "anbieter": "coingecko" },
+        { "id": "avalanche-2",             "symbol": "AVAX", "name": "Avalanche", "anbieter": "coingecko" },
+        { "id": "hedera-hashgraph",        "symbol": "HBAR", "name": "Hedera",    "anbieter": "coingecko" },
+        { "id": "jupiter-exchange-solana", "symbol": "JUP",  "name": "Jupiter",   "anbieter": "coingecko" },
+        { "id": "green-satoshi-token",     "symbol": "GST",  "name": "STEPN GST", "anbieter": "coingecko" },
+        { "id": "polkadot",                "symbol": "DOT",  "name": "Polkadot",  "anbieter": "coingecko" }
       ]
     }
   ]
 }
 ```
 
-**Anbieter-Werte:** `coingecko` · `twelve_data` · `binance` · `coinbase`.
+**Felder:** `id` (CoinGecko-ID, in 4.5b alle live verifiziert) · `symbol` (Display) · `name` (Display) · `anbieter` (immer `"coingecko"`).
 
-**Mario-TODO:** Coin-IDs für Move2Earn-Gruppe verifizieren · ein paar sind Schätzungen (z.B. green-satoshi-token, stepn). Liste in CoinGecko prüfen via `https://api.coingecko.com/api/v3/coins/list`.
+**Aktien-/Forex-Definitionen:** `src/data/aktien.ts` und `src/data/forex.ts` als typesafe TypeScript-Konstanten — werden von den `/api/aktien` + `/api/forex`-Endpoints **und** den jeweiligen Sektionen gelesen.
 
 ### 4.2 src/data/macro-events.json
 
@@ -299,14 +251,19 @@ const chart = echarts.init(domEl, 'drg');
 | `src/components/wirtschaft/LongShortRatioCard.astro` | Neu | 4.2 |
 | `src/components/wirtschaft/CoinbasePremiumCard.astro` | Neu | 4.2 |
 | `src/components/wirtschaft/StablecoinSupplyCard.astro` | Neu | 4.2 |
-| `src/lib/watchlistAggregator.ts` (Multi-Anbieter-Bündelung) | Neu | 4.3 |
+| `src/lib/watchlistAggregator.ts` (Multi-Anbieter-Bündelung) → in 4.5c umbenannt zu `src/lib/kryptoAggregator.ts` (reiner Krypto-Aggregator) | Neu · 4.5c refaktoriert | 4.3 |
 | `src/lib/twelveDataFetcher.ts` | Neu | 4.3 |
-| `src/data/watchlist.json` | Neu | 4.3 |
-| `src/components/wirtschaft/WatchlistSektion.astro` | Neu | 4.4 |
-| `src/components/wirtschaft/WatchlistGruppe.astro` | Neu | 4.4 |
-| `src/components/wirtschaft/WatchlistItem.astro` (mit Mini-Sparkline) | Neu | 4.4 |
-| `src/components/wirtschaft/AktienSektion.astro` | Neu | 4.5 |
-| `src/components/wirtschaft/ForexCommoditiesSektion.astro` | Neu | 4.5 |
+| `src/data/watchlist.json` (in 4.5b auf nur-Krypto reduziert) | Neu | 4.3 |
+| `src/components/wirtschaft/WatchlistSektion.astro` → in 4.5b umbenannt zu `KryptoSektion.astro` | Neu · 4.5b umbenannt | 4.4 |
+| `src/components/wirtschaft/WatchlistGruppe.astro` → in 4.5b umbenannt zu `KryptoGruppe.astro` (Card-Grid statt Zeilenliste) | Neu · 4.5b refaktoriert | 4.4 |
+| `src/components/wirtschaft/WatchlistItem.astro` (mit Mini-Sparkline) → in 4.5b GELÖSCHT (durch AssetCard ersetzt) | Neu · 4.5b entfernt | 4.4 |
+| `src/components/wirtschaft/AssetCard.astro` (gemeinsame Card-Basis für Krypto + Aktien) | Neu | 4.5b |
+| `src/components/wirtschaft/AktienSektion.astro` (in 4.5b auf AssetCard refaktoriert) | Neu | 4.5 |
+| `src/components/wirtschaft/ForexCommoditiesSektion.astro` (in 4.5b: Datenquelle auf forex.ts umgestellt) | Neu | 4.5 |
+| `src/pages/api/aktien.ts` (SSR-Endpoint, Edge-Cache 20min + SWR) | Neu | 4.5 |
+| `src/pages/api/forex.ts` (SSR-Endpoint, Edge-Cache 22min + SWR, TTL-Versatz) | Neu | 4.5 |
+| `src/data/aktien.ts` (typesafe Aktien-Definition) | Neu | 4.5b |
+| `src/data/forex.ts` (typesafe Forex-Definition) | Neu | 4.5b |
 | `src/components/wetter/WetterWochenBars.astro` (ECharts) | Neu | 4.6 |
 | `src/components/wetter/MondphaseSvg.astro` (Custom-SVG) | Neu | 4.6 |
 | `src/data/macro-events.json` | Neu | 4.7 |
@@ -328,7 +285,7 @@ const chart = echarts.init(domEl, 'drg');
 | **4.3** | Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup · watchlist.json | mittel | ✅ abgeschlossen |
 | **4.4** | Watchlist-Komponenten mit Gruppierung · alle Crypto-Items · Mini-Sparklines | gross | ✅ abgeschlossen |
 | **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur (zwei Endpoints + Edge-Cache + SWR) wegen 8/min-Credits-Limit · Commodities komplett raus · Indizes Fallback B (weglassen) | gross | ✅ abgeschlossen |
-| **4.5b/c** | (KEIN Spec-Slice) · IA-Umbau nach Mario-Wunsch · 4.5b: gemeinsame AssetCard, Krypto auf Card-Layout, neue Block-Struktur (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT), Aktien-Doppelung weg, watchlist.json nur noch Krypto, aktien.ts/forex.ts neu · 4.5c: interner Daten-Architektur-Cleanup (Aggregator-Rename + Typ-Renames) | mittel | 4.5b ✅ · 4.5c offen |
+| **4.5b/c** | (KEIN Spec-Slice · IA-Umbau nach Mario-Wunsch, eingeschoben zwischen 4.5 und 4.6) · 4.5b: gemeinsame AssetCard, Krypto auf Card-Layout, neue Block-Struktur (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT), Aktien-Doppelung weg, watchlist.json nur noch Krypto, aktien.ts/forex.ts neu, Eyebrow "Krypto · Märkte" · 4.5c: interner Daten-Architektur-Cleanup (Aggregator-Rename zu kryptoAggregator + Typ-Renames + Dead-Code-Removal, ~30% LOC-Reduktion) | mittel | 4.5b ✅ · 4.5c ✅ |
 | **4.6** | Wetter-Wochen-Bars (ECharts) + Mondphase-SVG (custom) auf /wetter | mittel | offen |
 | **4.7** | Macro-Timeline + Fear & Greed Gauge auf /wirtschaft | mittel | offen |
 | **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss | klein | offen |
@@ -428,6 +385,14 @@ npm install echarts
 
 ### 7.3 Slice 4.3 · Multi-Anbieter-Watchlist-Foundation
 
+> **Status nach 4.5b/c:** Die Multi-Anbieter-Aggregator-Idee wurde nach dem Twelve-Data-API-Test in 4.5 und dem IA-Umbau in 4.5b/c grundlegend überarbeitet. Realität heute:
+> - `watchlistAggregator.ts` → **`kryptoAggregator.ts`** (4.5c) · ein reiner Krypto-Aggregator, keine Multi-Anbieter-Logik mehr
+> - Aktien + Forex laufen über eigene **API-Endpoints** mit Edge-Cache (siehe §7.5)
+> - Bulk-Call-Annahme "1-2 Calls / Page-Load" hat sich als falsch erwiesen: Twelve Data zählt **1 Credit pro Symbol** im Bulk, das hat in 4.5 die Endpoint-Architektur erzwungen
+> - Cache "5min für Aktien" wurde auf 20min/22min angepasst (4.5)
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
+
 **Ziel:** Foundation für die grosse Watchlist · Multi-Anbieter-Bündelung in einer Aggregator-Funktion · Twelve-Data-Fetcher als neuer API-Anbieter.
 
 **Files:**
@@ -478,6 +443,17 @@ export async function getWatchlist(): Promise<WatchlistGruppe[]> {
 
 ### 7.4 Slice 4.4 · Watchlist-Komponenten mit Gruppierung
 
+> **Status nach 4.5b:** Die hier beschriebene Multi-Asset-Watchlist mit WatchlistSektion/Gruppe/Item-Komponenten als Zeilen-Liste wurde in 4.5b umgebaut:
+> - **Komponenten umbenannt + Layout neu:** `WatchlistSektion.astro` → `KryptoSektion.astro`, `WatchlistGruppe.astro` → `KryptoGruppe.astro` (jetzt Card-Grid statt Zeilen-Liste), `WatchlistItem.astro` gelöscht
+> - **Gemeinsame AssetCard** (`src/components/wirtschaft/AssetCard.astro`) — Karten-Basis für Krypto UND Aktien, mit optionalen Feldern Sparkline (Krypto) bzw. Tageshoch/-tief (Aktien)
+> - **Nur noch Krypto** in der Watchlist · zwei thematische Blöcke statt offener Multi-Asset-Liste · Aktien/Forex sind eigene Card-Sektionen (siehe §7.5)
+> - **Symbol-Logo-Kreis** (Sumi-e Buchstabe) bewusst entfernt zugunsten der schlankeren AssetCard-Optik
+> - **Eyebrow** "WATCHLIST · MÄRKTE" → "KRYPTO · MÄRKTE" nach Spec-Sync
+> - **Collapsible-Pattern** (Button + aria-expanded) bleibt
+> - **Mini-Sparklines** bleiben Desktop-only (Mobile: extra-Zelle inkl. Hairline-Trenner ausgeblendet)
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
+
 **Ziel:** Die Watchlist visuell rendern mit Gruppierung wie in Marios TradingView. Alle Crypto-Items vollständig.
 
 **Files:**
@@ -503,13 +479,16 @@ Mein Tipp: **3 als Pattern** mit selbst-gerendertem Mono-Buchstabe in Sumi-Kreis
 
 ### 7.5 Slice 4.5 · Aktien + Forex/Commodities-Sektion
 
-> **Realitäts-Hinweis (14.5.2026, nach Slice-Abschluss):** Diese §7.5-Spec ist von vor dem API-Test. Die Realität war enger:
+> **Realitäts-Hinweis (14.5.2026, nach 4.5 + 4.5b/c):**
 > - Twelve-Data-Free-Tier hat ein **hartes** 8-Credits/min-Limit (1 Credit pro Symbol im Bulk-Call). Ein 10-Symbol-Bulk → sofortiges 429. Das hat eine **Endpoint-Architektur erzwungen** (`/api/aktien` + `/api/forex` getrennt, jeder unter 8 Credits, mit Edge-Cache + stale-while-revalidate · TTL-Versatz 1200s / 1320s) statt eines Page-Fetches.
 > - **WTI/GOLD** matchen im Free Tier **falsche NYSE-Aktien** (W&T Offshore Inc. $4.40, Gold.com Inc. $41), nicht Spot-Preise. **SILVER/BRENT** sind 403. Alle vier komplett aus `watchlist.json` entfernt — Commodities-Tabelle zeigt nur einen ehrlichen Leer-Hinweis "Im aktuellen Datentier nicht verfügbar".
-> - **Indices** nicht im Free Tier (bestätigt) — `td_symbol`-Feld weggelassen, rendern als Offline-Stub in der Watchlist-Gruppe, kosten keine Credits mehr. **Fallback B (weglassen)** gewählt.
-> - Layout: Aktien als 3×2-Cards (Desktop), Forex/Commodities als zwei kompakte Tabellen unter gemeinsamem Sektion-Header.
+> - **Indices** nicht im Free Tier (bestätigt) — in 4.5 als Offline-Stub belassen, in 4.5b komplett aus `watchlist.json` entfernt. **Fallback B (weglassen)** gewählt, keine Alpha-Vantage-Anbindung.
+> - **Layout (nach 4.5b):** Aktien als 3×2-Cards (Desktop) via gemeinsame `AssetCard`-Komponente (siehe §7.4-Realitäts-Box) — nicht 2×2 wie ursprünglich geplant. Forex bleibt Tabelle, Commodities-Spalte zeigt nur den Leer-Hinweis.
+> - **AktienSektion-Komponente** ist seit 4.5b ein dünner Wrapper um AssetCard (gleiche Karten-Basis wie KryptoSektion).
 > - Daily-Credit-Total: ~720/Tag, unter 800/Tag-Limit.
 > - Cold-Start nach Deploy: Erster Page-Hit zeigt Forex offline (Aktien-6 + Forex-4 in derselben Minute), zweiter Hit liefert beides live (Aktien-Cache HIT, Forex frisch). Akzeptiert.
+>
+> Der ursprüngliche Spec-Text bleibt darunter als Entscheidungs-Kontext stehen.
 
 **Ziel:** Twelve-Data-Anbindung produktiv. Aktien-Sektion + Forex/Commodities-Sektion als eigene Blöcke.
 
@@ -601,7 +580,7 @@ Wenn Response = Error oder "Symbol not found":
 
 **Tasks:**
 - /wirtschaft visuell durchgehen · Sektion-Ordnung, Spacing, Eyebrow-Konsistenz
-- Reihenfolge auf /wirtschaft: KryptoHero (mit Sparkline aus 4.1) → TradingIndikatoren (4.2) → WatchlistSektion (4.4) → AktienSektion (4.5) → ForexCommoditiesSektion (4.5) → MacroTimeline (4.7) → FearGreedGauge (4.7) → WirtschaftsNews (aus 2.3.2) → TradeSetupsPlaceholder
+- Reihenfolge auf /wirtschaft: KryptoHero (mit Sparkline aus 4.1) → TradingIndikatoren (4.2) → KryptoSektion (4.4 + 4.5b · zwei Krypto-Blöcke als Card-Grid) → AktienSektion (4.5 · auf AssetCard) → ForexCommoditiesSektion (4.5) → MacroTimeline (4.7) → FearGreedGauge (4.7) → WirtschaftsNews (aus 2.3.2) → TradeSetupsPlaceholder
 - Performance-Check: Lighthouse-Spot-Check (Performance, Accessibility, Best Practices)
 - ECharts-Bundle-Size verifizieren (sollte ~250KB sein, nur auf /wirtschaft geladen)
 - Mobile-Volltest mit Scrolling-Verhalten der langen Page
@@ -630,11 +609,11 @@ Wenn Response = Error oder "Symbol not found":
 
 ## 9 · Offene Fragen (während Phase 4 zu klären)
 
-1. **Indices im Twelve Data Free Tier** · Test in Slice 4.5 zwingend. Falls nicht verfügbar: Alpha Vantage Fallback oder Indices weglassen.
-2. **Coin-IDs für Move2Earn-Gruppe** · ein paar sind Schätzungen (green-satoshi-token, stepn). Verifikation via CoinGecko API in Slice 4.4.
-3. **Mini-Sparklines bei Twelve-Data-Items** · Free Tier liefert Historical Data? Falls nicht: Sparklines nur bei Crypto-Items, Aktien/Forex/Commodities bleiben ohne.
-4. **Symbol-Logos** · Mario will Logos wie in TradingView? Custom-Sumi-e-Buchstaben-Kreise als MVP, echte Logos als spätere Polish-Phase.
-5. **Macro-Events-Pflege-Workflow** · Mario aktualisiert macro-events.json manuell. Reicht das? Oder Auto-Sync mit TradingEconomics-API (kostenpflichtig) später?
+1. ~~**Indices im Twelve Data Free Tier**~~ → **BEANTWORTET in 4.5**: nicht verfügbar (403), Fallback B (weglassen) gewählt, Indices komplett entfernt.
+2. ~~**Coin-IDs für Move2Earn-Gruppe**~~ → **BEANTWORTET in 4.5b**: Move2Earn-Gruppe wurde im IA-Umbau aufgegeben. Die neue Krypto-Block-Struktur enthält von den ursprünglichen Move2Earn-Schätzungen nur noch HBAR (`hedera-hashgraph`), JUP (`jupiter-exchange-solana`) und GST (`green-satoshi-token` — Solana-Variante) — alle in 4.5b live verifiziert.
+3. ~~**Mini-Sparklines bei Twelve-Data-Items**~~ → **BEANTWORTET in 4.5b**: AssetCard hat extra-Zelle disjunkt nach Anbieter — Krypto bekommt Sparkline (CoinGecko liefert History), Aktien bekommen stattdessen Tageshoch/-tief (Twelve Data liefert keine brauchbare History im Free Tier), Forex ohne extra-Zelle.
+4. ~~**Symbol-Logos**~~ → **BEANTWORTET in 4.5b**: Logo-Kreis wurde mit dem AssetCard-Refactor aufgegeben — Konsistenz zwischen Krypto- und Aktien-Cards war wichtiger als das sumi-e-Logo-Detail. Symbol-Eyebrow oben links übernimmt die Identifikation.
+5. **Macro-Events-Pflege-Workflow** · Mario aktualisiert macro-events.json manuell. Reicht das? Oder Auto-Sync mit TradingEconomics-API (kostenpflichtig) später? — bleibt offen für Slice 4.7
 
 ---
 
@@ -674,9 +653,17 @@ Aus Phasen 2.1 bis 2.3 dokumentiert · gilt weiter:
 11. **ECharts-Bundle-Size** · prüfen dass nur auf /wirtschaft geladen wird (Astro-Islands-Pattern via `client:visible`)
 12. **ECharts-Init-Race** · Theme muss vor erstem `echarts.init()`-Call registriert sein · `echarts.registerTheme()` zentral in einem Module-Side-Effect
 13. **CoinGecko-Rate-Limit** · 10-30 Calls/Min Free Tier · Watchlist mit 16+ Coins muss BULK-Call nutzen, nicht 16 einzelne Calls
-14. **Twelve-Data-Symbol-Format** · Aktien als Plain (TSLA), Forex als Slash (EUR/USD), Commodities als Code (WTI, BRENT) · Mapping in api_id-Field
+14. **Twelve-Data-Symbol-Format** · Aktien als Plain (TSLA), Forex als Slash (EUR/USD) · Mapping im `td_symbol`-Feld (in `src/data/aktien.ts` + `src/data/forex.ts`). Commodities-Symbole sind irreführend: `WTI`/`GOLD` matchen falsche NYSE-Aktien — alle vier Commodities in 4.5 komplett aus dem Setup entfernt.
 15. **Astro-Islands `client:visible`** · ECharts initialisiert erst wenn Element im Viewport · für SSR-First-Paint kein Problem, aber wichtig für UX-Wahrnehmung
 16. **Vercel-ENV-Var-Push** · neue Vars wie TWELVE_DATA_API_KEY müssen via Vercel CLI oder Dashboard gesetzt werden · nicht automatisch durch git push
+
+**In Phase 4 hinzugelernt (aus Slice 4.5 / 4.5b/c):**
+
+17. **Twelve-Data 8/min-Credits-Limit ist HART** · 1 Credit pro Symbol im Bulk-Call · ein 10-Symbol-Bulk = 10 Credits = sofort 429. Tageslimit 800/Tag obendrein. Hat die Endpoint-Architektur (zwei API-Routes mit Edge-Cache + SWR + TTL-Versatz) erzwungen — Page-Fetch funktioniert nicht auf Free Tier.
+18. **Vite-HMR-Cache-Bug nach `git mv`** · Bei Komponenten-Renames zeigt der Vite-Dev-Server stale Reload-Errors für die alten Pfade. Production-Build ist trotzdem sauber. Lösung: Dev-Server neu starten (siehe SKILL.md Stolperstein 7).
+19. **Vercel-Edge-Cache greift NICHT in `npm run dev`** · Cache-/SWR-Verhalten von API-Endpoints kann lokal nicht verifiziert werden — Production-Test via curl-Headers ist Pflicht.
+20. **Refactor-Slices brauchen explizite "vorher = nachher"-Verifikation** · Nicht "sieht gut aus", sondern: grep sauber, Layout identisch, Build grün, Live-Werte unverändert. Stilles Drift bei reinen Renames ist sonst leicht möglich.
+21. **Defensive Fetcher-Verträge VOR Direct-Await-Refactor verifizieren** · Bevor man `Promise.allSettled` gegen ein nacktes `await` tauscht: prüfen, ob es einen Code-Pfad gibt, der eine Rejection durchschlagen lässt (kann sonst zur weissen Page auf Production führen).
 
 ---
 
