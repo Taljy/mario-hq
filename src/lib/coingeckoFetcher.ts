@@ -87,7 +87,7 @@ export async function getKryptoStand(): Promise<KryptoErgebnis> {
   }
 }
 
-// getKryptoStandFuerIds — Flexible Bulk-Abfrage für watchlistAggregator
+// getKryptoStandFuerIds — Flexible Bulk-Abfrage für kryptoAggregator
 // Gibt Map<id, KryptoStand> zurück · Fallback: leere Map (Caller markiert als ist_live: false)
 export async function getKryptoStandFuerIds(ids: string[]): Promise<Map<string, KryptoStand>> {
   if (ids.length === 0) return new Map();

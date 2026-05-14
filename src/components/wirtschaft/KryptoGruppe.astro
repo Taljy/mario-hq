@@ -5,11 +5,11 @@
 // Alle Items offline → Gruppen-Header trägt "· nicht verfügbar"
 // Inhalt: AssetCard-Grid (vorher Zeilen-Liste via WatchlistItem · 4.5b refactor)
 
-import type { WatchlistGruppeEnriched } from '../../lib/watchlistAggregator';
+import type { KryptoGruppeEnriched } from '../../lib/kryptoAggregator';
 import AssetCard from './AssetCard.astro';
 
 interface Props {
-  gruppe: WatchlistGruppeEnriched;
+  gruppe: KryptoGruppeEnriched;
 }
 
 const { gruppe } = Astro.props;

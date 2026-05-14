@@ -1,13 +1,12 @@
 ---
 // KryptoSektion — Wrapper für die Krypto-Watchlist · zwei thematische Blöcke (4.5b)
 // Eyebrow konsistent zu TradingIndikatoren und anderen /wirtschaft-Sektionen
-// Props: WatchlistErgebnis (Krypto-only · Typ wird in 4.5c umbenannt)
 
-import type { WatchlistErgebnis } from '../../lib/watchlistAggregator';
+import type { KryptoWatchlistErgebnis } from '../../lib/kryptoAggregator';
 import KryptoGruppe from './KryptoGruppe.astro';
 
 interface Props {
-  watchlist: WatchlistErgebnis;
+  watchlist: KryptoWatchlistErgebnis;
 }
 
 const { watchlist } = Astro.props;

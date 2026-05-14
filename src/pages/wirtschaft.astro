@@ -22,7 +22,7 @@ import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
 import { getBinanceMetrics }             from '../lib/binanceFetcher';
 import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
 import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
-import { getWatchlist }                  from '../lib/watchlistAggregator';
+import { getKryptoWatchlist }            from '../lib/kryptoAggregator';
 import { getWirtschaft }                 from '../lib/wirtschaftResolver';
 import type { TwelveDataStand }          from '../lib/twelveDataFetcher';
 
@@ -49,7 +49,7 @@ async function holeAktienUndForex(origin: string): Promise<{ aktien: TwelveDataS
 const origin = Astro.url.origin;
 
 // Parallele Fetches · jeder Fetcher hat eigenen Fallback
-// CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getWatchlist) feuern simultan
+// CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getKryptoWatchlist) feuern simultan
 // zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
 const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td] = await Promise.all([
   getKryptoStand(),
@@ -57,7 +57,7 @@ const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td] = 
   getBinanceMetrics(),
   getCoinbasePremium(),
   getStablecoinSupply(),
-  getWatchlist(),
+  getKryptoWatchlist(),
   holeAktienUndForex(origin),
 ]);
 
