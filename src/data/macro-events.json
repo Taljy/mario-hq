@@ -1,0 +1,23 @@
+{
+  "_schema_doku": {
+    "felder": {
+      "datum": "ISO-Datum YYYY-MM-DD",
+      "name": "Editorial-Format · REGION · Bezeichnung (z.B. 'US · Retail Sales April')",
+      "kategorie": "inflation · central-bank · employment · gdp · geopolitik",
+      "impact": "kritisch (FOMC, ECB, SNB, PCE) · hoch (CPI, NFP, Ifo) · mittel (sekundär)",
+      "uhrzeit": "HH:MM CEST · Format-String, frei"
+    },
+    "pflege": "Mario aktualisiert ~monatlich · Termine via TradingEconomics / Fed / ECB / SNB / BEA verifizieren · MacroTimeline filtert automatisch auf die nächsten 14 Tage"
+  },
+  "events": [
+    { "datum": "2026-05-14", "name": "US · Retail Sales April",                "kategorie": "gdp",          "impact": "hoch",     "uhrzeit": "14:30 CEST" },
+    { "datum": "2026-05-19", "name": "CA · CPI April",                          "kategorie": "inflation",    "impact": "mittel",   "uhrzeit": "14:30 CEST" },
+    { "datum": "2026-05-20", "name": "UK · CPI April",                          "kategorie": "inflation",    "impact": "hoch",     "uhrzeit": "08:00 CEST" },
+    { "datum": "2026-05-20", "name": "US · FOMC Minutes (April-Sitzung)",       "kategorie": "central-bank", "impact": "hoch",     "uhrzeit": "20:00 CEST" },
+    { "datum": "2026-05-21", "name": "US · Housing Starts & Building Permits",  "kategorie": "gdp",          "impact": "mittel",   "uhrzeit": "14:30 CEST" },
+    { "datum": "2026-05-22", "name": "UK · Retail Sales April",                 "kategorie": "gdp",          "impact": "mittel",   "uhrzeit": "08:00 CEST" },
+    { "datum": "2026-05-22", "name": "DE · Ifo Geschäftsklima Mai",             "kategorie": "gdp",          "impact": "hoch",     "uhrzeit": "10:00 CEST" },
+    { "datum": "2026-05-28", "name": "US · BIP Q1 (zweite Schätzung)",          "kategorie": "gdp",          "impact": "hoch",     "uhrzeit": "14:30 CEST" },
+    { "datum": "2026-05-28", "name": "US · PCE Preisindex April",               "kategorie": "inflation",    "impact": "kritisch", "uhrzeit": "14:30 CEST" }
+  ]
+}

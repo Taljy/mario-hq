@@ -193,3 +193,89 @@ export function initSparkline(
 
   return { chart, destroy };
 }
+
+// initFearGreedGauge — Halbkreis-Tachometer für Fear & Greed Index
+// Wert 0-100 · Achsen-Farbverlauf Vermillon (Fear-Zone 0-30) → dezent (30-100)
+// KEIN Grün · Nadel in neutral · Wert + Label rendert die Astro-Komponente
+// als HTML drumherum (nicht im ECharts-Detail, damit Fraunces sauber bleibt)
+export function initFearGreedGauge(
+  el: HTMLElement,
+  wert: number,
+  label: string,
+): { chart: echarts.ECharts; destroy: () => void } | null {
+  if (!el) return null;
+
+  ensureThemeRegistered();
+
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const neutral       = isDark ? DRG_COLORS.sumiDark    : DRG_COLORS.sumiLight;
+  const axisInactive  = isDark ? DRG_COLORS.gridLineDk  : DRG_COLORS.gridLine;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const chart = echarts.init(el, 'drg');
+
+  function gaugeOption(value: number, lbl: string, neutralColor: string, inactiveColor: string) {
+    return {
+      animation:         !reducedMotion,
+      animationDuration: reducedMotion ? 0 : 400,
+      animationEasing:   'cubicOut',
+      series: [{
+        type:        'gauge',
+        startAngle:  180,
+        endAngle:    0,
+        center:      ['50%', '78%'],
+        radius:      '120%',
+        min:         0,
+        max:         100,
+        splitNumber: 5,
+        progress:    { show: false },
+        axisLine: {
+          lineStyle: {
+            width: 10,
+            color: [
+              [0.30, DRG_COLORS.accent],
+              [1.00, inactiveColor],
+            ],
+          },
+        },
+        pointer: {
+          icon:         'rect',
+          length:       '60%',
+          width:        2,
+          offsetCenter: [0, '5%'],
+          itemStyle:    { color: neutralColor },
+        },
+        axisTick:  { show: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
+        title:     { show: false },
+        detail:    { show: false },
+        data:      [{ value, name: lbl }],
+      }],
+    };
+  }
+
+  chart.setOption(gaugeOption(wert, label, neutral, axisInactive));
+
+  const themeObserver = new MutationObserver(() => {
+    const nowDark = document.documentElement.dataset.theme === 'dark';
+    const n  = nowDark ? DRG_COLORS.sumiDark   : DRG_COLORS.sumiLight;
+    const ax = nowDark ? DRG_COLORS.gridLineDk : DRG_COLORS.gridLine;
+    chart.setOption(gaugeOption(wert, label, n, ax));
+  });
+  themeObserver.observe(document.documentElement, {
+    attributes:      true,
+    attributeFilter: ['data-theme'],
+  });
+
+  const resizeObserver = new ResizeObserver(() => chart.resize());
+  resizeObserver.observe(el);
+
+  const destroy = () => {
+    themeObserver.disconnect();
+    resizeObserver.disconnect();
+    chart.dispose();
+  };
+
+  return { chart, destroy };
+}

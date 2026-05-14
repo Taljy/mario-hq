@@ -62,6 +62,20 @@
       "url": "https://defillama.com",
       "lizenz": "Free API · Public Data",
       "use": "Stablecoin Supply · Liquiditäts-Indikator"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Alternative.me",
+      "url": "https://alternative.me/crypto/fear-and-greed-index",
+      "lizenz": "Free API · Public Data",
+      "use": "Crypto Fear & Greed Index · Markt-Sentiment"
+    },
+    {
+      "modul": "wirtschaft",
+      "name": "Macro-Kalender (kuratiert)",
+      "url": null,
+      "lizenz": "Manuell gepflegt · Quellen: Fed · ECB · SNB · BEA · TradingEconomics",
+      "use": "Macro-Events der nächsten 14 Tage · monatliche Pflege"
     }
   ]
 }

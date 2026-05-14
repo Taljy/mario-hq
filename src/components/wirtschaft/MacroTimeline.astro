@@ -1,0 +1,180 @@
+---
+// MacroTimeline — Chronologische Liste der nächsten 14 Tage Macro-Events
+// Bewusst KEIN ECharts: bei realistischer Event-Dichte und auf Mobile 375px
+// würden Label-Kollisionen auf einer Zeitachse die Spec-Vorgabe brechen.
+// Editorial-Liste erfüllt die semantische Aufgabe (zeitliche Reihenfolge +
+// Impact-Codierung) robust auf jedem Viewport.
+// Daten: getMacroEvents() liest macro-events.json, filtert auf 14-Tage-Fenster
+// und sortiert chronologisch · keine ECharts-Islands, statisches SSR-Rendering.
+
+import type { MacroEvent } from '../../lib/macroEventsResolver';
+
+interface Props {
+  events: MacroEvent[];
+}
+
+const { events } = Astro.props;
+
+const heuteIso = new Date().toISOString().slice(0, 10);
+
+function formatDatum(iso: string): string {
+  const d = new Date(iso + 'T00:00:00');
+  const wochentag = d.toLocaleDateString('de-CH', { weekday: 'short', timeZone: 'Europe/Zurich' });
+  const tag = d.getDate();
+  const monat = d.getMonth() + 1;
+  return `${wochentag} ${tag}.${monat}.`;
+}
+---
+
+<section class="macro-sektion">
+  <div class="sektion-head">
+    <span class="eyebrow">Macro · Kalender</span>
+    <span class="hint">Nächste 14 Tage</span>
+  </div>
+
+  {events.length === 0 ? (
+    <p class="leer-hinweis">Keine Events im aktuellen Fenster.</p>
+  ) : (
+    <ul class="event-liste" role="list">
+      {events.map((event) => (
+        <li class={`event-zeile ${event.datum === heuteIso ? 'heute' : ''}`}>
+          <span class={`impact-punkt impact-${event.impact}`} aria-hidden="true"></span>
+          <span class="event-datum">{formatDatum(event.datum)}</span>
+          <span class="event-uhrzeit">{event.uhrzeit}</span>
+          <span class="event-name">{event.name}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
+
+<style>
+  .macro-sektion {
+    background:    var(--bg-card);
+    padding:       18px;
+    border-radius: 4px;
+  }
+
+  .sektion-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   var(--s-4);
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .hint {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    letter-spacing: 0.08em;
+    color:          var(--fg-subtle);
+  }
+
+  .leer-hinweis {
+    font-family: var(--font-mono);
+    font-size:   11px;
+    color:       var(--fg-subtle);
+    margin:      0;
+  }
+
+  .event-liste {
+    list-style: none;
+    margin:     0;
+    padding:    0;
+    display:    flex;
+    flex-direction: column;
+  }
+
+  .event-zeile {
+    display:       grid;
+    grid-template-columns: 14px 80px 80px 1fr;
+    align-items:   baseline;
+    gap:           0 12px;
+    padding:       8px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .event-zeile:last-child {
+    border-bottom: none;
+  }
+
+  .event-zeile.heute {
+    padding-left: 6px;
+    margin-left:  -6px;
+    border-left:  2px solid var(--accent);
+  }
+
+  .impact-punkt {
+    display:       inline-block;
+    width:         8px;
+    height:        8px;
+    border-radius: 50%;
+    align-self:    center;
+  }
+
+  .impact-kritisch { background: var(--accent); }
+  .impact-hoch     { background: var(--fg-muted); }
+  .impact-mittel   { background: var(--fg-faint); }
+
+  .event-datum {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    600;
+    letter-spacing: 0.04em;
+    color:          var(--fg);
+    white-space:    nowrap;
+  }
+
+  .event-uhrzeit {
+    font-family: var(--font-mono);
+    font-size:   10px;
+    color:       var(--fg-subtle);
+    white-space: nowrap;
+  }
+
+  .event-name {
+    font-family:   var(--font-body);
+    font-size:     13px;
+    color:         var(--fg-muted);
+    line-height:   1.4;
+  }
+
+  /* Mobile: zweizeilig · Datum + Uhrzeit oben, Name unten */
+  @media (max-width: 640px) {
+    .event-zeile {
+      grid-template-columns: 14px 1fr;
+      grid-template-areas:
+        "punkt meta"
+        "punkt name";
+      gap: 2px 10px;
+    }
+
+    .impact-punkt { grid-area: punkt; align-self: start; margin-top: 6px; }
+
+    .event-datum {
+      grid-area: meta;
+      grid-column: 2;
+      grid-row:    1;
+    }
+
+    .event-uhrzeit {
+      grid-area: meta;
+      grid-column: 2;
+      grid-row:    1;
+      justify-self: end;
+    }
+
+    .event-name {
+      grid-area:   name;
+      font-size:   12px;
+    }
+  }
+</style>

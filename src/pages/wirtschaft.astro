@@ -15,6 +15,8 @@ import TradingIndikatoren        from '../components/wirtschaft/TradingIndikator
 import KryptoSektion             from '../components/wirtschaft/KryptoSektion.astro';
 import AktienSektion             from '../components/wirtschaft/AktienSektion.astro';
 import ForexCommoditiesSektion   from '../components/wirtschaft/ForexCommoditiesSektion.astro';
+import MacroTimeline             from '../components/wirtschaft/MacroTimeline.astro';
+import FearGreedGauge            from '../components/wirtschaft/FearGreedGauge.astro';
 import WirtschaftsNews           from '../components/wirtschaft/WirtschaftsNews.astro';
 import TradeSetupsPlaceholder    from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
 
@@ -24,6 +26,8 @@ import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
 import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
 import { getKryptoWatchlist }            from '../lib/kryptoAggregator';
 import { getWirtschaft }                 from '../lib/wirtschaftResolver';
+import { getMacroEvents }                from '../lib/macroEventsResolver';
+import { getFearGreed }                  from '../lib/fearGreedFetcher';
 import type { TwelveDataStand }          from '../lib/twelveDataFetcher';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
@@ -51,7 +55,7 @@ const origin = Astro.url.origin;
 // Parallele Fetches · jeder Fetcher hat eigenen Fallback
 // CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getKryptoWatchlist) feuern simultan
 // zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
-const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td] = await Promise.all([
+const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td, fearGreed] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
   getBinanceMetrics(),
@@ -59,8 +63,10 @@ const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist, td] = 
   getStablecoinSupply(),
   getKryptoWatchlist(),
   holeAktienUndForex(origin),
+  getFearGreed(),
 ]);
 
+const macroEvents = getMacroEvents();
 const { news, trade_setups_placeholder } = getWirtschaft();
 ---
 
@@ -79,6 +85,8 @@ const { news, trade_setups_placeholder } = getWirtschaft();
     <KryptoSektion watchlist={watchlist} />
     <AktienSektion stand={td.aktien} fetch_zeit={watchlist.fetch_zeit} />
     <ForexCommoditiesSektion stand={td.forex} fetch_zeit={watchlist.fetch_zeit} />
+    <MacroTimeline events={macroEvents} />
+    <FearGreedGauge stand={fearGreed} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />
   </div>

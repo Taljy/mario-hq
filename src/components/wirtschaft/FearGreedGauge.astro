@@ -1,0 +1,158 @@
+---
+// FearGreedGauge — Halbkreis-Tachometer · ECharts mit DRG-Theme · Astro-Islands
+// Wert in Fraunces gross in der Mitte, Label in Mono darunter (als HTML-Overlay,
+// nicht via ECharts-Detail · damit Fraunces sauber rendert)
+// Achsen-Farbverlauf: Vermillon (0-30 Fear-Zone) → neutral (30-100) · KEIN Grün
+// Bei ist_live: false → "—" statt Wert, kein Gauge-Render
+
+import type { FearGreedStand } from '../../lib/fearGreedFetcher';
+
+interface Props {
+  stand: FearGreedStand;
+}
+
+const { stand } = Astro.props;
+
+const chartId      = `fng-${Math.random().toString(36).slice(2, 9)}`;
+const stempelLabel = stand.ist_live
+  ? `Live · ${stand.fetch_zeit}`
+  : 'Fallback';
+---
+
+<section class="fng-sektion">
+  <div class="sektion-head">
+    <span class="eyebrow">Fear &amp; Greed · Krypto</span>
+    <span class={`live-stempel ${!stand.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="fng-anzeige">
+    <div
+      id={chartId}
+      class="fng-gauge"
+      data-fng-gauge
+      data-wert={stand.wert}
+      data-label={stand.label}
+      data-live={stand.ist_live ? '1' : '0'}
+      aria-hidden="true"
+    ></div>
+    <div class="fng-werte">
+      <span class={`fng-zahl ${!stand.ist_live ? 'leer' : ''}`}>
+        {stand.ist_live ? stand.wert : '—'}
+      </span>
+      <span class="fng-label">{stand.label}</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initFearGreedGauge } from '../../lib/echartsRenderer';
+
+  function setup() {
+    document.querySelectorAll<HTMLElement>('[data-fng-gauge]').forEach((el) => {
+      if (el.dataset.live !== '1') return;  // offline → kein Gauge
+
+      const wert  = parseInt(el.dataset.wert  ?? '0', 10);
+      const label = el.dataset.label ?? '—';
+      if (!Number.isFinite(wert)) return;
+
+      let initialized = false;
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !initialized) {
+              initialized = true;
+              initFearGreedGauge(el, wert, label);
+              io.disconnect();
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      io.observe(el);
+    });
+  }
+
+  setup();
+</script>
+
+<style>
+  .fng-sektion {
+    background:    var(--bg-card);
+    padding:       18px;
+    border-radius: 4px;
+  }
+
+  .sektion-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   var(--s-3);
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  /* Anzeige: Gauge oben, Wert/Label darunter zentriert */
+  .fng-anzeige {
+    position: relative;
+    display:  flex;
+    flex-direction: column;
+    align-items:    center;
+  }
+
+  .fng-gauge {
+    width:  100%;
+    max-width: 320px;
+    height: 140px;
+  }
+
+  .fng-werte {
+    margin-top:  6px;
+    text-align:  center;
+    display:     flex;
+    flex-direction: column;
+    align-items: center;
+    gap:         2px;
+  }
+
+  .fng-zahl {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size:   36px;
+    line-height: 1;
+    font-variation-settings: "opsz" 48;
+    color:       var(--fg);
+  }
+
+  .fng-zahl.leer {
+    color: var(--fg-faint);
+  }
+
+  .fng-label {
+    font-family:    var(--font-mono);
+    font-size:      10px;
+    font-weight:    600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+</style>
