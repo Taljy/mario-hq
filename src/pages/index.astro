@@ -19,16 +19,24 @@ import MacroCard from '../components/MacroCard.astro';
 import NewsCard from '../components/NewsCard.astro';
 import CoverFooter from '../components/CoverFooter.astro';
 
-import { getKryptoStand }  from '../lib/coingeckoFetcher';
-import { getFearGreed }    from '../lib/fearGreedFetcher';
+import { getKryptoStand }      from '../lib/coingeckoFetcher';
+import { getFearGreed }        from '../lib/fearGreedFetcher';
+import { getWetterErgebnis }   from '../lib/openMeteoFetcher';
+import { getStundenHeute }     from '../lib/astronomieResolver';
+import { getFotoEmpfehlung }   from '../lib/fotoSpotPicker';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
 // Parallele Fetches · jeder mit eigenem Fallback (siehe Fetcher-Implementierungen)
-const [krypto, fearGreed] = await Promise.all([
+const [krypto, fearGreed, wetter] = await Promise.all([
   getKryptoStand(),
   getFearGreed(),
+  getWetterErgebnis(),
 ]);
+
+// Synchron · brauchen kein await
+const stunden = getStundenHeute();
+const foto    = getFotoEmpfehlung(wetter.heute);  // braucht wetter.heute, muss NACH dem await stehen
 ---
 
 <Magazine title="Cover · Mario's HQ">
@@ -40,7 +48,7 @@ const [krypto, fearGreed] = await Promise.all([
       <GeschichteStrip />
       <EventBanner />
       <div class="co-heroes">
-        <WetterCard />
+        <WetterCard wetter={wetter} stunden={stunden} foto={foto} />
         <KalenderCard />
       </div>
       <div class="supporting">

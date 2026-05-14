@@ -1,55 +1,54 @@
 ---
-// WetterCard — Co-Hero links (1.7fr) · statischer Wetter-Stub
-// Symbol: sumi-e monolinig · var(--fg) für Auto-Dark-Mode-Switch
-// Wolken-Fill via var(--bg-card) — überdeckt untere Sonnenstrahlen (Painters Model)
-// Live-MeteoSwiss-Anbindung kommt Phase 2.4
+// WetterCard — Co-Hero links (1.7fr) · LIVE (Slice 5.2b)
+// Quellen: getWetterErgebnis() (Open-Meteo) · getStundenHeute() (SunCalc, lokal)
+//          getFotoEmpfehlung() (kuratierte Foto-Spots)
+// Symbol via zentralen WetterSymbol-Wrapper (8 SVG-Sub-Komponenten)
+// Stunden-Formatierung in der Card (View-Logik): "{start} — {ende}" Em-Dash U+2014
+// niederschlag_mm bewusst nicht angezeigt · Layout-Treue · WetterDetail zeigt es
 
-import { getWetterHeute } from '../lib/wetterPicker';
+import WetterSymbol           from './wetter-symbole/WetterSymbol.astro';
+import type { WetterErgebnis } from '../lib/openMeteoFetcher';
+import type { StundenHeute }   from '../lib/astronomieResolver';
+import type { FotoEmpfehlung } from '../lib/fotoSpotPicker';
 
-const wetter = getWetterHeute();
+interface Props {
+  wetter:  WetterErgebnis;
+  stunden: StundenHeute;
+  foto:    FotoEmpfehlung;
+}
+
+const { wetter, stunden, foto } = Astro.props;
+
+const stempelLabel = wetter.ist_live
+  ? `Live · ${wetter.fetch_zeit}`
+  : 'Fallback · Open-Meteo offline';
+
+// Em-Dash U+2014 mit Leerzeichen — wie in der Stub-Card-Vorlage
+const goldenRange = `${stunden.goldene_stunde.start} — ${stunden.goldene_stunde.ende}`;
+const blauerRange = `${stunden.blaue_stunde.start} — ${stunden.blaue_stunde.ende}`;
 ---
 
 <div class="wetter-card">
-  <!-- Eyebrow -->
-  <span class="eyebrow">Wetter &amp; Foto · {wetter.ort}</span>
+  <!-- Header-Row: Eyebrow links · Live-Stempel rechts (flex space-between, analog KryptoCard) -->
+  <div class="card-head">
+    <span class="eyebrow">Wetter &amp; Foto · {wetter.ort}</span>
+    <span class={`live-stempel ${!wetter.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
 
-  <!-- Hero-Row: Symbol + Temperatur + Bedingung -->
+  <!-- Hero-Row: Symbol + Temperatur + Bedingung nebeneinander -->
   <div class="hero-row">
-    <!-- Sumi-e Symbol: Sonne zuerst, Wolke zuletzt — Wolke liegt oben im Painters Model -->
-    <svg
-      class="wetter-symbol"
-      viewBox="0 0 80 80"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="Mix Sonne und Wolken"
-    >
-      <circle cx="32" cy="32" r="14" fill="none" stroke="var(--fg)" stroke-width="1.5" />
-      <line x1="32" y1="10" x2="32" y2="16" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <line x1="32" y1="48" x2="32" y2="54" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <line x1="10" y1="32" x2="16" y2="32" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <line x1="16.7" y1="16.7" x2="21" y2="21" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <line x1="47.3" y1="16.7" x2="43" y2="21" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <line x1="16.7" y1="47.3" x2="21" y2="43" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round" />
-      <!-- Wolke zuletzt — fill=var(--bg-card) lässt sie mit Karten-Hintergrund verschmelzen -->
-      <path
-        d="M 28 56 Q 28 46 38 46 Q 44 38 54 42 Q 64 42 66 52 Q 72 52 72 60 Q 72 68 64 68 L 32 68 Q 24 68 24 62 Q 24 56 28 56 Z"
-        fill="var(--bg-card)"
-        stroke="var(--fg)"
-        stroke-width="1.5"
-        stroke-linejoin="round"
-      />
-    </svg>
+    <WetterSymbol wmoCode={wetter.heute.wmo_code} size={64} />
 
     <!-- Temperatur -->
     <div class="temp-block">
-      <span class="temp">{wetter.temperatur}°</span>
-      <span class="min">Min {wetter.min}°</span>
+      <span class="temp">{wetter.heute.temperatur}°</span>
+      <span class="min">Min {wetter.heute.min}°</span>
     </div>
 
     <!-- Bedingung + Wind -->
     <div class="bedingung-block">
-      <span class="bedingung">{wetter.bedingung}</span>
-      <span class="wind">{wetter.wind}</span>
+      <span class="bedingung">{wetter.heute.bedingung}</span>
+      <span class="wind">{wetter.heute.wind_richtung} {wetter.heute.wind_kmh} km/h</span>
     </div>
   </div>
 
@@ -57,16 +56,16 @@ const wetter = getWetterHeute();
   <div class="stunden-grid">
     <div class="stunde">
       <span class="stunde-eyebrow">Goldene Stunde</span>
-      <span class="stunde-wert">{wetter.goldene_stunde}</span>
+      <span class="stunde-wert">{goldenRange}</span>
     </div>
     <div class="stunde">
       <span class="stunde-eyebrow">Blaue Stunde</span>
-      <span class="stunde-wert">{wetter.blaue_stunde}</span>
+      <span class="stunde-wert">{blauerRange}</span>
     </div>
   </div>
 
   <!-- Foto-Hinweis -->
-  <p class="foto-hinweis">{wetter.foto_hinweis}</p>
+  <p class="foto-hinweis">{foto.begruendung}</p>
 </div>
 
 <style>
@@ -76,15 +75,34 @@ const wetter = getWetterHeute();
     border-radius: 4px;
   }
 
+  /* Header-Row mit Eyebrow + Live-Stempel · Pattern aus KryptoCard (5.1) */
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s-4);
+  }
+
   .eyebrow {
-    display: block;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: var(--s-4);
+  }
+
+  .live-stempel {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
   }
 
   /* Hero-Row — Symbol + Temp + Bedingung nebeneinander */
@@ -93,12 +111,6 @@ const wetter = getWetterHeute();
     align-items: center;
     gap: var(--s-4);
     margin-bottom: var(--s-4);
-  }
-
-  .wetter-symbol {
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
   }
 
   .temp-block {
