@@ -1,5 +1,38 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 24) · Slice 4.3 · Multi-Anbieter-Watchlist-Foundation
+
+### Was gemacht
+- `src/data/watchlist.json`: 6 Gruppen · 28 Items · Krypto Large/Mid (coingecko) · Aktien US (twelvedata) · Indizes · Forex · Rohstoffe
+- `src/lib/coingeckoFetcher.ts`: `getKryptoStandFuerIds(ids)` ergänzt · Bulk `/coins/markets` · gibt `Map<id, KryptoStand>` zurück · Fallback leere Map
+- `src/lib/twelveDataFetcher.ts` (neu): Key-Abwesenheit-Guard · Bulk-URL ein Request · Multi/Single-Symbol-Response-Unterscheidung · Fehler-Items (Plan nicht enthalten) als `ist_live: false` · 8s Timeout
+- `src/lib/watchlistAggregator.ts` (neu): `Promise.allSettled` für CoinGecko + Twelve Data parallel · Lookup Maps mergen · WatchlistGruppeEnriched ausgeben · `ist_live` flag wenn mindestens ein Item live
+- `src/pages/_test-watchlist.astro`: Temporäre Verifikations-Route mit Tabelle pro Gruppe · ✅/❌ pro Item · JSON-Rohdaten unter `<details>`
+
+### Erkenntnisse
+- Indizes (SPX, NDX, DAX, SMI) sind im Twelve Data Free Tier nicht enthalten · `ist_live: false` + Fehlertext · für Slice 4.5 geplant (bezahlter Tier oder Alternative)
+- WTI liefert $4.40 statt ~$60 · suspekter Wert, vermutlich falsches Symbol oder Einheit · für Slice 4.5 zu untersuchen
+- BRENT (XBR/USD) nicht im Free Tier · `ist_live: false` wie Indizes
+- EUR/USD, CHF/USD, GBP/USD, EUR/CHF · Forex ✅ · AAPL, NVDA, TSLA, MSFT, AMZN, META · Aktien US ✅
+- Kein zirkulärer Import: `twelveDataFetcher` hat eigene `TwelveDataItem`-Interface · kein Rückimport aus `watchlistAggregator`
+- Security-Check ✅: `TWELVE_DATA_API_KEY` nicht im `dist/`-Bundle · server-only via `import.meta.env`
+- Build ✅ · 3.13s · keine TypeScript-Fehler
+
+### Verifikation
+- Build grün · Security-Check sauber
+- `_test-watchlist.astro` wartet auf visuellen Vercel-Check nach Push (dann löschen)
+
+### Files dieser Session
+- `src/data/watchlist.json` (neu)
+- `src/lib/coingeckoFetcher.ts` (erweitert: `getKryptoStandFuerIds`)
+- `src/lib/twelveDataFetcher.ts` (neu)
+- `src/lib/watchlistAggregator.ts` (neu)
+- `src/pages/_test-watchlist.astro` (temporär)
+- `_pendenzen.md` (Slice 4.3 ✅ · Phase-4-Status aktualisiert)
+- `SESSION_LOG.md` (Update 24)
+
+---
+
 ## 26-05-13 (Update 23) · Tages-Abschluss · ENV-Setup + Vercel-Issues + Glassnode
 
 ### Was gemacht

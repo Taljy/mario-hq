@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-13
+aktualisiert: 26-05-14
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -46,10 +46,11 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - **Phase 3 (Content-Pipeline) wartet** bis Bedarf konkret ist · Habits/Notizen-Tracking oder Archiv-Wunsch sind Trigger.
 - **Phase 4 wird breiter:** Editorial-Charts (Sparklines, F&G, Mondphase) plus Trading-Indikatoren (Funding Rates, Open Interest, Long/Short Ratio, Coinbase Premium, Stablecoin Supply) plus vollständige Multi-Asset-Watchlist (Crypto, Aktien, Forex, Commodities) alles auf /wirtschaft als langem scrollintensiven Wirtschafts-Hub.
 
-**Phase-4-Status (Stand 13.5.2026 abend):**
+**Phase-4-Status (Stand 14.5.2026):**
 - Slice 4.1 ✅ ECharts-Foundation + BTC-Sparkline · lokal + Production
 - Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen Vercel-Binance-Block
-- Slice 4.3 als nächstes · Multi-Anbieter-Watchlist-Foundation · API-Keys (Twelve Data + CoinGecko) bereit
+- Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation · watchlist.json · twelveDataFetcher · watchlistAggregator · coingeckoFetcher erweitert
+- Slice 4.4 als nächstes · Watchlist-Komponenten auf /wirtschaft · UI für 6 Gruppen · Live-Daten-Anzeige
 
 ---
 
@@ -119,7 +120,7 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 
 - [x] **Slice 4.1** ECharts-Foundation + DRG-Theme + BTC-Hero mit Sparkline
 - [x] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
-- [ ] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
+- [x] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
 - [ ] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
 - [ ] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion
 - [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
