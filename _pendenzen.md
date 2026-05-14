@@ -88,7 +88,7 @@ Alle 5 Cover-Daten-Cards auf Live-Stand. Bewusst alle in einem Vorhaben. KryptoC
 - [~] **Vercel-Derivate-Börsen-IP-Block** · im Phase-4-Nachläufer-Slice (Commits `91ef169` + `7de6592`) zu struktureller Anbieter-Klassen-Block bestätigt (Binance + Bybit beide blockiert · DeFiLlama läuft). Anbieter-Swap-Pfad erschöpft. → Verbleibender Fix: **Architektur-Umbau Fetch-und-ablegen, GEPARKT** mit Trigger "Mario nutzt /wirtschaft regelmässig auf Production/Mobile und will die 4 Cards dort live". Cheap-Schritt-1 vor Pipeline-Bau: testen ob GH-Actions-Runner Bybit/Binance erreicht — wenn nein, Residential-IP-Lösung nötig.
 - [ ] **Glassnode-Subscription evaluieren** · On-Chain-Analytics Industrie-Standard · ~$39/Monat · Entscheidung wenn Slice 4.2 produktiv läuft und Nutzungs-Pattern bekannt
 - [x] **Cover-Meta-Stempel** · CoverFooter.astro auf "Phase 4" aktualisiert (Slice 4.8)
-- [ ] **Worktree-Reste aufräumen** · zwei verwaiste Claude-Code-Worktrees im Repo: `.claude/worktrees/crazy-roentgen-49029d` (5c4e8a1 · HQ-Pivot 12.5.) und `.claude/worktrees/lucid-noyce-c570f5` (00535aa · Phase 2.2 · weit hinter main). Kein Risiko, nur Müll. Aufräumen via `git worktree remove <pfad>` plus ggf. `git branch -D <branch>`. An jeden künftigen Slice anhängbar — keine eigene Slice-Notwendigkeit.
+- [x] **Worktree-Reste aufgeräumt** (15.5.2026) · beide Claude-Code-Worktrees entfernt + ihre verwaisten Branches gelöscht. `lucid-noyce-c570f5` sauber via `git worktree remove`. `crazy-roentgen-49029d` brauchte `--force` wegen untracked `.claude/`-Tool-Metadaten (Mario-GO, kein Mario-Repo-Inhalt verloren). Plus `git branch -D claude/crazy-roentgen-49029d claude/lucid-noyce-c570f5`. `git worktree list` zeigt nur noch main.
 
 ---
 
@@ -236,6 +236,11 @@ Datenmodell hängt daran. Muss Mario festlegen, bevor 4.6b geplant werden kann.
 ---
 
 ## ✅ Erledigt
+
+### 26-05-15 (Hausputz nach Phase 5 · Worktree-Cleanup)
+- Zwei verwaiste Claude-Code-Worktrees entfernt: `.claude/worktrees/lucid-noyce-c570f5` (sauber) und `.claude/worktrees/crazy-roentgen-49029d` (mit `--force` wegen untracked `.claude/`-Tool-Metadaten — kein Mario-Repo-Inhalt)
+- Beide verwaisten Branches gelöscht: `claude/lucid-noyce-c570f5` und `claude/crazy-roentgen-49029d`
+- `git worktree list` zeigt nur noch main · Repo sauber
 
 ### 26-05-14 (Mario · Vercel-Doppel-Projekt bereinigt)
 - Älteres Vercel-Projekt `mario-hq` gelöscht · nur noch `mario-hq-qc6f` aktiv unter `mario-hq-qc6f.vercel.app`
