@@ -46,6 +46,14 @@ export interface AstronomieHighlights {
   ist_bemerkenswert: boolean;
 }
 
+export interface StundenHeute {
+  // Goldene Stunde · Start = SunCalc goldenHour (≈1h vor Sonnenuntergang) · Ende = sunset
+  goldene_stunde: { start: string; ende: string };
+  // Blaue Stunde · Start = sunset · Ende = SunCalc dusk (Ende der bürgerlichen Dämmerung)
+  // Definition fotografisch sinnvoll · in PHASE-5-COVER-SYNC-SPEC.md §4.2 festgehalten
+  blaue_stunde: { start: string; ende: string };
+}
+
 function dateInRange(datum: Date, start: string, ende: string): boolean {
   const d = datum.toISOString().slice(0, 10);
   return d >= start && d <= ende;
@@ -71,6 +79,25 @@ function formatZeit(d: Date | undefined): string | null {
     minute: '2-digit',
     timeZone: 'Europe/Zurich',
   });
+}
+
+// getStundenHeute — Goldene + Blaue Stunde via SunCalc · lokale Berechnung, keine API
+// Standort: LAT/LNG-Konstanten oben (Baden AG · 47.4762, 8.3056)
+// Definition (siehe PHASE-5-COVER-SYNC-SPEC.md §4.2):
+//   goldene_stunde: SunCalc.goldenHour → sunset
+//   blaue_stunde:   SunCalc.sunset → dusk (Ende bürgerliche Dämmerung)
+export function getStundenHeute(datum: Date = new Date()): StundenHeute {
+  const t = SunCalc.getTimes(datum, LAT, LNG);
+  return {
+    goldene_stunde: {
+      start: formatZeit(t.goldenHour) ?? '—',
+      ende:  formatZeit(t.sunset)     ?? '—',
+    },
+    blaue_stunde: {
+      start: formatZeit(t.sunset) ?? '—',
+      ende:  formatZeit(t.dusk)   ?? '—',
+    },
+  };
 }
 
 export function getAstronomieHeute(datum: Date = new Date()): AstronomieHighlights {
