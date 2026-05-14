@@ -1,5 +1,50 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 30) · Slice 4.6 · Wetter-Wochen-Bars + Mondphase-SVG
+
+### Was gemacht
+- `src/components/wetter/WetterWochenBars.astro` (neu): ECharts vertikale Floating-Bars · Min/Max-Temperatur über 7 Tage · X-Achse Wochentage (Mo-So), Y-Achse °C-Werte · Höhe 120px · DRG-Theme zwingend, keine Tooltips · Astro-Islands mit IntersectionObserver
+- `src/components/wetter/MondphaseSvg.astro` (neu): Custom-SVG 60×60px · sumi-e-Reduktion · Konturkreis + Schatten-Kreis + beleuchteter Pfad mit zwei Bögen
+- `src/lib/echartsRenderer.ts`: `initWetterWochenBars(el, daten)` neu · Floating-Bar-Trick mit zwei stacked series (transparenter Sockel + sichtbare Range) · MutationObserver für Live-Theme-Switch · ResizeObserver
+- `src/lib/astronomieResolver.ts`: `Mondphase`-Interface um `ist_zunehmend: boolean` erweitert · intern bereits als `isWaxing = moonIllum.phase < 0.5` berechnet, jetzt auch nach aussen exportiert · 2-Zeilen-Änderung · keine Breaking Change (bestehender Caller AstronomieSektion nutzte das Feld nicht)
+- `src/components/wetter/AstronomieSektion.astro`: MondphaseSvg in `mondphase-card` eingebaut (SVG links, Text rechts) · neue CSS-Klassen `mondphase-head` / `mondphase-text`
+- `src/pages/wetter.astro`: `<WetterWochenBars>` zwischen `<WetterDetail>` und `<AstronomieSektion>` einhängt
+
+### SVG-Mondsichel-Geometrie · Plan-First-festgenagelt
+Mathematischer Ansatz: beleuchteter Bereich = SVG-Pfad mit zwei Bögen (Aussen-Kreis + Innen-Ellipse). Terminator-Faktor `k = 1 - 2*f` (f = Beleuchtungs-Anteil 0..1) bestimmt:
+- `k > 0` (Sichel, <50%): Innen-Ellipse wölbt sich NACH INNEN
+- `k = 0` (Halbmond): rxInner=0 → Innenbogen degeneriert zu Gerade
+- `k < 0` (Gibbous, >50%): Innen-Ellipse wölbt sich NACH AUSSEN über Mittellinie
+SVG-Sweep-Flags kippen automatisch zwischen Sichel und Gibbous · `ist_zunehmend` steuert die Seite (rechts/links).
+
+### Verifikation
+- SunCalc-Live-Test heute (14.5.2026): 7% Beleuchtung, `isWaxing=false`, kurz vor Neumond → muss dünne LINKE Sichel zeigen
+- SVG-Pfad-Inspektion auf Production: `M 30,6 A 24,24 0 0 0 30,54 A 20.64,24 0 0 1 30,6 Z` → aussenSweep=0 (ccw, linke Seite), rxInner=20.64 (= 0.86 * 24), innenSweep=1 (Sichel cw) → korrekt für abnehmend ✓
+- Synthetische Pfad-Tests für alle Phasen (Neumond, Sichel, Halbmond, Gibbous, Vollmond) im Browser durchgerechnet · Halbmond degeneriert sauber auf rx=0 · Gibbous wölbt korrekt nach aussen
+- Build ✅ lokal · TypeScript-strict ohne Fehler
+- /wetter visuell: 7 vertikale Bars (Fr–Do), Min/Max-Range erkennbar, Y-Achse °C-Werte, Mondphase-Card mit dünner linker Sichel
+- Light/Dark: Bars wechseln zwischen Sumi-Schwarz und Washi (DRG-Theme greift live), Mond bleibt mit Konturkreis lesbar
+- Mobile 375px: Bars in voller Breite, Mond-SVG erkennbar mit deutlicher linker Sichel
+- Console clean (nach Dev-Server-Restart wegen HMR)
+- Vercel-Push grün · /wetter rendert beide Komponenten
+
+### `ist_bemerkenswert`-Force entfiel
+Heute (14.5.2026) sind die Eta-Aquariden aktiv (Mai-Meteor-Schauer) → `ist_bemerkenswert: true` → AstronomieSektion rendert ohne Force. Wegwerf-Edit war nicht nötig.
+
+### Files dieser Session
+- `src/components/wetter/WetterWochenBars.astro` (neu)
+- `src/components/wetter/MondphaseSvg.astro` (neu)
+- `src/lib/echartsRenderer.ts` (initWetterWochenBars)
+- `src/lib/astronomieResolver.ts` (ist_zunehmend exportieren)
+- `src/components/wetter/AstronomieSektion.astro` (MondphaseSvg integriert)
+- `src/pages/wetter.astro` (WetterWochenBars eingehängt)
+- `_pendenzen.md` (4.6 ✅, 4.7 als nächstes)
+- `SESSION_LOG.md` (Update 30)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` §6 (4.6 ✅)
+- `docs/HANDOVER.md` (Stand nach 4.6 · 4.7 als nächster Schritt)
+
+---
+
 ## 26-05-14 (Update 29) · Spec-Sync nach 4.5c · Phase-4-Spec auf realen Stand + Eyebrow
 
 ### Was gemacht
