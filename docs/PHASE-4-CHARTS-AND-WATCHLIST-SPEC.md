@@ -323,10 +323,10 @@ const chart = echarts.init(domEl, 'drg');
 
 | Slice | Inhalt | Umfang | Status |
 |---|---|---|---|
-| **4.1** | ECharts-Foundation · DRG-Theme · Astro-Islands-Pattern · BTC-Hero mit Sparkline | mittel | offen |
-| **4.2** | Trading-Indikatoren-Block (Funding · OI · L/S · Coinbase Premium · Stablecoin Supply) | gross | offen |
-| **4.3** | Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup · watchlist.json | mittel | offen |
-| **4.4** | Watchlist-Komponenten mit Gruppierung · alle Crypto-Items · Mini-Sparklines | gross | offen |
+| **4.1** | ECharts-Foundation · DRG-Theme · Astro-Islands-Pattern · BTC-Hero mit Sparkline | mittel | ✅ abgeschlossen |
+| **4.2** | Trading-Indikatoren-Block (Funding · OI · L/S · Coinbase Premium · Stablecoin Supply) | gross | ✅ abgeschlossen |
+| **4.3** | Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup · watchlist.json | mittel | ✅ abgeschlossen |
+| **4.4** | Watchlist-Komponenten mit Gruppierung · alle Crypto-Items · Mini-Sparklines | gross | ✅ abgeschlossen |
 | **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Indices-Fallback klären | mittel | offen |
 | **4.6** | Wetter-Wochen-Bars (ECharts) + Mondphase-SVG (custom) auf /wetter | mittel | offen |
 | **4.7** | Macro-Timeline + Fear & Greed Gauge auf /wirtschaft | mittel | offen |

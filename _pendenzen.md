@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14
+aktualisiert: 26-05-14 (Slice 4.4)
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -50,7 +50,8 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.1 ✅ ECharts-Foundation + BTC-Sparkline · lokal + Production
 - Slice 4.2 ✅ Trading-Indikatoren-Block · lokal komplett · Production zeigt Fallback wegen Vercel-Binance-Block
 - Slice 4.3 ✅ Multi-Anbieter-Watchlist-Foundation · watchlist.json · twelveDataFetcher · watchlistAggregator · coingeckoFetcher erweitert
-- Slice 4.4 als nächstes · Watchlist-Komponenten auf /wirtschaft · UI für 6 Gruppen · Live-Daten-Anzeige
+- Slice 4.4 ✅ Watchlist-Komponenten · WatchlistItem + WatchlistGruppe + WatchlistSektion · Mini-Sparklines für Crypto · collapsible Gruppen · in /wirtschaft integriert
+- Slice 4.5 als nächstes · Aktien + Forex/Commodities-Sektion · Indices-Fallback klären
 
 ---
 
@@ -121,7 +122,7 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.1** ECharts-Foundation + DRG-Theme + BTC-Hero mit Sparkline
 - [x] **Slice 4.2** Trading-Indikatoren-Block · Funding · OI · L/S · Coinbase Premium · Stablecoin Supply
 - [x] **Slice 4.3** Multi-Anbieter-Watchlist-Foundation · Twelve-Data-Fetcher · ENV-Setup
-- [ ] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
+- [x] **Slice 4.4** Watchlist-Komponenten mit Gruppierung · Crypto-Items komplett
 - [ ] **Slice 4.5** Aktien-Sektion + Forex/Commodities-Sektion
 - [ ] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
 - [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft

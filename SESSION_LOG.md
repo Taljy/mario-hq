@@ -1,5 +1,42 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 25) · Slice 4.4 · Watchlist-Komponenten mit Gruppierung
+
+### Was gemacht
+- `coingeckoFetcher.ts`: `sparkline=true` in `getKryptoStandFuerIds` · `KryptoStand` + `sparkline_7d?: number[]` · API-Typ mit `sparkline_in_7d?.price`
+- `watchlistAggregator.ts`: `WatchlistItemEnriched` + `sparkline_7d?: number[]` · pass-through aus coingecko-Map
+- `WatchlistItem.astro` (neu): Logo-Kreis (Mono-Buchstabe, selbst gerendert) · Preis in Fraunces adaptiv formatiert · Delta: Vermillon wenn negativ, `var(--fg-muted)` wenn positiv · Mini-Sparkline 80×20px Desktop-only für Crypto-Items · `ist_live: false` → "—" ohne Fehlertext
+- `WatchlistGruppe.astro` (neu): Collapsible via Button + `aria-expanded` · kein `<details>` · DOM-only State (kein localStorage, Slice 4.4) · alleOffline-Gruppe trägt "· nicht verfügbar" im Header
+- `WatchlistSektion.astro` (neu): Eyebrow "WATCHLIST · MÄRKTE" konsistent · Live-Stempel · gruppen-loop mit `WatchlistErgebnis`-Props
+- `wirtschaft.astro`: `getWatchlist()` in 6-er `Promise.all` · `<WatchlistSektion>` nach TradingIndikatoren · CoinGecko-Doppelcall notiert für Merge-Optimierung Slice 4.8
+
+### Erkenntnisse
+- Kein Grün im DRG-System: positives Delta nutzt `var(--fg-muted)` neutral, nicht eine erfundene Farbe
+- Fehlertext pro Item weglassen: tote Items zeigen nur "—", Gruppenebene trägt den Hinweis
+- CoinGecko `/coins/markets?sparkline=true`: 7-Tage-Kurve pro Coin im Bulk-Request, kein Extra-Call
+- Collapsible Default "offen" ist legitim für Übersichtsseite · localStorage-Persistierung als optionales Mini-Polish für Slice 4.8 notiert
+
+### Offene Pendenzen
+- localStorage-Persistierung für Gruppen-Expand-Zustand → Mini-Polish Slice 4.8
+- CoinGecko `getKryptoStand()` + `getKryptoStandFuerIds()` simultan → Merge-Optimierung Slice 4.8
+
+### Verifikation
+- Build ✅ · 3.74s · keine TypeScript-Fehler
+- Push → Vercel-Deploy ausstehend
+
+### Files dieser Session
+- `src/lib/coingeckoFetcher.ts` (sparkline-Erweiterung)
+- `src/lib/watchlistAggregator.ts` (sparkline pass-through)
+- `src/components/wirtschaft/WatchlistItem.astro` (neu)
+- `src/components/wirtschaft/WatchlistGruppe.astro` (neu)
+- `src/components/wirtschaft/WatchlistSektion.astro` (neu)
+- `src/pages/wirtschaft.astro` (6. Fetch + WatchlistSektion integriert)
+- `_pendenzen.md` (Slice 4.4 ✅)
+- `PHASE-4-SPEC §6` (4.1–4.4 → abgeschlossen)
+- `SESSION_LOG.md` (Update 25)
+
+---
+
 ## 26-05-14 (Update 24) · Slice 4.3 · Multi-Anbieter-Watchlist-Foundation
 
 ### Was gemacht
