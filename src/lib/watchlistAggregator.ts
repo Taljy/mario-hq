@@ -27,6 +27,7 @@ export interface WatchlistItemEnriched extends WatchlistItem {
   preis_usd: number | null;
   delta_24h_prozent: number | null;
   ist_live: boolean;
+  sparkline_7d?: number[];  // nur Crypto · nur wenn coingecko live
   fehler?: string;
 }
 
@@ -94,6 +95,7 @@ export async function getWatchlist(): Promise<WatchlistErgebnis> {
             preis_usd:         stand.preis_usd,
             delta_24h_prozent: stand.delta_24h_prozent,
             ist_live:          true,
+            sparkline_7d:      stand.sparkline_7d,
           };
         }
         return {

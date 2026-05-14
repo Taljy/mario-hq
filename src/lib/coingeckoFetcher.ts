@@ -10,6 +10,7 @@ export interface KryptoStand {
   name: string;
   preis_usd: number;
   delta_24h_prozent: number;
+  sparkline_7d?: number[];  // 7-Tage-Kurve · nur wenn sparkline=true angefordert
 }
 
 export interface KryptoErgebnis {
@@ -94,7 +95,7 @@ export async function getKryptoStandFuerIds(ids: string[]): Promise<Map<string, 
   try {
     const url =
       `https://api.coingecko.com/api/v3/coins/markets` +
-      `?vs_currency=usd&ids=${ids.join(',')}&order=market_cap_desc&sparkline=false`;
+      `?vs_currency=usd&ids=${ids.join(',')}&order=market_cap_desc&sparkline=true`;
 
     const response = await fetch(url, {
       signal: AbortSignal.timeout(5000),
@@ -108,6 +109,7 @@ export async function getKryptoStandFuerIds(ids: string[]): Promise<Map<string, 
       symbol: string;
       current_price: number;
       price_change_percentage_24h: number;
+      sparkline_in_7d?: { price: number[] };
     }>;
 
     const map = new Map<string, KryptoStand>();
@@ -117,6 +119,7 @@ export async function getKryptoStandFuerIds(ids: string[]): Promise<Map<string, 
         name:              coin.name,
         preis_usd:         coin.current_price,
         delta_24h_prozent: coin.price_change_percentage_24h,
+        sparkline_7d:      coin.sparkline_in_7d?.price,
       });
     }
     return map;

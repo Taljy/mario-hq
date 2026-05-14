@@ -7,6 +7,7 @@ export const prerender = false;
 import DetailPage from '../layouts/DetailPage.astro';
 import KryptoHero            from '../components/wirtschaft/KryptoHero.astro';
 import TradingIndikatoren    from '../components/wirtschaft/TradingIndikatoren.astro';
+import WatchlistSektion      from '../components/wirtschaft/WatchlistSektion.astro';
 import IndizesGrid           from '../components/wirtschaft/IndizesGrid.astro';
 import WirtschaftsNews       from '../components/wirtschaft/WirtschaftsNews.astro';
 import TradeSetupsPlaceholder from '../components/wirtschaft/TradeSetupsPlaceholder.astro';
@@ -15,17 +16,21 @@ import { getKryptoStand, getBTCHistory } from '../lib/coingeckoFetcher';
 import { getBinanceMetrics }             from '../lib/binanceFetcher';
 import { getCoinbasePremium }            from '../lib/coinbasePremiumFetcher';
 import { getStablecoinSupply }           from '../lib/defiLlamaFetcher';
+import { getWatchlist }                  from '../lib/watchlistAggregator';
 import { getWirtschaft }                 from '../lib/wirtschaftResolver';
 
 Astro.response.headers.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
 
-// Alle 5 async Fetches parallel · jeder Fetcher hat eigenen Fallback
-const [krypto, btcHistory, binance, coinbasePrem, stablecoins] = await Promise.all([
+// 6 async Fetches parallel · jeder Fetcher hat eigenen Fallback
+// CoinGecko-Note: getKryptoStand() + getKryptoStandFuerIds() (via getWatchlist) feuern simultan
+// zwei /coins/markets-Calls — akzeptiert für MVP, Merge-Optimierung in Slice 4.8
+const [krypto, btcHistory, binance, coinbasePrem, stablecoins, watchlist] = await Promise.all([
   getKryptoStand(),
   getBTCHistory(),
   getBinanceMetrics(),
   getCoinbasePremium(),
   getStablecoinSupply(),
+  getWatchlist(),
 ]);
 const { indizes, news, trade_setups_placeholder } = getWirtschaft();
 ---
@@ -42,6 +47,7 @@ const { indizes, news, trade_setups_placeholder } = getWirtschaft();
       coinbasePrem={coinbasePrem}
       stablecoins={stablecoins}
     />
+    <WatchlistSektion watchlist={watchlist} />
     <IndizesGrid indizes={indizes} />
     <WirtschaftsNews items={news} />
     <TradeSetupsPlaceholder text={trade_setups_placeholder} />

@@ -1,0 +1,77 @@
+---
+// WatchlistSektion — Wrapper für die gesamte Multi-Asset-Watchlist
+// Eyebrow konsistent zu TradingIndikatoren und anderen /wirtschaft-Sektionen
+// Props: WatchlistErgebnis (realer Rückgabetyp aus watchlistAggregator.ts)
+
+import type { WatchlistErgebnis } from '../../lib/watchlistAggregator';
+import WatchlistGruppe from './WatchlistGruppe.astro';
+
+interface Props {
+  watchlist: WatchlistErgebnis;
+}
+
+const { watchlist } = Astro.props;
+
+const stempelLabel = watchlist.ist_live
+  ? `Live · ${watchlist.fetch_zeit}`
+  : `Fallback · ${watchlist.fetch_zeit}`;
+---
+
+<section class="watchlist-sektion">
+
+  <div class="sektion-head">
+    <span class="eyebrow">Watchlist · Märkte</span>
+    <span class={`live-stempel ${!watchlist.ist_live ? 'offline' : ''}`}>{stempelLabel}</span>
+  </div>
+
+  <div class="gruppen-stack">
+    {watchlist.gruppen.map((gruppe) => (
+      <WatchlistGruppe gruppe={gruppe} />
+    ))}
+  </div>
+
+</section>
+
+<style>
+  .watchlist-sektion {
+    background:    var(--bg-card);
+    padding:       18px;
+    border-radius: 4px;
+  }
+
+  /* Kopfzeile */
+  .sektion-head {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     baseline;
+    margin-bottom:   4px;
+  }
+
+  .eyebrow {
+    font-family:    var(--font-mono);
+    font-size:      11px;
+    font-weight:    400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color:          var(--accent);
+  }
+
+  .live-stempel {
+    font-family:    var(--font-mono);
+    font-size:      9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color:          var(--fg-subtle);
+  }
+
+  .live-stempel.offline {
+    color:   var(--accent);
+    opacity: 0.7;
+  }
+
+  /* Gruppen ohne Zwischenraum — Border-Top pro Gruppe erzeugt Trenner */
+  .gruppen-stack {
+    display:        flex;
+    flex-direction: column;
+  }
+</style>
