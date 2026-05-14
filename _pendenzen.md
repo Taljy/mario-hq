@@ -1,8 +1,8 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Phase 5 Slice 5.3 abgeschlossen)
-aktuelle-phase: 5 (Cover-Sync) · Slice 5.1/5.2/5.3 ✅ · 5.4 als letzter Schritt
+aktualisiert: 26-05-15 (Phase 5 ABGESCHLOSSEN)
+aktuelle-phase: 5 ABGESCHLOSSEN · Phase 6 / Architektur-Frage / Mini-Tasks offen
 ---
 
 # Mario's HQ · Pendenzen
@@ -64,17 +64,17 @@ Binance-Production-Block sollte per Anbieter-Swap zu Bybit V5 behoben werden. By
 
 **Slice-Nummerierungs-Klärung:** Die frühere Bezeichnung *"Slice 5.1 Binance/Bybit-Swap"* war ein Übergangs-Label am Ende von Phase 4. Phase 5 (Cover-Sync) startet die Slice-Zählung neu mit 5.1, 5.2, 5.3, 5.4 (siehe Roadmap unten). Commits aus dem Nachläufer bleiben unverändert (Git-Geschichte ist unveränderlich), wir referenzieren sie weiterhin per SHA (`91ef169`, `7de6592`), nicht per Slice-Nummer.
 
-## 🎯 Phase 5 · Cover-Sync · in Arbeit (14.5.2026)
+## ✅ Phase 5 · Cover-Sync — Abgeschlossen (15.5.2026)
 
 > **Detail-Spezifikation:** `docs/PHASE-5-COVER-SYNC-SPEC.md`
 
-Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben. Krypto-Card nutzt NUR CoinGecko-Preise (keine Trading-Indikatoren wegen IP-Block-Vererbung).
+Alle 5 Cover-Daten-Cards auf Live-Stand. Bewusst alle in einem Vorhaben. KryptoCard nutzt NUR CoinGecko (keine Trading-Indikatoren — keine IP-Block-Vererbung auf die Startseite).
 
-- Slice 5.1 ✅ Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9` · Production live mit `$81'432 · +2.3% · Fear · F&G 34`
-- Slice 5.2a ✅ getStundenHeute() in astronomieResolver via SunCalc · feat `8decc27`. Plan-Befund: wmoSymbol-Helper aus Original-Plan unnötig (WetterSymbol-Wrapper schon zentralisiert seit 2.3) → 5.2 in 5.2a/5.2b geteilt analog 4.5b/4.5c, bleibt EIN Slice in der 4er-Phasen-Zählung
-- Slice 5.2b ✅ WetterCard live-Swap (Open-Meteo + getStundenHeute + getFotoEmpfehlung) · feat `a5ffb9e` · Production live. Mario-Entscheidung 5.2b: Blaue-Stunde-Definition von `sunset → dusk` (≈ 36 min) auf `sunset → nauticalDusk` (≈ 82 min, erweitertes fotografisches Fenster) korrigiert.
-- Slice 5.3 ✅ Kalender + Macro + News live · EventBanner stillgelegt · feat `e491b44` · Production live. Mario-Konzept-Wechsel 5.3: MacroCard = ruhige 3er-Vorausschau (keine Pulse-Animation, kein Live-Stempel, keine Indizes-Zeile) · EventBanner aus index.astro ausgebunden, Datei bleibt für Wiederanschluss. Logik-Bug vor Push gefunden + gefixt: Wochen-Strip-Generierung defensive (icalFetcher liefert nur Tage mit Terminen).
-- Slice 5.4 als letzter Schritt · Polish + Volltest + Phase-5-Abschluss + Cover-Stempel "Phase 5" + card-head Mobile-Wrap zentral anschauen (siehe 5.2b-Befund, betrifft nur WetterCard)
+- Slice 5.1 ✅ Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9`
+- Slice 5.2a ✅ getStundenHeute() in astronomieResolver via SunCalc · feat `8decc27` · Plan-Befund: wmoSymbol-Helper aus Original-Plan unnötig (WetterSymbol-Wrapper bereits zentralisiert seit Phase 2.3)
+- Slice 5.2b ✅ WetterCard live-Swap (Open-Meteo + getStundenHeute + getFotoEmpfehlung) · feat `a5ffb9e` · Mario-Entscheidung: Blaue-Stunde-Definition `sunset → nauticalDusk` (≈ 82 min, erweitertes fotografisches Fenster)
+- Slice 5.3 ✅ Kalender + Macro + News live · EventBanner stillgelegt · feat `e491b44` · Mario-Konzept-Wechsel: MacroCard = ruhige 3er-Vorausschau · EventBanner aus index.astro ausgebunden (Datei bleibt für Wiederanschluss)
+- Slice 5.4 ✅ Polish + Volltest + Phase-5-Abschluss · feat `d757dfe` · beide Phase-Stempel auf "Phase 5" · WetterCard-Eyebrow gekürzt (löst Mobile-Wrap) · KalenderCard-Satzzeichen-Fix ("Daniela:" → "Daniela")
 
 ---
 
@@ -156,18 +156,18 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [x] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · §7.7-Realitäts-Notiz · Cover-Stempel · SESSION_LOG Synthese
 
-### Phase 5 · Cover-Sync — Cover auf Live-Stand bringen · in Arbeit *(14.5.2026)*
+### Phase 5 · Cover-Sync — Cover auf Live-Stand bringen ✅ *(15.5.2026)*
 
 > **Detail-Spezifikation:** `docs/PHASE-5-COVER-SYNC-SPEC.md`
 
-Cover-Daten-Cards auf Live-Stand bringen. Bewusst alle in einem Vorhaben — kein Halb-Zustand. Krypto-Card nutzt NUR CoinGecko (keine Trading-Indikatoren wegen IP-Block-Vererbung).
+Cover-Daten-Cards auf Live-Stand gebracht. Alle 5 Cards (Krypto · Wetter · Kalender · Macro · News) live · EventBanner stillgelegt. KryptoCard nutzt NUR CoinGecko (keine Trading-Indikatoren wegen IP-Block-Vererbung).
 
 - [x] **Slice 5.1** Spec + SSR-Foundation + KryptoCard live · feat `7af3bf9`
 - [x] **Slice 5.2** Wetter-Card live · Bau-Aufteilung 5.2a/5.2b
   - [x] **5.2a** getStundenHeute() in astronomieResolver · feat `8decc27`
   - [x] **5.2b** WetterCard-Live-Swap + nauticalDusk-Korrektur · feat `a5ffb9e`
 - [x] **Slice 5.3** Kalender + Macro + News live · EventBanner stillgelegt · feat `e491b44` · MacroCard-Konzept-Wechsel: 3er-Vorausschau statt Pulse-Karte
-- [ ] **Slice 5.4** Polish + Volltest + Cover-Stempel "Phase 5" + Phase-5-Abschluss · card-head Mobile-Wrap zentral anschauen
+- [x] **Slice 5.4** Polish + Volltest + Phase-5-Abschluss · feat `d757dfe` · beide Phase-Stempel auf "Phase 5" · WetterCard-Eyebrow gekürzt · KalenderCard-Satzzeichen-Fix
 
 ### Phase 6 · Briefing-Erweiterungen
 - [ ] **Streaks-Tracker** mit GitHub-Style Heatmap (im Briefing eingeblendet)

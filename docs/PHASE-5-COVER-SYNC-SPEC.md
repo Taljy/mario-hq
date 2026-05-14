@@ -3,8 +3,8 @@ type: phasenspezifikation
 projekt: mario-hq
 phase: 5
 erstellt: 26-05-14
-aktualisiert: 26-05-14 (Slice 5.3 abgeschlossen)
-status: 5.1 ✅ · 5.2 ✅ · 5.3 ✅ · 5.4 offen
+aktualisiert: 26-05-15 (Slice 5.4 · Phase-5-Abschluss)
+status: ABGESCHLOSSEN · alle Slices 5.1–5.4 erledigt · 15.5.2026
 referenz: Cover-Sync-Plan-Chat 14.5.2026 (claude.ai)
 ersetzt: Cover-Sync-Punkte aus _pendenzen.md vor Phase-5-Eröffnung
 ---
@@ -34,7 +34,7 @@ Phase 5 = **4 Slices total.**
 | **5.1** | Spec + SSR-Foundation (prerender=false, Cache-Header, Promise.all-Block) + KryptoCard live (CoinGecko + Fear & Greed) | klein-mittel | ✅ abgeschlossen |
 | **5.2** | Wetter-Card live · `astronomieResolver.getStundenHeute()` für Goldene/Blaue Stunde · `WetterCard.astro` auf `getWetterErgebnis()` + `getStundenHeute()` + `getFotoEmpfehlung()` · WetterSymbol-Wrapper direkt verwendet (kein eigener Helper nötig, siehe Bau-Aufteilung) | mittel | ✅ abgeschlossen (5.2a + 5.2b) |
 | **5.3** | KalenderCard (`getKalenderTermine()`) · MacroCard (3er-Vorausschau mit `getNaechsteWichtigeEvents()`, Indizes + Puls + Live-Stempel komplett raus) · NewsCard (`cover_headlines`-Feld in `news-voll.json`) · EventBanner **stillgelegt** (Datei bleibt, aus index.astro ausgebunden) · alte Stub-Resolver gelöscht | mittel | ✅ abgeschlossen |
-| **5.4** | Polish + Volltest Light/Dark/Mobile 375px + Cover-Stempel "Phase 4" → "Phase 5" + Phase-5-Synthese in SESSION_LOG + HANDOVER + Spec abschliessen | klein | offen |
+| **5.4** | Polish + Volltest Light/Dark/Mobile 375px + Cover-Stempel "Phase 4" → "Phase 5" (beide Footers) + WetterCard-Eyebrow gekürzt (löst Mobile-Wrap) + KalenderCard-Satzzeichen-Fix + Phase-5-Synthese in SESSION_LOG + HANDOVER + Spec abschliessen | klein | ✅ abgeschlossen |
 
 **Reihenfolge-Begründung:**
 - **5.1 zuerst:** CoinGecko hat im Phase-4-Nachläufer bewiesen, dass es von Vercel-IPs erreichbar ist → minimales Restrisiko. Beweist die SSR-Foundation (Cover wird zu `prerender = false`) auf der Live-Pipeline. Etabliert das Pattern für die folgenden Slices.

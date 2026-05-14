@@ -1,5 +1,94 @@
 # Mario's HQ · Session Log
 
+## 26-05-15 (Update 38) · Phase 5 · Slice 5.4 · Polish + Phase-5-Abschluss
+
+### Was gemacht (Slice 5.4)
+- `src/components/CoverFooter.astro` · "Phase 4" → "Phase 5" (Stempel-Hygiene)
+- `src/components/layout/Footer.astro` · "· Phase 4" → "· Phase 5" (zweiter Stempel-Ort, Lehre aus 4.8 — beide Stellen gleichzeitig)
+- `src/components/WetterCard.astro` · Eyebrow von `"Wetter & Foto · {ort}"` auf `"Wetter · {ort}"` gekürzt · Mario-Entscheidung Variante A · löst den 375px-card-head-Wrap (5.2b-Befund). Lokal verifiziert: einzeilig auf Mobile.
+- `src/components/KalenderCard.astro` · `ersterTerminWort()` um `.replace(/[:;,.\-–—]+$/, '')` ergänzt · Mario-Entscheidung Variante A · "Daniela:" → "Daniela", robust gegen weitere Satzzeichen-Varianten
+- Verifikations-`grep -rn "Phase 4" src/`: leer · keine Phase-4-Strings mehr in src/
+
+### Verifikation
+- `npm run build` grün
+- Dev-Server-Restart (HMR-Falle)
+- /-Cover Light/Dark/Mobile 375px:
+  - WETTER · BADEN AG + Live-Stempel einzeilig auf Mobile ✓ (Wrap weg)
+  - Wochen-Strip "Fr Zahnarzt · Sa frei · So frei · Mo Daniela · Di frei · Mi frei · Do frei" (Daniela ohne Doppelpunkt) ✓
+  - Beide Footers zeigen "Phase 5" ✓
+  - Console clean
+- /wirtschaft + /wetter + /kalender + /news HTTP 200 (Sicherheits-Check)
+- Production via grep-Schleife: Phase 5 + neue Eyebrow propagiert in Iteration 5 (~12 s · diesmal hat's etwas gedauert, bestätigt nochmal: Status-200 wäre nicht genug gewesen, grep-auf-Inhalt-Pattern ist die robuste Lösung)
+
+### Hinweis · Lighthouse-Spot-Check
+Im GO erwähnt aber Preview-Tools liefern keinen Lighthouse-Output direkt. Console clean + Build-Output-Sanity-Check (kein Chunk-Bloat ausser bekanntem ECharts-Warning) als Ersatz. Falls Mario tiefer prüfen will: `npx unlighthouse --site mario-hq-qc6f.vercel.app` lokal oder Chrome-DevTools-Lighthouse-Tab manuell — nicht Teil dieses Slice.
+
+---
+
+## Phase-5-Synthese · Cover-Sync · 14.5.–15.5.2026
+
+**Ziel:** Cover (/) von statischen Stub-JSONs auf Live-Quellen umstellen. Bewusst alle 5 Cards in einer Phase. KryptoCard nur CoinGecko, keine Trading-Indikatoren (würden Vercel-IP-Block aus Phase-4-Nachläufer auf die Startseite vererben).
+
+### Phase-5-Status · 4 Slices (5.2 intern in 5.2a/5.2b, Bau-Aufteilung wie 4.5b/4.5c)
+
+| Slice | Kernarbeit | Mario-Entscheidung |
+|---|---|---|
+| 5.1 | Spec + SSR-Foundation (prerender=false + Cache-Header + Promise.all) + KryptoCard live | Spec als erster Task in 5.1, kein Vor-Slice |
+| 5.2a | `getStundenHeute()` in astronomieResolver (SunCalc Golden/Blue Hour) | Plan-Befund: wmoSymbol-Helper unnötig — Bau-Aufteilung 5.2a/5.2b |
+| 5.2b | WetterCard live-Swap + Inline-SonneWolken-SVG durch Wrapper ersetzt + Stub-Files gelöscht | Blaue-Stunde-Definition `sunset → nauticalDusk` (≈ 82 min · erweitertes fotografisches Fenster · Card als Inspirations-Werkzeug) |
+| 5.3 | KalenderCard (icalFetcher) + MacroCard-Konzept-Wechsel + NewsCard (cover_headlines) + EventBanner stillgelegt | MacroCard = ruhige 3er-Vorausschau (statt Pulse-Card) · EventBanner ausgebunden (Datei bleibt) · NewsCard Single-Source via news-voll.cover_headlines |
+| 5.4 | Polish + Phase-Stempel beide auf "Phase 5" + WetterCard-Eyebrow-Kürzung + KalenderCard-Satzzeichen-Fix + Abschluss-Doku | Wetter-Eyebrow Variante A ("Wetter · Baden AG") · Satzzeichen-Fix Variante A |
+
+### Kern-Erkenntnisse Phase 5
+
+1. **Stub-Daten sind handgefräst-ordentlich · echte Daten haben Lücken** · Beispiel `icalFetcher.parseIcal()`: liefert nur Tage MIT Terminen, leere Tage fehlen komplett. Wochen-Strip-Logik musste defensive umgebaut werden (explizite 7-Tage-Generierung mit `tageMap.get(iso)`-Lookup, "frei" als Default). Stub-JSON hatte einen fertigen formatierten String — die Anbindung an echte Daten musste die Lücke füllen.
+
+2. **Edge-Cache-grep-Schleife als gelöster Stolperstein** · Status-200 ≠ Inhalts-Propagation. `until curl -sf` sagt nur dass die Lambda läuft, nicht dass die neue Version durchgereicht ist. Die Schleife `for i in seq 1 N; do curl | grep -q "neuer Wert" && break; sleep 3; done` mit Nanosekunden-Bust ist robust. Iterations-Bedarf variierte: 5.1 (sofort), 5.2b (mehrere), 5.3 (sofort), 5.4 (5 Iterationen). Bestätigt: kein separater Helper-Posten nötig, die Schleife selbst IST die Lösung.
+
+3. **UI-Wahrheits-Prinzip beim Live-Stempel** · Mario-gepflegtes JSON ist kein Live-Fetch → kein "Live · 23:31 CEST"-Stempel auf MacroCard. Die Card hat einen einseitigen card-head (nur Eyebrow links). Bonus: kein Mobile-Wrap-Problem. Pattern: Live-Stempel nur bei echtem Live-Fetch (Open-Meteo, CoinGecko, iCal). Bei Mario-gepflegtem JSON (macro-events.json, news-voll.json): kein Stempel.
+
+4. **Plan-First-Befunde offen festhalten · auch wenn GO-Annahme falsch war** · 5.2a deckte auf: "Refactor-Schuld aus 2.3.3" existierte nicht (`WetterSymbol.astro` war bereits zentralisiert). 5.3-Wochen-Strip-Bug wurde vor Push gefunden. Beide Befunde sind im SESSION_LOG ehrlich festgehalten — nicht überschrieben. Plan-First spart hier echte Doppel-Arbeit.
+
+5. **EventBanner stillgelegt als bewusste Vereinfachung** · Mario-Konzept-Wechsel in 5.3-Freigabe: statt Banner + MacroCard synchron zu pulsen, EventBanner ganz weg und MacroCard übernimmt mit ruhiger 3er-Vorausschau. Spart Shared Helper + Synchronitäts-Verifikation. Komponente bleibt im Repo mit Wiederanschluss-Anleitung im Header — ~10 min Wiederanschluss möglich falls je gewünscht.
+
+6. **MacroCard-Konzept-Wechsel zu 3er-Vorausschau** · von "heutiges Event" (1 Zeile) auf "nächste 3 wichtige Events" (kritisch || hoch, ab heute, chronologisch). Card wird Inspirations-Liste statt Trigger-Karte. Datum-Format "Heute" / "DD. Monat". Defensive bei 0/1/2 Events (Empty-State greift bei nicht-gepflegter JSON).
+
+### Bewährte Pattern Phase 5 (zusätzlich zu Phase-4-Pattern)
+- Bau-Aufteilung innerhalb eines Slices (5.2a/5.2b) wie 4.5b/4.5c · bleibt EIN Slice in der Phasen-Zählung
+- Sanity-Check gegen unabhängige Quelle vor Code-Touch (5.2a/5.2b: `api.sunrise-sunset.org` für SunCalc-Werte)
+- Datentest-Skripte im Projekt-Root ablegen (`_test-xyz.mjs`, danach löschen) wegen Dependency-Auflösung
+- grep-auf-Inhalt-Schleife für Production-Verifikation (Nanosekunden-Bust)
+- Konzept-Wechsel in der Slice-Freigabe sind ok und oft vereinfachend (5.3)
+
+### Cover-Stand nach Phase 5
+Alle 5 Cards live auf `mario-hq-qc6f.vercel.app/`:
+- KryptoCard (CoinGecko BTC-Preis + Fear & Greed)
+- WetterCard (Open-Meteo + SunCalc Golden/Blue Hour + FotoSpotPicker)
+- KalenderCard (Google iCal Read-Only + defensive Wochen-Strip-Generierung)
+- MacroCard (macroEventsResolver 3er-Vorausschau · kein Live-Stempel · keine Pulse)
+- NewsCard (news-voll.cover_headlines · Mario-gepflegt · Single-Source mit /news)
+
+EventBanner stillgelegt (Datei bleibt). Phase-Stempel auf "Phase 5" an beiden Footer-Stellen.
+
+### Offene Themen nach Phase 5 (siehe HANDOVER §3)
+- Architektur-Frage Fetch-und-ablegen für Phase-4-Nachläufer-Issue (geparkt mit Trigger)
+- EventBanner-Wiederanschluss (~10 min falls je gewünscht)
+- Worktree-Cleanup (crazy-roentgen, lucid-noyce — in _pendenzen, nie erledigt)
+- Custom Domain (Phase 6)
+- Phase 6 / Phase 3 / Foto-Inspiration 4.6b — alle Optionen offen
+
+### Files dieser Session (5.4)
+- `src/components/CoverFooter.astro` (Phase-5-Stempel)
+- `src/components/layout/Footer.astro` (Phase-5-Stempel)
+- `src/components/WetterCard.astro` (Eyebrow gekürzt)
+- `src/components/KalenderCard.astro` (Satzzeichen-Fix)
+- `docs/PHASE-5-COVER-SYNC-SPEC.md` (Status ABGESCHLOSSEN · §2 + §5.4)
+- `_pendenzen.md` (Phase 5 ✅ · Roadmap ✅)
+- `SESSION_LOG.md` (Update 38 mit Phase-5-Synthese)
+- `docs/HANDOVER.md` (Stand nach Phase 5 · offene Themen ohne Slice-Framing)
+
+---
+
 ## 26-05-14 (Update 37) · Phase 5 · Slice 5.3 · Kalender + Macro + News live · EventBanner stillgelegt
 
 ### Konzept-Wechsel in der 5.3-Freigabe (Mario)
