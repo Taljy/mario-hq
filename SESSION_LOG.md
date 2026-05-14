@@ -1,5 +1,59 @@
 # Mario's HQ · Session Log
 
+## 26-05-14 (Update 31) · Slice 4.7 · Macro-Timeline + Fear & Greed Gauge
+
+### Was gemacht
+- `src/data/macro-events.json` (neu) · 9 echte Macro-Events 14.5.-28.5.2026 · via Fed/ECB/SNB/BEA/TradingEconomics verifiziert · Schema-Doku inline (`_schema_doku`) damit Mario die JSON künftig manuell pflegen kann
+- `src/lib/macroEventsResolver.ts` (neu) · liest JSON, filtert auf 14-Tage-Fenster ab heute, sortiert nach Datum+Uhrzeit
+- `src/lib/fearGreedFetcher.ts` (neu) · alternative.me-Fetcher · **1h Module-Cache** (Spec-konform) · defensive Behandlung wie defiLlama · Fehler werden NICHT gecached (nächster Hit retry)
+- `src/components/wirtschaft/MacroTimeline.astro` (neu) · Editorial-Liste · Datum/Uhrzeit/Name/Impact-Farbpunkt · heute mit Vermillon-Balken links · zweizeiliges Mobile-Layout
+- `src/components/wirtschaft/FearGreedGauge.astro` (neu) · ECharts-Halbkreis-Tachometer · Wert in Fraunces 36px · Label in Mono · KEIN Grün · Astro-Islands
+- `src/lib/echartsRenderer.ts` · `initFearGreedGauge` mit Achsen-Farbverlauf Vermillon (0-30 Fear-Zone) → neutral (30-100) · `title: { show: false }` explizit (sonst rendert ECharts data.name doppelt zum HTML-Label)
+- `src/pages/wirtschaft.astro` · MacroTimeline + FearGreedGauge nach ForexCommoditiesSektion · getFearGreed im Promise.all · macroEvents synchron via Resolver
+- `src/data/sources.json` · Alternative.me + Macro-Kalender (kuratiert) als neue Quellen
+
+### Macro-Event-Recherche · was im Fenster liegt UND was nicht
+Verifiziert über offizielle Quellen:
+- **Im Fenster (14.5.-28.5.2026):** US Retail Sales (14.5.), CA CPI (19.5.), UK CPI (20.5.), US FOMC Minutes (20.5.), US Housing Starts (21.5.), UK Retail (22.5.), DE Ifo (22.5.), US BIP Q1 2. Schätzung (28.5.), **US PCE Preisindex April (28.5.) als kritisch** — Fed's bevorzugter Inflations-Indikator
+- **NICHT im Fenster:** FOMC erst 16-17.6., EZB-Zinsentscheid 10-11.6., SNB erst 18.6. — alle Zentralbank-Entscheidungen liegen erst im Juni. Bewusst transparent gemacht.
+- **Bewusst weggelassen:** China-Daten (für Krypto-Trader nicht primär), Trump-Xi-Summit 15.5. (geopolitisch, kein Daten-Release)
+
+### Darstellungs-Entscheidung MacroTimeline: Liste statt ECharts-Zeitachse
+Bewusst von Spec §7.7 ("horizontale Zeitachse mit Punkten") abgewichen. Begründung:
+- 9 Events mit Häufungen (3 am 20.5., 2 am 22.5., 2 am 28.5.) → ECharts-Achse hätte Label-Kollisionen produziert
+- Auf Mobile 375px wäre die Zeitachse unlesbar
+- Editorial-Liste erfüllt die semantische Aufgabe (chronologische Reihenfolge + Impact-Codierung via Farbpunkt) auf jedem Viewport robust
+- Bonus: keine ECharts-Komponente nötig → statisches SSR-Rendering, kein Astro-Islands-Setup
+
+Mario hat diese Abweichung explizit freigegeben mit der Auflage: Realitäts-Notiz beim nächsten Spec-Sync oder im 4.8-Polish in Spec §7.7 ergänzen. Vormerkung steht in `_pendenzen.md` Slice 4.8.
+
+### FearGreed-Cache: 1h Module-Cache (Mario-Präzisierung)
+Erst-Plan hatte "1h-Cache nicht erzwingen, 60s-Page-Cache reicht eh". Mario hat das auf 1h-Cache spec-konform präzisiert · Begründung: Wert ändert sich täglich, nicht minütlich · Konsistenz mit Spec schlägt Pragmatik wenn die Spec richtig liegt. In-Memory-Module-Cache mit `expires`-Timestamp + Cache-Hit-Check vor jedem Fetch · Fehler werden NICHT gecached (kein Vergiften).
+
+### Verifikation
+- Build ✅ lokal
+- /wirtschaft lokal: 9 Macro-Events in chronologischer Liste, heute (14.5.) mit Vermillon-Balken links, PCE (28.5.) mit Vermillon-Punkt; F&G-Gauge zeigt Wert 34 "Fear", Vermillon-Achsen-Segment 0-30, Nadel auf 34
+- F&G-Layout-Fix während Verifikation: doppeltes "Fear"-Label entfernt (`title: { show: false }` in ECharts-Option), Werte-Layout vom margin-top:-56px auf normales Stack unter Gauge umgestellt
+- Light/Dark/Mobile 375px alle sauber: Mobile zeigt zweizeilige Event-Zeilen (Datum/Uhrzeit oben, Name unten, Punkt links)
+- Console clean nach Dev-Restart
+- Vercel-Push grün · /wirtschaft-Verifikation steht aus (docs-Commit-Push)
+
+### Files dieser Session
+- `src/data/macro-events.json` (neu, 9 Events + Schema-Doku)
+- `src/lib/macroEventsResolver.ts` (neu)
+- `src/lib/fearGreedFetcher.ts` (neu, 1h Module-Cache)
+- `src/components/wirtschaft/MacroTimeline.astro` (neu)
+- `src/components/wirtschaft/FearGreedGauge.astro` (neu)
+- `src/lib/echartsRenderer.ts` (initFearGreedGauge ergänzt)
+- `src/pages/wirtschaft.astro` (Integration)
+- `src/data/sources.json` (alternative.me + macro-kalender)
+- `_pendenzen.md` (4.7 ✅, 4.8 als nächstes mit §7.7-Realitäts-Notiz-Vormerkung)
+- `SESSION_LOG.md` (Update 31)
+- `docs/PHASE-4-CHARTS-AND-WATCHLIST-SPEC.md` §6 (4.7 ✅)
+- `docs/HANDOVER.md` (Stand nach 4.7 · Slice 4.8 als Abschluss)
+
+---
+
 ## 26-05-14 (Update 30) · Slice 4.6 · Wetter-Wochen-Bars + Mondphase-SVG
 
 ### Was gemacht

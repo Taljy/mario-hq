@@ -1,7 +1,7 @@
 ---
 type: pendenzen
 projekt: mario-hq
-aktualisiert: 26-05-14 (Slice 4.6)
+aktualisiert: 26-05-14 (Slice 4.7)
 aktuelle-phase: 4 (geplant)
 ---
 
@@ -56,7 +56,8 @@ Mario's HQ ist die langfristige Vision: ein **zentrales Steuerungs- und Anzeige-
 - Slice 4.5c ✅ Daten-Architektur-Cleanup · watchlistAggregator → kryptoAggregator · Typ-Renames · tdMap-Parameter + tote twelvedata-Logik raus · Datei -30% kleiner
 - Spec-Sync ✅ Phase-4-Spec an Realität nach 4.5b/c angeglichen · §2/§3/§4.1/§5/§6/§7.3/§7.4/§7.5/§7.8/§9/§11 aktualisiert · Eyebrow "WATCHLIST" → "MÄRKTE"
 - Slice 4.6 ✅ Wetter-Wochen-Bars (ECharts vertikale Floating-Bars) + Mondphase-SVG (Custom-SVG, mathematisch korrekt) auf /wetter · astronomieResolver um ist_zunehmend erweitert
-- Slice 4.7 als nächstes · Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
+- Slice 4.7 ✅ Macro-Timeline (Editorial-Liste) + Fear & Greed Gauge (Halbkreis-Tacho) auf /wirtschaft · 9 echte Macro-Events 14.5.-28.5.2026 · alternative.me-Fetcher mit 1h Cache
+- Slice 4.8 als nächstes · Polish + Volltest + Phase-4-Abschluss (inkl. §7.7-Realitäts-Notiz für die Editorial-Listen-Entscheidung)
 
 ---
 
@@ -134,8 +135,8 @@ Editorial-Charts UND Trading-Tools auf einer Page. Vollständige Multi-Asset-Wat
 - [x] **Slice 4.5c** Interner Daten-Architektur-Cleanup (kryptoAggregator)
 - [x] **Spec-Sync** Phase-4-Spec an Realität nach 4.5b/c angeglichen · Eyebrow-Fix
 - [x] **Slice 4.6** Wetter-Wochen-Bars + Mondphase-SVG auf /wetter
-- [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
-- [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss
+- [x] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
+- [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss · inkl. §7.7-Realitäts-Notiz für MacroTimeline = Editorial-Liste statt ECharts-Zeitachse
 - [ ] **Slice 4.7** Macro-Timeline + Fear & Greed Gauge auf /wirtschaft
 - [ ] **Slice 4.8** Polish + Volltest + Phase-4-Abschluss
 

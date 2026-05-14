@@ -287,7 +287,7 @@ const chart = echarts.init(domEl, 'drg');
 | **4.5** | Aktien-Sektion + Forex/Commodities-Sektion · Endpoint-Architektur (zwei Endpoints + Edge-Cache + SWR) wegen 8/min-Credits-Limit · Commodities komplett raus · Indizes Fallback B (weglassen) | gross | ✅ abgeschlossen |
 | **4.5b/c** | (KEIN Spec-Slice · IA-Umbau nach Mario-Wunsch, eingeschoben zwischen 4.5 und 4.6) · 4.5b: gemeinsame AssetCard, Krypto auf Card-Layout, neue Block-Struktur (BTC/ETH/SOL/XRP/SUI/TRX + ADA/AVAX/HBAR/JUP/GST/DOT), Aktien-Doppelung weg, watchlist.json nur noch Krypto, aktien.ts/forex.ts neu, Eyebrow "Krypto · Märkte" · 4.5c: interner Daten-Architektur-Cleanup (Aggregator-Rename zu kryptoAggregator + Typ-Renames + Dead-Code-Removal, ~30% LOC-Reduktion) | mittel | 4.5b ✅ · 4.5c ✅ |
 | **4.6** | Wetter-Wochen-Bars (ECharts vertikale Floating-Bars) + Mondphase-SVG (Custom-SVG mit korrekter Sichel-/Gibbous-Geometrie) auf /wetter · astronomieResolver um ist_zunehmend-Feld erweitert | mittel | ✅ abgeschlossen |
-| **4.7** | Macro-Timeline + Fear & Greed Gauge auf /wirtschaft | mittel | offen |
+| **4.7** | Macro-Timeline (Editorial-Liste statt ECharts-Zeitachse · siehe §7.7-Realitäts-Notiz für 4.8) + Fear & Greed Gauge (ECharts Halbkreis-Tacho) auf /wirtschaft · 9 recherchierte Macro-Events 14.5.-28.5.2026 · fearGreedFetcher mit 1h Cache | mittel | ✅ abgeschlossen |
 | **4.8** | Polish · Cross-Page-Konsistenz · Volltest · Phase-4-Abschluss | klein | offen |
 
 **Anzahl Slices:** 8 (gegenüber 5 in Phase 2.3)
